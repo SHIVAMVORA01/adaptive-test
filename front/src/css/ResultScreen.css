@@ -14,9 +14,20 @@ color: #081466;
     font-size: 16px;
     line-height: 24px;
     text-align: justify;
-    
     color: #0F1420;
 }
 .radarCh .apexcharts-menu-icon {
   display: none;
+}
+
+.Para{
+  margin-top: 23px;
+  position: absolute; 
+  font-family: Poppins;
+  font-weight: 1000;
+  font-size: 20px;
+  line-height: 36px; 
+  color: #081466;
+  margin-left: 30px;
+  margin-left: 30px;
 }

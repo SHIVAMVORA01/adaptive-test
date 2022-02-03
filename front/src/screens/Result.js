@@ -46,9 +46,6 @@ function Result() {
           },
         },
       },
-      title: {
-        text: "Personality Analysis",
-      },
       colors: ["#FF4560"],
       markers: {
         size: 4,
@@ -309,9 +306,10 @@ function Result() {
     <div>
       <Row>
         <Col md="12">
-          <div className="rectangle">
+          <div className="rectangle" style={{ textAlign: "center",fontSize: '18px'}}>
             {timeTaken !== undefined && (
               <TestHeaderComp
+                style={{fontSize: '18px'}}
                 timer={timeTaken}
                 timeKey="Time Taken"
                 start={false}
@@ -324,7 +322,8 @@ function Result() {
           </div>
         </Col>
       </Row>
-      <Row style={{ marginTop: "15px" }}>
+      <p className="Para">Placement Test Analysis</p>
+      <Row style={{ marginTop: "80px" }}>
         <Col lg="6">
           <div
             className="rectangle"
@@ -365,7 +364,8 @@ function Result() {
       </Row>
       {/* <GenericPdfDownloader rootElementId={'generatePdf'} downloadFileName="CustomPdf" ></GenericPdfDownloader> */}
       <Row>
-        <Col>
+      <p className="Para">Personality Test Analysis</p>
+        <Col style={{ marginTop: "80px" }}>
           <div
             className="rectangle"
             style={{ minHeight: "460px", backgroundColor: "#FFFFFF" }}

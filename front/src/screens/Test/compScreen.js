@@ -40,9 +40,9 @@ function CompScreen() {
       isReload(true);
     }
     if (!localStorage.getItem("test3")) {
-        let user = localStorage.getItem("username");
+      let user = localStorage.getItem("username");
       if (localStorage.getItem("test6")) {
-        let ax = JSON.parse(localStorage.getItem("test6")); 
+        let ax = JSON.parse(localStorage.getItem("test6"));
         let ar = ax["marks"];
         let total = 0;
         axiosInstance
@@ -319,9 +319,13 @@ function CompScreen() {
             change screen again !!
           </h6>
           <button
-            className="btn btn-secondary"
+            className="btn"
             onClick={(e) => handleCloseSChange(e)}
-            style={{ color: "#10B65C", margin: "0px 0px 10px 3px" }}
+            style={{
+              backgroundColor: "#10B65C",
+              margin: "0px 0px 10px 3px",
+              color: "white",
+            }}
           >
             Okay
           </button>
@@ -342,7 +346,7 @@ function CompScreen() {
                     noTotal={true}
                     header="Verbal Reasoning"
                     nextpage={"result"}
-                    start={!testFinshBool}
+                    start={false}
                     reset={testFinshBool}
                     setMd={setMd}
                   ></TestHeaderComp>
@@ -385,13 +389,13 @@ function CompScreen() {
           </Row>
 
           <Row style={{ height: window.screen.height - 300 }}>
-            <Col className="passage scrollbar" id="style-4">
+            <Col className="passage" style={{overflow:'none'}}>
               <div
                 style={{
                   backgroundColor: "#293E6F",
                   boxShadow: "1px 1px 7px 2px rgba(0, 0, 0, 0.25)",
                   borderRadius: "14px",
-                  margin: "5px 5px 15px 5px",
+                  margin: "5px 5px 15px 5px",          
                 }}
               >
                 <div
@@ -412,29 +416,38 @@ function CompScreen() {
                   Read the passage and answer the associated questions
                 </div>
               </div>
-              <h3
+              <h6
                 style={{
                   textAlign: "center",
                   fontWeight: "bold",
-                  marginTop: "20px",
+                  marginTop: "19.5px",
+                  fontSize: "20px",
                 }}
               >
                 {passage[parano].title}
-              </h3>
-              <h5
+              </h6>
+              <textarea
                 style={{
                   fontFamily: "Poppins",
                   fontStyle: "normal",
                   fontWeight: "normal",
                   padding: "0 10px",
-                  fontSize: "18px",
-                  lineHeight: "27px",
-                  color: "#000000",
+                  fontSize: "17.5px",
+                  width:'100%',
+                  height:'75%',
+                  fontSize: "17.5px",
+                  lineHeight: "20px",
+                  backgroundColor:'#F7F7F7',
+                  contentEditable: false,
+                  outline: "none",
+                  border: "none",
                 }}
-              >
-                {" "}
-                {passage[parano].para}
-              </h5>
+                value={passage[parano].para}
+                className="style-4"
+                
+              />
+                
+              
             </Col>
             <Col className="question scrollbar" id="style-4">
               <div style={{ marginBottom: "10px", padding: "30px" }}>
