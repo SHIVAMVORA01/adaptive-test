@@ -20,7 +20,7 @@ function AdminHome() {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div className="mainHeading">Our Test Modules :</div>
+        <div className="mainHeading">Our Test Modules</div>
         <div>
           <button
             style={{ color: "white" }}

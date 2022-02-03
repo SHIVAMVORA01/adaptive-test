@@ -76,7 +76,7 @@ function ViewSchdlTest() {
         <div>
             
              <button
-        style={{ marginLeft: "1%" ,marginBottom:'5px'}}
+        style={{ marginLeft: "1%" ,marginBottom:'5px', backgroundColor:'#293E6F',borderRadius:'5px',border:'none'}}
         className="btn btn-secondary"
         onClick={(e) => navigate("/admin/scheduledTest")}
       >

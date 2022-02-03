@@ -25,34 +25,37 @@
   margin-bottom: 20px;
   margin-right: 10px;
 }
-
 .secName {
   font-style: normal;
   font-weight: normal;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 36px;
   color: #293e6f;
-  margin-left: 34%;
+  margin-left: 42%;
   margin-top: 10px;
 }
+
 .secName1 {
   margin-top: 10px;
   font-style: normal;
   font-weight: normal;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 36px;
   color: #293e6f;
-  margin-left: 22%;
+  margin-left: 30%;
 }
+
+
 .secNameBig {
   margin-top: 10px;
   font-style: normal;
   font-weight: normal;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 36px;
   color: #293e6f;
-  margin-left: 10%;
+  margin-left: 25%;
 }
+
 
 .secNm {
   width: 100%;
@@ -181,11 +184,12 @@
 
 .mainHeading {
   font-family: Poppins;
-  font-style: normal;
   font-weight: bolder;
-  font-size: 35px;
+  font-size: 25px;
   color: #293e6f;
+  padding: 30px;
 }
+
 .TimePicker {
   padding-left: 10px;
 }

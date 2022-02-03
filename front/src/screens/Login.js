@@ -157,7 +157,7 @@ function Login() {
               <Row style={{ marginTop: "35px", paddingLeft: "200px" }}>
                 <Col>
                   <button
-                    style={{ backgroundColor: "#10B65C", width: "150px" }}
+                    style={{ backgroundColor: "#10B65C", width: "150px", border: "none" }}
                     type="submit"
                     className="btn btn-primary"
                   >

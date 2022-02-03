@@ -578,6 +578,7 @@ function Result() {
         type="button"
         className="btn btn-secondary"
         onClick={(e) => navigate("/logout")}
+        style={{ marginTop: "20px", backgroundColor: "red", color: "white", border:"none" }}
       >
         Logout
       </button>

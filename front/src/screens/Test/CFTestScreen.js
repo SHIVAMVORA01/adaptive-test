@@ -468,19 +468,20 @@ function CFTestScreen() {
                       )}
                     {countWindowAwayModal && (
                       <>
-                        <h1 style={{ color: "red" }}>
+                        <h4 style={{ color: "red" }}>
                           Screen Change Detected !!{" "}
                           {countWindowAway === 1 ? "1st" : "LAST"} WARNING
-                        </h1>
-                        <h3>
+                        </h4>
+                        <h6>
                           Screen changed detected.Test will get auto submitted
                           if you try to change screen again !!
-                        </h3>
+                        </h6>
                         <button
                           className="btn btn-secondary"
                           onClick={(e) => handleCloseSChange(e)}
+                          style={{ color: "#10B65C", margin: "0px 0px 10px 3px" }}
                         >
-                          OKay
+                          Okay
                         </button>
                       </>
                     )}

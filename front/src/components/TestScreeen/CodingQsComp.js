@@ -20,9 +20,9 @@ function CodingQsComp({ qs }) {
             className="style-4"
             disabled
           ></textarea>
-          <h5>
+          <h6>
             <b>Input Format</b>
-          </h5>
+          </h6>
 
           <textarea
             defaultValue={qs.input_format}
@@ -31,9 +31,9 @@ function CodingQsComp({ qs }) {
             className="style-4"
             disabled
           ></textarea>
-          <h5>
+          <h6>
             <b>Output Format</b>
-          </h5>
+          </h6>
 
           <textarea
             defaultValue={qs.output_format}
@@ -42,9 +42,9 @@ function CodingQsComp({ qs }) {
             className="style-4"
             disabled
           ></textarea>
-          <h5>
+          <h6>
             <b>Constraints</b>
-          </h5>
+          </h6>
 
           <textarea
             defaultValue={qs.constraints}
@@ -52,18 +52,18 @@ function CodingQsComp({ qs }) {
             className="style-4"
             disabled
           ></textarea>
-          <h5>
+          <h6>
             <b>Sample Input 1 </b>
-          </h5>
+          </h6>
           <textarea
             defaultValue={qs.sample_input}
             style={{ height: "fit-content" }}
             className="style-4"
             disabled
           ></textarea>
-          <h5>
+          <h6>
             <b>Sample Output 1 </b>
-          </h5>
+          </h6>
           <textarea
             defaultValue={qs.sample_output}
             style={{ height: "fit-content" }}
@@ -71,9 +71,9 @@ function CodingQsComp({ qs }) {
             className="style-4"
           ></textarea>
           {qs.explanation !== null && qs.explanation !== "" && (
-            <h5>
+            <h6>
               <b>Explanation</b>
-            </h5>
+            </h6>
           )}
           {qs.explanation !== null && qs.explanation !== "" && (
             <textarea

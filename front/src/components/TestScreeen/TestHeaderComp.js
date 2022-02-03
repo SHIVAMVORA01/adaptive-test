@@ -17,7 +17,7 @@ function TestHeaderComp({
   return (
     <div id="testHeaderComp">
       <Row>
-        <Col md="4" style={{ textAlign: "center" }}>
+        <Col md="4" style={{ textAlign: "center", fontSize: '18px' }}>
           <div>{header}</div>
         </Col>
         {noTotal ? (
@@ -31,6 +31,7 @@ function TestHeaderComp({
           >
             {timeKey}:
             <CustomTimer
+              style={{fontSize: '18px' }}
               start={start}
               reset={reset}
               time={timer}
@@ -49,6 +50,7 @@ function TestHeaderComp({
           >
             {timeKey}:
             <CustomTimer
+              style={{fontSize: '18px' }}
               start={start}
               reset={reset}
               time={timer}
@@ -58,7 +60,7 @@ function TestHeaderComp({
           </Col>
         )}
         {!noTotal && (
-          <Col md="2" style={{ textAlign: "center" }}>
+          <Col md="2" style={{ textAlign: "center",fontSize: '18px'}}>
             {totalKey} : {totalValue}
           </Col>
         )}

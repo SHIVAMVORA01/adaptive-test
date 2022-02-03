@@ -214,7 +214,7 @@ function ScheduledTest() {
         </Modal.Footer>
       </Modal>
       <button
-        style={{ marginLeft: "1%" }}
+        style={{ marginLeft: "1%",backgroundColor:'#293E6F',borderRadius:'5px',border:'none' }}
         className="btn btn-secondary"
         onClick={(e) => navigate("/admin/home")}
       >

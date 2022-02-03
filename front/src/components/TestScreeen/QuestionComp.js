@@ -30,7 +30,7 @@ function QuestionComp({
           </Row>
           <Row>
             <Col>
-              <div style={{ padding: "5px 0 20px 0px", fontWeight: "400" }}>
+              <div style={{ padding: "5px 0 20px 0px", fontWeight: "700" }}>
                 {question}
               </div>
             </Col>
