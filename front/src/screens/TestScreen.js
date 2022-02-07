@@ -8,6 +8,8 @@ import "../css/TestScreen.css";
 import { useNavigate } from "react-router";
 import { isExpired, decodeToken } from "react-jwt";
 import CustomTimer from "./Admin/CustomTimer";
+import crypt from "../components/TestScreeen/crypt";
+import ProtectUrl from "../components/TestScreeen/ProtectUrl";
 
 function TestScreen() {
   const [hard, setHard] = useState([]);
@@ -30,151 +32,157 @@ function TestScreen() {
   const [timeFF, setTimeFF] = useState();
 
   useEffect(() => {
-    var test = JSON.parse(localStorage.getItem("test"));
-    const token = localStorage.getItem("access_token");
-    const isMyTokenExpired = isExpired(token);
-    const channel = new BroadcastChannel("tab");
-    const items = { ...localStorage };
-    console.log(items);
-
-    channel.postMessage("another-tab");
-    // note that listener is added after posting the message
-
-    channel.addEventListener("message", (msg) => {
-      if (msg.data === "another-tab") {
-        // message received from 2nd tab
-        // alert('Cannot open multiple instances');
-        // navigate('/error')
-      }
-    });
-
-    if (test) {
-      if (test["question"].length !== 0) {
-        console.info("This page is reloaded");
-        isReload(true);
-      }
-    }
-    if (isMyTokenExpired) {
-      navigate("/login");
-      return;
+    if (!localStorage.getItem("test")) {
+      navigate(ProtectUrl.protect());
     } else {
-      if (localStorage.getItem("result")) {
-        navigate("/result");
-      } else {
-        const getData = async () =>
-          await axios
-            .get("http://127.0.0.1:8000/api/subs/1")
-            .then((res) => {
-              let a = converttime(res.data.time);
-              var tf = a;
-              var totalQs = res.data.qs;
-              if (totalQs > 0) {
-                if (test["question"].length === 0) {
-                  setTimeFF(tf);
-                  setEasy(res.data.easy);
-                  setHard(res.data.hard);
-                  var mediumArrRes = res.data.medium;
-                  var index = getRandomInt(0, res.data.medium.length);
-                  setQs([...qs, mediumArrRes[index]]);
-                  test["question"].push(mediumArrRes[index]);
-                  test["currentLevel"] = 2;
-                  mediumArrRes.splice(index, 1);
-                  setMedium(mediumArrRes);
-                  let ar = new Array(res.data.qs).fill(-1);
-                  setAns(ar);
-                  test["marks"] = ar;
-                  test["maxMarks"] = [2];
-                  localStorage.setItem("test", JSON.stringify(test));
-                } else {
-                  var qss = test["question"];
-                  var x = res.data.easy;
-                  var y = res.data.medium;
-                  var z = res.data.hard;
-                  for (let i = 0; i < qss.length; i++) {
-                    if (
-                      x
-                        .map(function (e) {
-                          return e.ques;
-                        })
-                        .indexOf(qss[i].ques) !== -1
-                    ) {
-                      let a = x
-                        .map(function (e) {
-                          return e.ques;
-                        })
-                        .indexOf(qss[i].ques);
-                      x.splice(a, 1);
-                    } else if (
-                      y
-                        .map(function (e) {
-                          return e.ques;
-                        })
-                        .indexOf(qss[i].ques) !== -1
-                    ) {
-                      let b = y
-                        .map(function (e) {
-                          return e.ques;
-                        })
-                        .indexOf(qss[i].ques);
-                      y.splice(b, 1);
-                    } else if (
-                      z
-                        .map(function (e) {
-                          return e.ques;
-                        })
-                        .indexOf(qss[i].ques) !== -1
-                    ) {
-                      let c = z
-                        .map(function (e) {
-                          return e.ques;
-                        })
-                        .indexOf(qss[i].ques);
-                      z.splice(c, 1);
-                    }
-                  }
-                  setEasy(x);
-                  setHard(z);
-                  setMedium(y);
-                  setCurrent(test["currentLevel"]);
-                  var ar = test["marks"];
-                  setAns(ar);
-                  setQsno(test["currentQsNo"] - 1);
-                  setQs(test["question"]);
-                  var ob = new Date();
-                  console.log(test["strtTime"]);
-                  console.log(ob.toLocaleTimeString());
-                  var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-                  var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-                  var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
+      var test = JSON.parse(localStorage.getItem("test"));
+      const token = localStorage.getItem("access_token");
+      const isMyTokenExpired = isExpired(token);
+      const channel = new BroadcastChannel("tab");
+      const items = { ...localStorage };
+      console.log(items);
 
-                  var timeStart = new Date(
-                    new Date().toLocaleDateString() + " " + test["strtTime"]
-                  );
-                  var timeEnd = new Date(
-                    new Date().toLocaleDateString() +
-                      " " +
-                      h +
-                      ":" +
-                      m +
-                      ":" +
-                      s
-                  );
-                  var hourDiff = (timeEnd - timeStart) / 1000;
-                  console.log(timeEnd);
-                  console.log(timeStart);
-                  console.log(hourDiff);
-                  console.log(tf);
-                  setTimeFF(tf - hourDiff);
+      channel.postMessage("another-tab");
+      // note that listener is added after posting the message
+
+      channel.addEventListener("message", (msg) => {
+        if (msg.data === "another-tab") {
+          // message received from 2nd tab
+          // alert('Cannot open multiple instances');
+          // navigate('/error')
+        }
+      });
+
+      if (test) {
+        if (test["question"].length !== 0) {
+          console.info("This page is reloaded");
+          isReload(true);
+        }
+      }
+      if (isMyTokenExpired) {
+        navigate("/login");
+        return;
+      } else {
+        if (localStorage.getItem("result")) {
+          navigate("/result");
+        } else {
+          let xx = localStorage.getItem("testId");
+          const getData = async () =>
+            await axios
+              .get(`http://127.0.0.1:8000/api/subs/1/${xx}`)
+              .then((res) => {
+                console.log(res.data)
+                let a = converttime(res.data.time);
+                var tf = a;
+                var totalQs = res.data.qs;
+                if (totalQs > 0) {
+                  if (test["question"].length === 0) {
+                    setTimeFF(tf);
+                    setEasy(res.data.easy);
+                    setHard(res.data.hard);
+                    var mediumArrRes = res.data.medium;
+                    var index = getRandomInt(0, res.data.medium.length);
+                    setQs([...qs, mediumArrRes[index]]);
+                    test["question"].push(mediumArrRes[index]);
+                    test["currentLevel"] = 2;
+                    mediumArrRes.splice(index, 1);
+                    setMedium(mediumArrRes);
+                    let ar = new Array(res.data.qs).fill(-1);
+                    setAns(ar);
+                    test["marks"] = ar;
+                    test["maxMarks"] = [2];
+                    localStorage.setItem("test", JSON.stringify(test));
+                  } else {
+                    var qss = test["question"];
+                    var x = res.data.easy;
+                    var y = res.data.medium;
+                    var z = res.data.hard;
+                    for (let i = 0; i < qss.length; i++) {
+                      if (
+                        x
+                          .map(function (e) {
+                            return e.ques;
+                          })
+                          .indexOf(qss[i].ques) !== -1
+                      ) {
+                        let a = x
+                          .map(function (e) {
+                            return e.ques;
+                          })
+                          .indexOf(qss[i].ques);
+                        x.splice(a, 1);
+                      } else if (
+                        y
+                          .map(function (e) {
+                            return e.ques;
+                          })
+                          .indexOf(qss[i].ques) !== -1
+                      ) {
+                        let b = y
+                          .map(function (e) {
+                            return e.ques;
+                          })
+                          .indexOf(qss[i].ques);
+                        y.splice(b, 1);
+                      } else if (
+                        z
+                          .map(function (e) {
+                            return e.ques;
+                          })
+                          .indexOf(qss[i].ques) !== -1
+                      ) {
+                        let c = z
+                          .map(function (e) {
+                            return e.ques;
+                          })
+                          .indexOf(qss[i].ques);
+                        z.splice(c, 1);
+                      }
+                    }
+                    setEasy(x);
+                    setHard(z);
+                    setMedium(y);
+                    setCurrent(test["currentLevel"]);
+                    var ar = test["marks"];
+                    setAns(ar);
+                    setQsno(test["currentQsNo"] - 1);
+                    setQs(test["question"]);
+                    var ob = new Date();
+                    console.log(test["strtTime"]);
+                    console.log(ob.toLocaleTimeString());
+                    var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+                    var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+                    var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
+
+                    var timeStart = new Date(
+                      new Date().toLocaleDateString() + " " + test["strtTime"]
+                    );
+                    var timeEnd = new Date(
+                      new Date().toLocaleDateString() +
+                        " " +
+                        h +
+                        ":" +
+                        m +
+                        ":" +
+                        s
+                    );
+                    var hourDiff = (timeEnd - timeStart) / 1000;
+                    console.log(timeEnd);
+                    console.log(timeStart);
+                    console.log(hourDiff);
+                    console.log(tf);
+                    setTimeFF(tf - hourDiff);
+                  }
+                } else {
+                  localStorage.removeItem("test");
+                  navigate("/admin/computer");
                 }
-              } else {
-                localStorage.removeItem("test");
-                navigate("/admin/computer");
-              }
-            })
-            .catch((e) => {
-              console.log(e);
-            });
-        getData();
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          getData();
+        }
       }
     }
   }, []);
@@ -185,6 +193,8 @@ function TestScreen() {
       else if (element.webkitRequestFullscreen)
         element.webkitRequestFullscreen();
       else if (element.msRequestFullscreen) element.msRequestFullscreen();
+      element.style.overflowY = `auto`;
+      element.classList.add(`style-4`);
     }
   }
   document.addEventListener("fullscreenchange", function () {
@@ -224,11 +234,10 @@ function TestScreen() {
 
   function click(e) {
     e.preventDefault();
-
     var myans = -1;
     const formData = new FormData(e.target);
     for (var pair of formData.entries()) {
-      myans = pair[1];
+      myans = crypt.decryptVal(pair[1]);
     }
     setTotal(total + parseInt(myans));
     var x;
@@ -400,6 +409,7 @@ function TestScreen() {
                           level={current}
                           question={qs[qsno].ques}
                           options={qs[qsno].options}
+                          qsimg={qs[qsno].img}
                         ></QuestionComp>
                       )}
                     {countWindowAwayModal && (
@@ -413,9 +423,13 @@ function TestScreen() {
                           if you try to change screen again !!
                         </h6>
                         <button
-                          className="btn btn-secondary"
+                          className="btn"
                           onClick={(e) => handleCloseSChange(e)}
-                          style={{ color: "#10B65C", margin: "0px 0px 10px 3px" }}
+                          style={{
+                            backgroundColor: "#10B65C",
+                            margin: "0px 0px 10px 3px",
+                            color: "white",
+                          }}
                         >
                           Okay
                         </button>

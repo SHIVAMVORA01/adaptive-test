@@ -192,14 +192,16 @@ input:focus {
   font-size: 24px;
   line-height: 36px;
   overflow-x: hidden;
-  overflow-Y: auto;
+  overflow-y: auto;
   padding-bottom: 30px;
 }
 
 #quesComp {
   color: #293e6f !important;
 }
-
+.qsRadio:hover {
+  cursor: pointer;
+}
 .qsRadio:after {
   width: 15px;
   height: 15px;
@@ -239,4 +241,27 @@ input:focus {
 
 #style-4::-webkit-scrollbar-thumb {
   background-color: #adb5bd;
+}
+
+.form-check-input {
+  width: 1px;
+  height: 1px;
+  border-radius: 1px;
+}
+
+.form-check-input:focus {
+  box-shadow: none;
+  outline: none;
+}
+.TestQs textarea {
+  font-weight: 800;
+  min-height: 10px;
+}
+.form-check:hover,
+.textdivOpt {
+  cursor: pointer !important;
+}
+.textdivOpt:focus,
+.textdivQs:focus {
+  outline: none;
 }

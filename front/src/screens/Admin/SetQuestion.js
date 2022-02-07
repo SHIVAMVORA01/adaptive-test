@@ -5,7 +5,11 @@ import "../../css/AdminAddQsScreen.css";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../axios";
 import $ from "jquery";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 import AnalyticalQsComp from "../../components/Admin/AnalyticalQsComp";
+import Alert from "../../components/Admin/Alert";
+import { Image } from "cloudinary-react";
 
 function SetQuestion() {
   const navigate = useNavigate();
@@ -37,9 +41,17 @@ function SetQuestion() {
   const [para_title, set_para_title] = useState();
   const [para, set_para] = useState();
   const [para_qs, set_para_qs] = useState([]);
-  const [isPersonality,set_isPersonality]=useState(false)
+  const [isPersonality, set_isPersonality] = useState(false);
+
+  const [fileInputState, setFileInputState] = useState("");
+  const [previewSource, setPreviewSource] = useState("");
+  const [selectedFile, setSelectedFile] = useState();
+  const [successMsg, setSuccessMsg] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [imgDB, setImgDb] = useState("");
 
   useEffect(() => {
+    document.getElementById(location.state.type).selected = "selected";
     var divHeight = document.querySelector("#SETQS").clientHeight;
     setWindowHeight(divHeight);
     localStorage.removeItem("isNewTestReload");
@@ -49,14 +61,15 @@ function SetQuestion() {
       setIsCoding(true);
     } else if (parseInt(location.state.sid) === 6) {
       setIsAnalytical(true);
-    }else if(parseInt(location.state.sid) === 4){
-      set_isPersonality(true)
+    } else if (parseInt(location.state.sid) === 4) {
+      set_isPersonality(true);
     }
     if (temp[0] !== undefined) {
       if (location.state.sid !== 5 && location.state.sid !== 6) {
         setCurrentQsID(temp[0].id);
         setCurrentQs(temp[0].ques);
         setOpt(temp[0].options);
+        setImgDb(temp[0].imgId);
       } else if (location.state.sid === 5) {
         setCurrentQsID(temp[0].id);
         setCurrentQs(temp[0].question || "");
@@ -154,7 +167,7 @@ function SetQuestion() {
         dictionary[document.getElementById("qsSetTestCase3Output").name] =
           document.getElementById("qsSetTestCase3Output").value;
       }
-      
+
       var rightOpt = document.querySelector('input[name="correctOpt"]:checked');
 
       if (rightOpt !== null) {
@@ -166,7 +179,7 @@ function SetQuestion() {
         e.target[x] instanceof HTMLInputElement ||
         e.target[x] instanceof HTMLSelectElement
       ) {
-        if ((e.target[x].name).toString() !== "type") {
+        if (e.target[x].name.toString() !== "type") {
           if (isAnalytical) {
             console.log(e.target[x].name.split("Option")[0]);
             var key = e.target[x].name.split("Option")[0].toString();
@@ -177,23 +190,50 @@ function SetQuestion() {
           dictionary[e.target[x].name] = e.target[x].value;
         } else {
           if (e.target[x].value == "Easy") {
-            dictionary['type'] = 1;
+            dictionary["type"] = 1;
           } else if (e.target[x].value == "Medium") {
-            dictionary['type'] = 2;
+            dictionary["type"] = 2;
           } else {
-            dictionary['type'] = 3;
+            dictionary["type"] = 3;
           }
         }
       }
     }
-    if(parseInt(location.state.sid) === 4){
-      dictionary['type']=2
+    if (parseInt(location.state.sid) === 4) {
+      dictionary["type"] = 2;
     }
     console.log(dictionary);
-    axiosInstance.post("api/admin/addQs", { data: dictionary }).then((res) => {
-      navigate("/admin/newTest", { state: { sid: location.state.sid - 1 } });
-    });
+    dictionary["image"] = "";
+    if (selectedFile) {
+      const reader = new FileReader();
+      reader.readAsDataURL(selectedFile);
+      reader.onloadend = () => {
+        uploadImage(reader.result, dictionary);
+      };
+      reader.onerror = () => {
+        console.error("AHHHHHHHH!!");
+        setErrMsg("something went wrong!");
+      };
+    } else {
+      uploadImage("", dictionary);
+    }
   }
+  const uploadImage = async (base64EncodedImagee, dictionary) => {
+    try {
+      dictionary["image"] = base64EncodedImagee;
+      axiosInstance
+        .post("api/admin/addQs", { data: dictionary })
+        .then((res) => {
+          navigate("/admin/newTest", {
+            state: { sid: location.state.sid - 1 },
+          });
+        })
+        .catch((e) => {
+          console.log(e);
+          setErrMsg("something went wrong!,Try Again");
+        });
+    } catch (e) {}
+  };
   function delOptInSubQs(e, pId, qsId, questionIndex) {
     para_qs[questionIndex].options.pop();
     set_rerenderState(true);
@@ -338,6 +378,7 @@ function SetQuestion() {
         setCurrentQs(navArray[e.target.id].ques);
         setCurrentQsID(navArray[e.target.id].id);
         setOpt(navArray[e.target.id].options);
+        setImgDb(navArray[e.target.id].imgId);
         setCurrentQsNo(`${parseInt(e.target.id) + 1}`);
       } else if (location.state.sid === 5) {
         setCurrentQsID(navArray[e.target.id].id);
@@ -391,13 +432,28 @@ function SetQuestion() {
         set_para_qs(navArray[e.target.id].questions);
       }
     }
+    document.getElementById(location.state.type).selected = "selected";
   }
   function reportWindowSize(e) {
     setWindowHeight(window.screen.height);
   }
+  const handleFileInputChange = (e) => {
+    const file = e.target.files[0];
+    previewFile(file);
+    setSelectedFile(file);
+    setFileInputState(e.target.value);
+  };
+  const previewFile = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreviewSource(reader.result);
+    };
+  };
 
   return (
     <div>
+      <Alert msg={errMsg} type="danger" />
       <form onSubmit={(e) => handleSubmit(e)} id="sbForm">
         <input name="sectionName" value={location.state.sectionName} hidden />
         <input
@@ -416,45 +472,30 @@ function SetQuestion() {
               className="basicRec SetQuestion"
               style={{
                 margin: "0px 50px",
-                minHeight:window.screen.height-500
+                minHeight: window.screen.height - 500,
               }}
             >
               <div style={{ padding: "20px 36px 0 36px" }}>
-                {!isCoding&&!isPersonality && (
+                {!isCoding && !isPersonality && (
                   <div
                     style={{ marginBottom: "20px" }}
                     hidden={isAnalytical ? true : false}
                   >
                     <div class="form-group">
-                      <label for="selectSetQs">Type :</label>
+                      <label for="selectSetQs">
+                        <b style={{ color: "red" }}>*</b>Type :
+                      </label>
                       <select
                         class="form-select"
                         name="type"
                         aria-label="Default select example"
                         hidden={isAnalytical ? true : false}
                         disabled={!isUpdate}
+                        required
                       >
-                        <option
-                          selected={
-                            location.state.type === "Easy" ? true : false
-                          }
-                        >
-                          Easy
-                        </option>
-                        <option
-                          selected={
-                            location.state.type === "Medium" ? true : false
-                          }
-                        >
-                          Medium
-                        </option>
-                        <option
-                          selected={
-                            location.state.type === "Hard" ? true : false
-                          }
-                        >
-                          Hard
-                        </option>
+                        <option id="Easy">Easy</option>
+                        <option id="Medium">Medium</option>
+                        <option id="Hard">Hard</option>
                       </select>
                     </div>
                   </div>
@@ -464,7 +505,9 @@ function SetQuestion() {
                     {isNew && currentQsNo === navArray.length && (
                       <>
                         <div class="form-group">
-                          <label for="paragraphTitle">Paragraph Title : </label>
+                          <label for="paragraphTitle">
+                            <b style={{ color: "red" }}>*</b>Paragraph Title :{" "}
+                          </label>
                           <textarea
                             class="form-control form-field style-4"
                             disabled={!isUpdate}
@@ -479,7 +522,9 @@ function SetQuestion() {
                           ></textarea>
                         </div>
                         <div class="form-group">
-                          <label for="paragraph">Paragraph : </label>
+                          <label for="paragraph">
+                            <b style={{ color: "red" }}>*</b>Paragraph :{" "}
+                          </label>
                           <textarea
                             class="form-control form-field style-4"
                             disabled={!isUpdate}
@@ -509,7 +554,9 @@ function SetQuestion() {
                     {!isNew && (
                       <>
                         <div class="form-group">
-                          <label for="paragraphTitle">Paragraph Title : </label>
+                          <label for="paragraphTitle">
+                            <b style={{ color: "red" }}>*</b>Paragraph Title :{" "}
+                          </label>
                           <textarea
                             class="form-control form-field style-4"
                             disabled={!isUpdate}
@@ -524,7 +571,9 @@ function SetQuestion() {
                           ></textarea>
                         </div>
                         <div class="form-group">
-                          <label for="paragraph">Paragraph : </label>
+                          <label for="paragraph">
+                            <b style={{ color: "red" }}>*</b>Paragraph :{" "}
+                          </label>
                           <textarea
                             class="form-control form-field style-4"
                             disabled={!isUpdate}
@@ -556,7 +605,9 @@ function SetQuestion() {
                 <Row>
                   {!isNew && !isAnalytical && (
                     <div class="form-group">
-                      <label for="qsSetQs">Question : </label>
+                      <label for="qsSetQs">
+                        <b style={{ color: "red" }}>*</b>Question :{" "}
+                      </label>
                       <textarea
                         class="form-control form-field style-4"
                         disabled={!isUpdate}
@@ -573,7 +624,9 @@ function SetQuestion() {
                   )}
                   {isNew && !isAnalytical && currentQsNo === navArray.length && (
                     <div class="form-group">
-                      <label for="qsSetQs">Question : </label>
+                      <label for="qsSetQs">
+                        <b style={{ color: "red" }}>*</b>Question :{" "}
+                      </label>
                       <textarea
                         class="form-control form-field style-4"
                         disabled={!isUpdate}
@@ -589,6 +642,97 @@ function SetQuestion() {
                     </div>
                   )}
                 </Row>
+                {!isCoding &&
+                  !isPersonality &&
+                  !isAnalytical &&
+                  isNew &&
+                  currentQsNo === navArray.length && (
+                    <Row>
+                      <div style={{ margin: "10px 0" }}>
+                        <div class="form-group">
+                          <label for="selectSetQs">Image :</label>
+                          <input
+                            id="fileInput"
+                            type="file"
+                            name="image"
+                            style={{ marginLeft: "20px" }}
+                            onChange={handleFileInputChange}
+                            value=""
+                            className="form-input"
+                          />
+                          {previewSource && (
+                            <div id="zoomImg">
+                              <Zoom>
+                                <img
+                                  src={previewSource}
+                                  alt="chosen"
+                                  style={{
+                                    height: "200px",
+                                    padding: "30px",
+                                    outline: "none",
+                                    border: "0",
+                                  }}
+                                />
+                              </Zoom>{" "}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </Row>
+                  )}
+                {!isCoding && !isPersonality && !isAnalytical && !isNew && (
+                  <Row>
+                    <div style={{ margin: "10px 0" }}>
+                      <div class="form-group">
+                        <label for="selectSetQs">Image :</label>
+                        <input
+                          id="fileInput"
+                          type="file"
+                          name="image"
+                          style={{ marginLeft: "20px" }}
+                          onChange={handleFileInputChange}
+                          value={fileInputState}
+                          className="form-input"
+                        />
+                        {previewSource && (
+                          <div id="zoomImg">
+                            <Zoom>
+                              <img
+                                src={previewSource}
+                                alt="chosen"
+                                style={{
+                                  height: "200px",
+                                  padding: "30px",
+                                  outline: "none",
+                                  border: "0",
+                                }}
+                              />
+                            </Zoom>{" "}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </Row>
+                )}
+                {!isCoding && !isPersonality && !isAnalytical && !isNew && (
+                  <Row>
+                    {imgDB !== null && (
+                      <div style={{ margin: "10px 0" }}>
+                        <div id="zoomImg" class="form-group">
+                          <Zoom>
+                            <Image
+                              cloudName="chaitanya1911"
+                              public_id={imgDB}
+                              width="500"
+                              crop="scale"
+                            ></Image>
+                          </Zoom>
+                        </div>
+                      </div>
+                    )}
+                  </Row>
+                )}
+
                 {!isCoding && (
                   <div
                     class="scrollbar"
@@ -651,7 +795,9 @@ function SetQuestion() {
                     <Row>
                       {isNew && currentQsNo === navArray.length && (
                         <div class="form-group">
-                          <label for="qsSetInputFormat">Input Format : </label>
+                          <label for="qsSetInputFormat">
+                            <b style={{ color: "red" }}>*</b>Input Format :{" "}
+                          </label>
                           <textarea
                             class="form-control form-field style-4"
                             disabled={!isUpdate}
@@ -668,7 +814,9 @@ function SetQuestion() {
                       )}
                       {!isNew && (
                         <div class="form-group">
-                          <label for="qsSetInputFormat">Input Format : </label>
+                          <label for="qsSetInputFormat">
+                            <b style={{ color: "red" }}>*</b>Input Format :{" "}
+                          </label>
                           <textarea
                             class="form-control form-field style-4"
                             disabled={!isUpdate}
@@ -689,7 +837,7 @@ function SetQuestion() {
                       {isNew && currentQsNo === navArray.length && (
                         <div class="form-group">
                           <label for="qsSetOutputFormat">
-                            Output Format :{" "}
+                            <b style={{ color: "red" }}>*</b>Output Format :{" "}
                           </label>
                           <textarea
                             class="form-control form-field style-4"
@@ -708,7 +856,7 @@ function SetQuestion() {
                       {!isNew && (
                         <div class="form-group">
                           <label for="qsSetOutputFormat">
-                            Output Format :{" "}
+                            <b style={{ color: "red" }}>*</b>Output Format :{" "}
                           </label>
                           <textarea
                             class="form-control form-field style-4"
@@ -729,7 +877,9 @@ function SetQuestion() {
                       <Col md={6}>
                         {!isNew && (
                           <div class="form-group">
-                            <label for="qsSetConstraints">Constraints : </label>
+                            <label for="qsSetConstraints">
+                              <b style={{ color: "red" }}>*</b>Constraints :{" "}
+                            </label>
                             <textarea
                               class="form-control form-field style-4"
                               disabled={!isUpdate}
@@ -750,7 +900,9 @@ function SetQuestion() {
                         )}
                         {isNew && currentQsNo === navArray.length && (
                           <div class="form-group">
-                            <label for="qsSetConstraints">Constraints : </label>
+                            <label for="qsSetConstraints">
+                              <b style={{ color: "red" }}>*</b>Constraints :{" "}
+                            </label>
                             <textarea
                               class="form-control form-field style-4"
                               disabled={!isUpdate}
@@ -770,6 +922,7 @@ function SetQuestion() {
                         {isCoding && (
                           <div style={{ marginBottom: "20px" }}>
                             <div class="form-group">
+                              <b style={{ color: "red" }}>*</b>
                               <label for="selectSetQs">Type :</label>
                               <select
                                 class="form-select"
@@ -777,33 +930,9 @@ function SetQuestion() {
                                 aria-label="Default select example"
                                 disabled={!isUpdate}
                               >
-                                <option
-                                  selected={
-                                    location.state.type === "Easy"
-                                      ? true
-                                      : false
-                                  }
-                                >
-                                  Easy
-                                </option>
-                                <option
-                                  selected={
-                                    location.state.type === "Medium"
-                                      ? true
-                                      : false
-                                  }
-                                >
-                                  Medium
-                                </option>
-                                <option
-                                  selected={
-                                    location.state.type === "Hard"
-                                      ? true
-                                      : false
-                                  }
-                                >
-                                  Hard
-                                </option>
+                                <option id="Easy">Easy</option>
+                                <option id="Medium">Medium</option>
+                                <option id="Hard">Hard</option>
                               </select>
                             </div>
                           </div>
@@ -816,7 +945,7 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetSampleInput">
-                                Sample Input :{" "}
+                                <b style={{ color: "red" }}>*</b>Sample Input :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -835,7 +964,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetSampleOutput">
-                                Sample Output :{" "}
+                                <b style={{ color: "red" }}>*</b> Sample Output
+                                :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -858,7 +988,7 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetSampleInput">
-                                Sample Input :{" "}
+                                <b style={{ color: "red" }}>*</b>Sample Input :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -877,7 +1007,7 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetSampleOutput">
-                                Sample Output :{" "}
+                                <b style={{ color: "red" }}>*</b>Sample Output :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -936,7 +1066,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase1Input">
-                                TestCase Input 1 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Input
+                                1 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -955,7 +1086,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase1Output">
-                                TestCase Output 1 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Output
+                                1 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -979,7 +1111,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase1Input">
-                                TestCase Input 1 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Input
+                                1 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -998,7 +1131,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase1Output">
-                                TestCase Output 1 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Output
+                                1 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1024,7 +1158,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase2Input">
-                                TestCase Input 2 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Input
+                                2 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1043,7 +1178,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase2Output">
-                                TestCase Output 2 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Output
+                                2 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1068,7 +1204,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase2Input">
-                                TestCase Input 2 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Input
+                                2 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1087,7 +1224,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase2Output">
-                                TestCase Output 2 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Output
+                                2 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1113,7 +1251,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase3Input">
-                                TestCase Input 3 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Input
+                                3 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1132,7 +1271,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase3Output">
-                                TestCase Output 3 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Output
+                                3 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1156,7 +1296,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase3Input">
-                                TestCase Input 3 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Input
+                                3 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1175,7 +1316,8 @@ function SetQuestion() {
                           <Col md={6}>
                             <div class="form-group">
                               <label for="qsSetTestCase3Output">
-                                TestCase Output 3 :{" "}
+                                <b style={{ color: "red" }}>*</b>TestCase Output
+                                3 :{" "}
                               </label>
                               <textarea
                                 class="form-control form-field style-4"
@@ -1197,7 +1339,7 @@ function SetQuestion() {
                   </div>
                 )}
               </div>
-              {isUpdate && !isCoding&&!isPersonality && (
+              {isUpdate && !isCoding && !isPersonality && (
                 <>
                   <button
                     class="btn"
@@ -1257,7 +1399,7 @@ function SetQuestion() {
                     borderRadius: "100px",
                     marginLeft: "5%",
                     marginBottom: "10px",
-                    marginTop:'20px'
+                    marginTop: "5px",
                   }}
                 >
                   <i class="fa fa-edit" style={{ color: "white" }}></i>
@@ -1274,7 +1416,7 @@ function SetQuestion() {
                     borderRadius: "100px",
                     marginLeft: "5%",
                     marginBottom: "10px",
-                    marginTop:'20px'
+                    marginTop: "5px",
                   }}
                 >
                   <i class="fa fa-edit" style={{ color: "white" }}></i>
@@ -1307,7 +1449,7 @@ function SetQuestion() {
                   <div
                     class="scrollbar"
                     style={{
-                      height:window.screen.height-500,
+                      height: window.screen.height - 500,
                       padding: "5px",
                       maxWidth: "100%",
                       backgroundColor: "#e9ecef",
@@ -1405,7 +1547,7 @@ function SetQuestion() {
                   <div
                     class="scrollbar"
                     style={{
-                      height:window.screen.height-500,
+                      height: window.screen.height - 500,
                       padding: "5px",
                       maxWidth: "100%",
                       backgroundColor: "white",
@@ -1525,6 +1667,7 @@ function SetQuestion() {
                 setCurrentQsID("New");
                 set_para_qs([]);
                 setOpt([]);
+                setPreviewSource("");
               }}
             >
               Add new Question

@@ -59,3 +59,7 @@
     4px -6px 0 white, 4px -8px 0 white;
   transform: rotate(45deg);
 }
+
+#zoomImg div button:hover {
+  cursor: zoom-in;
+}

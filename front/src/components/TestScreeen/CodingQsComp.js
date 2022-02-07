@@ -1,4 +1,5 @@
 import React from "react";
+import TextAreaAutoSize from "./TextAreaAutoSize";
 
 function CodingQsComp({ qs }) {
   return (
@@ -13,76 +14,69 @@ function CodingQsComp({ qs }) {
     >
       {qs !== undefined && (
         <>
-          <textarea
-            defaultValue={qs.question}
-            style={{ height: "max-content", width: "100%" }}
-            rows={6}
-            className="style-4"
-            disabled
-          ></textarea>
+          <TextAreaAutoSize
+            text={qs.question}
+            isQs={true}
+            isCoding={true}
+          ></TextAreaAutoSize>
           <h6>
             <b>Input Format</b>
           </h6>
 
-          <textarea
-            defaultValue={qs.input_format}
-            style={{ height: "max-content", width: "100%" }}
-            rows={3}
-            className="style-4"
-            disabled
-          ></textarea>
+          <TextAreaAutoSize
+            text={qs.input_format}
+            isQs={true}
+            isCoding={true}
+          ></TextAreaAutoSize>
           <h6>
             <b>Output Format</b>
           </h6>
 
-          <textarea
-            defaultValue={qs.output_format}
-            style={{ height: "max-content", width: "100%" }}
-            rows={3}
-            className="style-4"
-            disabled
-          ></textarea>
+          <TextAreaAutoSize
+            text={qs.output_format}
+            isQs={true}
+            isCoding={true}
+          ></TextAreaAutoSize>
           <h6>
             <b>Constraints</b>
           </h6>
 
-          <textarea
-            defaultValue={qs.constraints}
-            style={{ height: "max-content", width: "100%" }}
-            className="style-4"
-            disabled
-          ></textarea>
+          <TextAreaAutoSize
+            text={qs.constraints}
+            isQs={true}
+            isCoding={true}
+          ></TextAreaAutoSize>
+
           <h6>
             <b>Sample Input 1 </b>
           </h6>
-          <textarea
-            defaultValue={qs.sample_input}
-            style={{ height: "fit-content" }}
-            className="style-4"
-            disabled
-          ></textarea>
+
+          <TextAreaAutoSize
+            text={qs.sample_input}
+            isQs={true}
+            isCoding={true}
+          ></TextAreaAutoSize>
+
           <h6>
             <b>Sample Output 1 </b>
           </h6>
-          <textarea
-            defaultValue={qs.sample_output}
-            style={{ height: "fit-content" }}
-            disabled
-            className="style-4"
-          ></textarea>
+
+          <TextAreaAutoSize
+            text={qs.sample_output}
+            isQs={true}
+            isCoding={true}
+          ></TextAreaAutoSize>
           {qs.explanation !== null && qs.explanation !== "" && (
             <h6>
               <b>Explanation</b>
             </h6>
           )}
           {qs.explanation !== null && qs.explanation !== "" && (
-            <textarea
-              defaultValue={qs.explanation}
-              className="style-4"
-              rows={3}
-              style={{ height: "fit-content", width: "100%" }}
-              disabled
-            ></textarea>
+            <TextAreaAutoSize
+              text={qs.explanation}
+              isQs={true}
+              isCoding={true}
+            ></TextAreaAutoSize>
           )}
         </>
       )}

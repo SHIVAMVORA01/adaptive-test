@@ -6,14 +6,17 @@ urlpatterns = [
    path('api/subs',views.subs),
    path('api/results/<str:name>',views.results),
    path('api/marks/<str:sid>',views.marks),
-   path('api/subs/<str:subject>',views.subqs),
+   path('api/subs/<str:subject>/<int:tid>',views.subqs),
    path('api/test/<int:idd>',views.tests),
-   path('api/codingTests',views.getCodingTests),
+   path('api/codingTests/<int:tid>',views.getCodingTests),
    path('api/admin/resultTest/<str:id>',views.resultTest),
-   path('api/para',views.comprehension),
+   path('api/para/<int:tid>',views.comprehension),
    path('api/personality/res',views.personalityR),
    path('api/personality/res',views.personalityR),
-   
+
+   # testing
+   path('api/testing',views.uploadCloudinary),
+   path('api/getImgs',views.getImgs),
 
    # admin
    path('api/admin/addQs',views.addQs),

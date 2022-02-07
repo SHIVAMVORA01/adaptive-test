@@ -10,7 +10,7 @@ function ScheduledTest() {
   const [stests, setSTests] = useState([]);
   const [utests, setUTests] = useState([]);
   const [show, setShow] = useState(false);
-  const [tests,setTests] = useState([])
+  const [tests, setTests] = useState([]);
   const [header, setHeader] = useState();
   const [testId, setTestId] = useState();
 
@@ -30,10 +30,10 @@ function ScheduledTest() {
         .get("http://127.0.0.1:8000/api/admin/tests")
         .then((res) => {
           console.log(res.data);
-          let ar = []
+          let ar = [];
           setSTests(res.data.stests);
           setUTests(res.data.utests);
-          setTests(ar.concat(res.data.stests,res.data.utests))
+          setTests(ar.concat(res.data.stests, res.data.utests));
         })
         .catch((e) => {
           console.log(e);
@@ -42,49 +42,52 @@ function ScheduledTest() {
 
     data();
   }, []);
-  function clash(stx,etx,tId){
-    for(let i=0;i<tests.length;i++){
-      if(tId===tests[i].id)continue;
+  function clash(stx, etx, tId) {
+    for (let i = 0; i < tests.length; i++) {
+      if (tId === tests[i].id) continue;
       let ss = new Date(tests[i].test_start).getTime();
       let ee = new Date(tests[i].test_end).getTime();
-      
-      if(stx>=ss && stx<=ee || etx>=ss && etx<=ee ){
+
+      if ((stx >= ss && stx <= ee) || (etx >= ss && etx <= ee)) {
         return 1;
-      }
-      else if(ss>=stx && ss<=etx || ee>stx && ee<=etx){
+      } else if ((ss >= stx && ss <= etx) || (ee > stx && ee <= etx)) {
         return 1;
       }
     }
     return 0;
   }
   function upcomingTest(e, test) {
-    let s = new Date(test.test_start)
-    let s1 = new Date(test.test_end)
-    
+    let s = new Date(test.test_start);
+    let s1 = new Date(test.test_end);
+
     setHeader(test.test_name);
-    let date = s.toLocaleDateString()
-    console.log(date)
-    console.log(s)
-    
-    date = date.split('/');
-    let time = s.toTimeString().split(' ')[0]
-    time = time.split(':');
-    console.log(new Date(date[2], date[0]-1, date[1], time[0], time[1], time[2]))
+    let date = s.toLocaleDateString();
+    console.log(date);
+    console.log(s);
+
+    date = date.split("/");
+    let time = s.toTimeString().split(" ")[0];
+    time = time.split(":");
+    console.log(
+      new Date(date[2], date[0] - 1, date[1], time[0], time[1], time[2])
+    );
     onChangeStart(
-      new Date(date[2], date[0]-1, date[1], time[0], time[1], time[2])
+      new Date(date[2], date[0] - 1, date[1], time[0], time[1], time[2])
     );
     onChangeStartCheck(
-      new Date(date[2], date[0]-1, date[1], time[0], time[1], time[2])
+      new Date(date[2], date[0] - 1, date[1], time[0], time[1], time[2])
     );
     setTestId(test.id);
 
-    let datey = s1.toLocaleDateString()
-    datey = datey.split('/');
-    let timey = s1.toTimeString().split(' ')[0]
-    timey = timey.split(':');
-    onChangeEnd(new Date(datey[2], datey[0]-1, datey[1], timey[0], timey[1], timey[2]));
+    let datey = s1.toLocaleDateString();
+    datey = datey.split("/");
+    let timey = s1.toTimeString().split(" ")[0];
+    timey = timey.split(":");
+    onChangeEnd(
+      new Date(datey[2], datey[0] - 1, datey[1], timey[0], timey[1], timey[2])
+    );
     onChangeEndCheck(
-      new Date(datey[2], datey[0]-1, datey[1], timey[0], timey[1], timey[2])
+      new Date(datey[2], datey[0] - 1, datey[1], timey[0], timey[1], timey[2])
     );
     setShow(true);
   }
@@ -92,31 +95,31 @@ function ScheduledTest() {
     e.preventDefault();
     var cDate = new Date();
     if (valueStart <= valueEnd && valueStart > cDate) {
-      console.log(valueStart)
-      console.log(valueEnd)
-      
+      console.log(valueStart);
+      console.log(valueEnd);
+
       if (valueStart !== valueStartCheck || valueEnd !== valueEndCheck) {
-        if(!clash(valueStart.getTime(),valueEnd.getTime(),testId)){
-        axiosInstance
-          .post("api/test/0", {
-            data: {
-              name: header,
-              start: valueStart,
-              end: valueEnd,
-              update: true,
-              delete: false,
-              id: testId,
-            },
-          })
-          .then((res) => {
-            console.log(res);
-            window.location.reload();
-          })
-          .catch((e) => {
-            console.log(e);
-          });
-        }else{
-          alert('This test will clash with an existing test')
+        if (!clash(valueStart.getTime(), valueEnd.getTime(), testId)) {
+          axiosInstance
+            .post("api/test/0", {
+              data: {
+                name: header,
+                start: valueStart,
+                end: valueEnd,
+                update: true,
+                delete: false,
+                id: testId,
+              },
+            })
+            .then((res) => {
+              console.log(res);
+              window.location.reload();
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        } else {
+          alert("This test will clash with an existing test");
         }
       }
       handleClose(e);
@@ -145,24 +148,27 @@ function ScheduledTest() {
         console.log(e);
       });
   }
-  function delSTest(idd){
-    if(window.confirm('Delete this test?')){
-      axios.delete(`http://127.0.0.1:8000/api/test/${idd}`)
-      .then(res=>{
-        let arr = stests.filter(test=>{
-          return test.id!==idd
+  function delSTest(idd) {
+    if (window.confirm("Delete this test?")) {
+      axios
+        .delete(`http://127.0.0.1:8000/api/test/${idd}`)
+        .then((res) => {
+          let arr = stests.filter((test) => {
+            return test.id !== idd;
+          });
+          setSTests(arr);
         })
-        setSTests(arr)
-      })
-      .catch(e=>{
-        console.log(e)
-      })
+        .catch((e) => {
+          console.log(e);
+        });
     }
   }
   return (
     <div className="SchdlTest">
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton><h3>Edit</h3></Modal.Header>
+        <Modal.Header closeButton>
+          <h3>Edit</h3>
+        </Modal.Header>
         <Modal.Body>
           <Row style={{ margin: "2% 0" }}>
             <Col md={3}>Test Name: </Col>
@@ -214,7 +220,12 @@ function ScheduledTest() {
         </Modal.Footer>
       </Modal>
       <button
-        style={{ marginLeft: "1%",backgroundColor:'#293E6F',borderRadius:'5px',border:'none' }}
+        style={{
+          marginLeft: "1%",
+          backgroundColor: "#293E6F",
+          borderRadius: "5px",
+          border: "none",
+        }}
         className="btn btn-secondary"
         onClick={(e) => navigate("/admin/home")}
       >
@@ -238,36 +249,49 @@ function ScheduledTest() {
             >
               {stests.map((t, index) => {
                 return (
-                  <Row style={{
-                  backgroundColor: "white",
-                  borderColor: "#F0F0F0",
-                  marginBottom: "1px",}}>
+                  <Row
+                    style={{
+                      backgroundColor: "white",
+                      borderColor: "#F0F0F0",
+                      marginBottom: "1px",
+                    }}
+                  >
                     <Col>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        navigate("/admin/viewScheduledTest", {
-                          state: {
-                            id: t.id,
-                            name: t.test_name,
-                            start: t.test_start,
-                            end: t.test_end,
-                          },
-                        });
-                      }}
-                      style={{
-                        width: "100%",
-                        backgroundColor: "white",
-                        borderColor: "#F0F0F0",
-                        marginBottom: "1px",
-                      }}
-                      key={index}
-                    >
-                      {t.test_name}
-                    </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          navigate("/admin/viewScheduledTest", {
+                            state: {
+                              id: t.id,
+                              name: t.test_name,
+                              start: t.test_start,
+                              end: t.test_end,
+                            },
+                          });
+                        }}
+                        style={{
+                          width: "100%",
+                          backgroundColor: "white",
+                          borderColor: "#F0F0F0",
+                          marginBottom: "1px",
+                        }}
+                        key={index}
+                      >
+                        {t.test_name}
+                      </button>
                     </Col>
                     <Col md={1}>
-                    <i onClick={()=>delSTest(t.id)} class="fa fa-trash" style={{backgroundColor: "white", color: "red",float:"right",marginRight:"15px",marginTop:'10px'}}></i>
+                      <i
+                        onClick={() => delSTest(t.id)}
+                        class="fa fa-trash"
+                        style={{
+                          backgroundColor: "white",
+                          color: "red",
+                          float: "right",
+                          marginRight: "15px",
+                          marginTop: "10px",
+                        }}
+                      ></i>
                     </Col>
                   </Row>
                 );

@@ -45,7 +45,6 @@
   margin-left: 30%;
 }
 
-
 .secNameBig {
   margin-top: 10px;
   font-style: normal;
@@ -55,7 +54,6 @@
   color: #293e6f;
   margin-left: 25%;
 }
-
 
 .secNm {
   width: 100%;
@@ -194,7 +192,6 @@
   padding-left: 10px;
 }
 
-.onHoverDiv:hover{
- 
+.onHoverDiv:hover {
   cursor: pointer;
 }

@@ -10,6 +10,7 @@ import { isExpired, decodeToken } from "react-jwt";
 import CustomTimer from "../Admin/CustomTimer";
 import getCurrentTime from "../../components/TestScreeen/dateCalc";
 import axiosInstance from "../../axios";
+import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
 
 function PTestScreen() {
   const [hard, setHard] = useState([]);
@@ -36,170 +37,180 @@ function PTestScreen() {
   const [timeFF, setTimeFF] = useState();
 
   useEffect(() => {
-    var full_screen_element = document.fullscreenElement;
-
-    if (full_screen_element === null) {
-      setShow(true);
-      setMd(false);
-      isReload(true);
-    }
-    if (!localStorage.getItem("test6")) {
-      let ax = JSON.parse(localStorage.getItem("test5"));
-      let user = localStorage.getItem("username");
-      if (ax) {
-        let ar = ax["marks"];
-        let maxMarks = ax["maxMarks"];
-        let gotMarks = ax["marks"];
-        let total = 0;
-        for (let i = 0; i < ar.length; i++) {
-          if (ar[i] !== -1) total = total + ar[i];
-        }
-        axiosInstance
-          .post("api/marks/4", {
-            data: {
-              username: user,
-              marks: total,
-              maxMarks: maxMarks,
-              testId: localStorage.getItem("testId"),
-              gotMarks: gotMarks,
-            },
-          })
-          .then((res) => {
-            console.log("done");
-            localStorage.removeItem("test5");
-          })
-          .catch((e) => console.log(e));
+    let flag = true;
+    if (!(localStorage.getItem("test5") && !localStorage.getItem("test6"))) {
+      if (!localStorage.getItem("test6")) {
+        navigate(ProtectUrl.protect());
+        flag = false;
       }
-      let txx = getCurrentTime();
-      let hh = txx.hh;
-      let mm = txx.mm;
-      let ss = txx.ss;
-      localStorage.setItem(
-        "test6",
-        JSON.stringify({
-          username: user,
-          STime: Date(),
-          FSTimer: "10",
-          question: [],
-          marks: [],
-          strtTime: +hh + ":" + mm + ":" + ss,
-          currentQsNo: 1,
-        })
-      );
     }
-    var test = JSON.parse(localStorage.getItem("test6"));
-    const token = localStorage.getItem("access_token");
-    const isMyTokenExpired = isExpired(token);
-    const channel = new BroadcastChannel("tab");
-    const items = { ...localStorage };
-    console.log(items);
+    if (flag) {
+      var full_screen_element = document.fullscreenElement;
 
-    channel.postMessage("another-tab");
-    // note that listener is added after posting the message
-
-    channel.addEventListener("message", (msg) => {
-      if (msg.data === "another-tab") {
-        // message received from 2nd tab
-        // alert('Cannot open multiple instances');
-        // navigate('/error')
-      }
-    });
-
-    if (test) {
-      if (test["question"].length !== 0) {
-        console.info("This page is reloaded");
-        isReload(true);
+      if (full_screen_element === null) {
         setShow(true);
+        setMd(false);
+        isReload(true);
       }
-    }
-    if (isMyTokenExpired) {
-      navigate("/login");
-      return;
-    } else {
-      if (localStorage.getItem("result")) {
-        navigate("/result");
-      } else {
-        const getData = async () =>
-          await axios
-            .get("http://127.0.0.1:8000/api/subs/4")
-            .then((res) => {
-              let a = converttime(res.data.time);
-              var tf = a;
-              console.log(res.data);
-              var totalQs = res.data.qs;
-              if (totalQs > 0) {
-                if (test["question"].length === 0) {
-                  setTimeFF(tf);
-                  var mediumArrRes = res.data.allQs;
-                  var index = getRandomInt(0, res.data.allQs.length);
-                  setQs([...qs, mediumArrRes[index]]);
-                  test["question"].push(mediumArrRes[index]);
-                  mediumArrRes.splice(index, 1);
-                  setMedium(mediumArrRes);
-                  let ar = new Array(res.data.qs).fill(-1);
-                  setAns(ar);
-                  test["marks"] = ar;
-                  localStorage.setItem("test6", JSON.stringify(test));
-                } else {
-                  var qss = test["question"];
-                  var y = res.data.medium;
-
-                  for (let i = 0; i < qss.length; i++) {
-                    if (
-                      y
-                        .map(function (e) {
-                          return e.ques;
-                        })
-                        .indexOf(qss[i].ques) !== -1
-                    ) {
-                      let b = y
-                        .map(function (e) {
-                          return e.ques;
-                        })
-                        .indexOf(qss[i].ques);
-                      y.splice(b, 1);
-                    }
-                  }
-                  setMedium(y);
-                  var ar = test["marks"];
-                  setAns(ar);
-                  setQsno(test["currentQsNo"] - 1);
-                  setQs(test["question"]);
-
-                  var ob = new Date();
-                  console.log(test["strtTime"]);
-                  console.log(ob.toLocaleTimeString());
-                  var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-                  var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-                  var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
-
-                  var timeStart = new Date(
-                    new Date().toLocaleDateString() + " " + test["strtTime"]
-                  );
-                  var timeEnd = new Date(
-                    new Date().toLocaleDateString() +
-                      " " +
-                      h +
-                      ":" +
-                      m +
-                      ":" +
-                      s
-                  );
-                  var hourDiff = (timeEnd - timeStart) / 1000;
-                  console.log(timeEnd);
-                  console.log(timeStart);
-                  console.log(hourDiff);
-                  console.log(tf);
-                  setTimeFF(tf - hourDiff);
-                }
-              } else {
-                navigate("/admin/analytical");
-              }
+      if (!localStorage.getItem("test6")) {
+        let ax = JSON.parse(localStorage.getItem("test5"));
+        let user = localStorage.getItem("username");
+        if (ax) {
+          let ar = ax["marks"];
+          let maxMarks = ax["maxMarks"];
+          let gotMarks = ax["marks"];
+          let total = 0;
+          for (let i = 0; i < ar.length; i++) {
+            if (ar[i] !== -1) total = total + ar[i];
+          }
+          axiosInstance
+            .post("api/marks/4", {
+              data: {
+                username: user,
+                marks: total,
+                maxMarks: maxMarks,
+                testId: localStorage.getItem("testId"),
+                gotMarks: gotMarks,
+              },
             })
-            .catch((e) => {
-              console.log(e);
-            });
-        getData();
+            .then((res) => {
+              console.log("done");
+              localStorage.removeItem("test5");
+            })
+            .catch((e) => console.log(e));
+        }
+        let txx = getCurrentTime();
+        let hh = txx.hh;
+        let mm = txx.mm;
+        let ss = txx.ss;
+        localStorage.setItem(
+          "test6",
+          JSON.stringify({
+            username: user,
+            STime: Date(),
+            FSTimer: "10",
+            question: [],
+            marks: [],
+            strtTime: +hh + ":" + mm + ":" + ss,
+            currentQsNo: 1,
+          })
+        );
+      }
+      var test = JSON.parse(localStorage.getItem("test6"));
+      const token = localStorage.getItem("access_token");
+      const isMyTokenExpired = isExpired(token);
+      const channel = new BroadcastChannel("tab");
+      const items = { ...localStorage };
+      console.log(items);
+
+      channel.postMessage("another-tab");
+      // note that listener is added after posting the message
+
+      channel.addEventListener("message", (msg) => {
+        if (msg.data === "another-tab") {
+          // message received from 2nd tab
+          // alert('Cannot open multiple instances');
+          // navigate('/error')
+        }
+      });
+
+      if (test) {
+        if (test["question"].length !== 0) {
+          console.info("This page is reloaded");
+          isReload(true);
+          setShow(true);
+        }
+      }
+      if (isMyTokenExpired) {
+        navigate("/login");
+        return;
+      } else {
+        if (localStorage.getItem("result")) {
+          navigate("/result");
+        } else {
+          let xx = localStorage.getItem("testId");
+          const getData = async () =>
+            await axios
+              .get(`http://127.0.0.1:8000/api/subs/4/${xx}`)
+              .then((res) => {
+                let a = converttime(res.data.time);
+                var tf = a;
+                console.log(res.data);
+                var totalQs = res.data.qs;
+                if (totalQs > 0) {
+                  if (test["question"].length === 0) {
+                    setTimeFF(tf);
+                    var mediumArrRes = res.data.allQs;
+                    var index = getRandomInt(0, res.data.allQs.length);
+                    setQs([...qs, mediumArrRes[index]]);
+                    test["question"].push(mediumArrRes[index]);
+                    mediumArrRes.splice(index, 1);
+                    setMedium(mediumArrRes);
+                    let ar = new Array(res.data.qs).fill(-1);
+                    setAns(ar);
+                    test["marks"] = ar;
+                    localStorage.setItem("test6", JSON.stringify(test));
+                  } else {
+                    var qss = test["question"];
+                    var y = res.data.allQs;
+
+                    for (let i = 0; i < qss.length; i++) {
+                      if (
+                        y
+                          .map(function (e) {
+                            return e.ques;
+                          })
+                          .indexOf(qss[i].ques) !== -1
+                      ) {
+                        let b = y
+                          .map(function (e) {
+                            return e.ques;
+                          })
+                          .indexOf(qss[i].ques);
+                        y.splice(b, 1);
+                      }
+                    }
+                    setMedium(y);
+                    var ar = test["marks"];
+                    setAns(ar);
+                    setQsno(test["currentQsNo"] - 1);
+                    setQs(test["question"]);
+
+                    var ob = new Date();
+                    console.log(test["strtTime"]);
+                    console.log(ob.toLocaleTimeString());
+                    var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+                    var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+                    var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
+
+                    var timeStart = new Date(
+                      new Date().toLocaleDateString() + " " + test["strtTime"]
+                    );
+                    var timeEnd = new Date(
+                      new Date().toLocaleDateString() +
+                        " " +
+                        h +
+                        ":" +
+                        m +
+                        ":" +
+                        s
+                    );
+                    var hourDiff = (timeEnd - timeStart) / 1000;
+                    console.log(timeEnd);
+                    console.log(timeStart);
+                    console.log(hourDiff);
+                    console.log(tf);
+                    setTimeFF(tf - hourDiff);
+                  }
+                } else {
+                  navigate("/admin/analytical");
+                }
+              })
+              .catch((e) => {
+                console.log(e);
+              });
+          getData();
+        }
       }
     }
   }, []);
@@ -210,6 +221,8 @@ function PTestScreen() {
       else if (element.webkitRequestFullscreen)
         element.webkitRequestFullscreen();
       else if (element.msRequestFullscreen) element.msRequestFullscreen();
+      element.style.overflowY = `auto`;
+      element.classList.add(`style-4`);
     }
   }
   document.addEventListener("fullscreenchange", function () {
@@ -402,6 +415,7 @@ function PTestScreen() {
                           level={current}
                           question={qs[qsno].ques}
                           options={[]}
+                          qsimg={null}
                         ></QuestionComp>
                       )}
                     {countWindowAwayModal && (
@@ -415,9 +429,13 @@ function PTestScreen() {
                           if you try to change screen again !!
                         </h6>
                         <button
-                          className="btn btn-secondary"
+                          className="btn"
                           onClick={(e) => handleCloseSChange(e)}
-                          style={{ color: "#10B65C", margin: "0px 0px 10px 3px" }}
+                          style={{
+                            backgroundColor: "#10B65C",
+                            margin: "0px 0px 10px 3px",
+                            color: "white",
+                          }}
                         >
                           Okay
                         </button>

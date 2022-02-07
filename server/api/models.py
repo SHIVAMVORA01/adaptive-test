@@ -5,6 +5,12 @@ class Test(models.Model):
     test_name = models.CharField(max_length=150)
     test_start = models.DateTimeField(blank=True,null=True)
     test_end = models.DateTimeField(blank=True,null=True)
+    apt = models.JSONField(null=True, blank=True)
+    cf = models.JSONField(null=True, blank=True)
+    c = models.JSONField(null=True, blank=True)
+    dom = models.JSONField(null=True, blank=True)
+    p = models.JSONField(null=True, blank=True)
+    aw = models.JSONField(null=True, blank=True)
     def __str__(self):
         return self.test_name
 
@@ -18,14 +24,15 @@ class Subject(models.Model):
 
 class Questions(models.Model):
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+    title = models.TextField(blank=True,null=True)
     type = models.IntegerField()
+    imgId=models.TextField(blank=True,null=True)
     def __str__(self):
         return self.title
 
 class Options(models.Model):
     question = models.ForeignKey(Questions,on_delete=models.CASCADE)
-    title = models.CharField(max_length=255)
+    title = models.TextField(blank=True,null=True)
     marks = models.IntegerField()  
     def __str__(self):
         return self.title

@@ -12,6 +12,7 @@ import getCurrentTime from "../../components/TestScreeen/dateCalc";
 import axiosInstance from "../../axios";
 import { isExpired, decodeToken } from "react-jwt";
 import ACEEditor from "../../components/TestScreeen/AceEditor";
+import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
 
 export default function Compiler() {
   const [inputT, setInput] = useState();
@@ -144,179 +145,212 @@ export default function Compiler() {
   const [timeFF, setTimeFF] = useState();
 
   useEffect(() => {
-    var full_screen_element = document.fullscreenElement;
-
-    if (full_screen_element === null) {
-      setShow(true);
-      setMd(false);
-      isReload(true);
-    }
-    if (!localStorage.getItem("test4")) {
-      let ax = JSON.parse(localStorage.getItem("test2"));
-      if (localStorage.getItem("test2")) {
-        var user = ax["username"];
-        let ar = ax["marks"];
-        let maxMarks = ax["maxMarks"];
-        let gotMarks = ax["marks"];
-        let total = 0;
-        for (let i = 0; i < ar.length; i++) {
-          if (ar[i] !== -1) total = total + ar[i];
-        }
-        axiosInstance
-          .post("api/marks/2", {
-            data: {
-              username: user,
-              marks: total,
-              maxMarks: maxMarks,
-              testId: localStorage.getItem("testId"),
-              gotMarks: gotMarks,
-            },
-          })
-          .then((res) => {
-            console.log("done");
-            localStorage.removeItem("test2");
-          })
-          .catch((e) => console.log(e));
+    let flag = true;
+    if (!(localStorage.getItem("test2") && !localStorage.getItem("test4"))) {
+      if (!localStorage.getItem("test4")) {
+        navigate(ProtectUrl.protect());
+        flag = false;
       }
-      let txx = getCurrentTime();
-      let hh = txx.hh;
-      let mm = txx.mm;
-      let ss = txx.ss;
-      localStorage.setItem(
-        "test4",
-        JSON.stringify({
-          username: user,
-          STime: Date(),
-          FSTimer: "10",
-          marks: [0, 0, 0],
-          isFirstTime: true,
-          maxMarks: [10, 20, 30],
-
-          strtTime: hh + ":" + mm + ":" + ss,
-        })
-      );
     }
-    var test = JSON.parse(localStorage.getItem("test4"));
-    const token = localStorage.getItem("access_token");
-    const isMyTokenExpired = isExpired(token);
-    //  const isMyTokenExpired = false;
+    if (flag) {
+      var full_screen_element = document.fullscreenElement;
 
-    if (isMyTokenExpired) {
-      navigate("/login");
-      return;
-    } else {
-      if (localStorage.getItem("result")) {
-        navigate("/result");
-      } else {
-        let data;
-        const getData = async () =>
-          await axios
-            .get("http://127.0.0.1:8000/api/codingTests")
+      if (full_screen_element === null) {
+        setShow(true);
+        setMd(false);
+        isReload(true);
+      }
+      if (!localStorage.getItem("test4")) {
+        let ax = JSON.parse(localStorage.getItem("test2"));
+        if (localStorage.getItem("test2")) {
+          var user = ax["username"];
+          let ar = ax["marks"];
+          let maxMarks = ax["maxMarks"];
+          let gotMarks = ax["marks"];
+          let total = 0;
+          for (let i = 0; i < ar.length; i++) {
+            if (ar[i] !== -1) total = total + ar[i];
+          }
+          axiosInstance
+            .post("api/marks/2", {
+              data: {
+                username: user,
+                marks: total,
+                maxMarks: maxMarks,
+                testId: localStorage.getItem("testId"),
+                gotMarks: gotMarks,
+              },
+            })
             .then((res) => {
-              console.log(res.data.cQs);
-              let a = converttime(res.data.time);
-              var tf = a;
-              // setTimeFF(tf);
+              console.log("done");
+              localStorage.removeItem("test2");
+            })
+            .catch((e) => console.log(e));
+        }
+        let txx = getCurrentTime();
+        let hh = txx.hh;
+        let mm = txx.mm;
+        let ss = txx.ss;
+        localStorage.setItem(
+          "test4",
+          JSON.stringify({
+            username: user,
+            STime: Date(),
+            FSTimer: "10",
+            marks: [0, 0, 0],
+            isFirstTime: true,
+            maxMarks: [10, 20, 30],
 
-              var ob = new Date();
-              console.log(test["strtTime"]);
-              console.log(ob.toLocaleTimeString());
-              var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-              var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-              var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
+            strtTime: hh + ":" + mm + ":" + ss,
+          })
+        );
+      }
+      var test = JSON.parse(localStorage.getItem("test4"));
+      const token = localStorage.getItem("access_token");
+      const isMyTokenExpired = isExpired(token);
+      //  const isMyTokenExpired = false;
 
-              var timeStart = new Date(
-                new Date().toLocaleDateString() + " " + test["strtTime"]
-              );
-              var timeEnd = new Date(
-                new Date().toLocaleDateString() + " " + h + ":" + m + ":" + s
-              );
-              var hourDiff = (timeEnd - timeStart) / 1000;
-              console.log(timeEnd);
-              console.log(timeStart);
-              console.log(hourDiff);
-              console.log(tf);
-              setTimeFF(tf - hourDiff);
+      if (isMyTokenExpired) {
+        navigate("/login");
+        return;
+      } else {
+        if (localStorage.getItem("result")) {
+          navigate("/result");
+        } else {
+          // navigate(ProtectUrl.protect())
+          let data;
+          let xx = localStorage.getItem("testId");
+          const getData = async () =>
+            await axios
+              .get(`http://127.0.0.1:8000/api/codingTests/${xx}`)
+              .then((res) => {
+                console.log(res.data.cQs);
+                let a = converttime(res.data.time);
+                var tf = a;
+                // setTimeFF(tf);
 
-              set_db_data(res.data.cQs);
-              data = res.data.cQs;
-              //from db
+                var ob = new Date();
+                console.log(test["strtTime"]);
+                console.log(ob.toLocaleTimeString());
+                var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+                var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+                var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
 
-              if (Object.keys(data[0]).length !== 0) {
-                set_question_1(data[0]);
-                set_question_current(data[0]);
-                set_q1_testCase_1_input(data[0].test_case_input[0]);
-                set_q1_testCase_1_expected_output(data[0].test_case_output[0]);
-                set_q1_testCase_2_input(data[0].test_case_input[1]);
-                set_q1_testCase_2_expected_output(data[0].test_case_output[1]);
-                set_q1_testCase_3_input(data[0].test_case_input[2]);
-                set_q1_testCase_3_expected_output(data[0].test_case_output[2]);
-              }
-              if (Object.keys(data[1]).length !== 0) {
-                console.log(data[1]);
-                set_question_2(data[1]);
-                set_q2_testCase_1_input(data[1].test_case_input[0]);
+                var timeStart = new Date(
+                  new Date().toLocaleDateString() + " " + test["strtTime"]
+                );
+                var timeEnd = new Date(
+                  new Date().toLocaleDateString() + " " + h + ":" + m + ":" + s
+                );
+                var hourDiff = (timeEnd - timeStart) / 1000;
+                console.log(timeEnd);
+                console.log(timeStart);
+                console.log(hourDiff);
+                console.log(tf);
+                setTimeFF(tf - hourDiff);
 
-                set_q2_testCase_1_expected_output(data[1].test_case_output[0]);
-                set_q2_testCase_2_input(data[1].test_case_input[1]);
-                set_q2_testCase_2_expected_output(data[1].test_case_output[1]);
-                set_q2_testCase_3_input(data[1].test_case_input[2]);
-                set_q2_testCase_3_expected_output(data[1].test_case_output[2]);
-              }
-              if (Object.keys(data[2]).length !== 0) {
-                set_question_3(data[2]);
-                set_q3_testCase_1_input(data[2].test_case_input[0]);
+                set_db_data(res.data.cQs);
+                data = res.data.cQs;
+                //from db
 
-                set_q3_testCase_1_expected_output(data[2].test_case_output[0]);
-                set_q3_testCase_2_input(data[2].test_case_input[1]);
-                set_q3_testCase_2_expected_output(data[2].test_case_output[1]);
-                set_q3_testCase_3_input(data[2].test_case_input[2]);
-                set_q3_testCase_3_expected_output(data[2].test_case_output[2]);
-              }
-            });
-        getData();
-        console.log(JSON.parse(localStorage.getItem("test4"))["input_1"]);
-        setInput(JSON.parse(localStorage.getItem("test4"))["input_1"]);
-        setInput_question_1(
-          JSON.parse(localStorage.getItem("test4"))["input_1"]
-        );
-        setInput_question_2(
-          JSON.parse(localStorage.getItem("test4"))["input_2"]
-        );
-        setInput_question_3(
-          JSON.parse(localStorage.getItem("test4"))["input_3"]
-        );
+                if (Object.keys(data[0]).length !== 0) {
+                  set_question_1(data[0]);
+                  set_question_current(data[0]);
+                  set_q1_testCase_1_input(data[0].test_case_input[0]);
+                  set_q1_testCase_1_expected_output(
+                    data[0].test_case_output[0]
+                  );
+                  set_q1_testCase_2_input(data[0].test_case_input[1]);
+                  set_q1_testCase_2_expected_output(
+                    data[0].test_case_output[1]
+                  );
+                  set_q1_testCase_3_input(data[0].test_case_input[2]);
+                  set_q1_testCase_3_expected_output(
+                    data[0].test_case_output[2]
+                  );
+                }
+                if (Object.keys(data[1]).length !== 0) {
+                  console.log(data[1]);
+                  set_question_2(data[1]);
+                  set_q2_testCase_1_input(data[1].test_case_input[0]);
 
-        setUser_input(localStorage.getItem("test4")["user_input_1"] || ``);
-        setUser_input(
-          JSON.parse(localStorage.getItem("test4"))["user_input_1"] || ``
-        );
-        setUser_input_question_1(
-          JSON.parse(localStorage.getItem("test4"))["user_input_1"] || ``
-        );
-        setUser_input_question_2(
-          JSON.parse(localStorage.getItem("test4"))["user_input_2"] || ``
-        );
-        setUser_input_question_3(
-          JSON.parse(localStorage.getItem("test4"))["user_input_3"] || ``
-        );
+                  set_q2_testCase_1_expected_output(
+                    data[1].test_case_output[0]
+                  );
+                  set_q2_testCase_2_input(data[1].test_case_input[1]);
+                  set_q2_testCase_2_expected_output(
+                    data[1].test_case_output[1]
+                  );
+                  set_q2_testCase_3_input(data[1].test_case_input[2]);
+                  set_q2_testCase_3_expected_output(
+                    data[1].test_case_output[2]
+                  );
+                }
+                if (Object.keys(data[2]).length !== 0) {
+                  set_question_3(data[2]);
+                  set_q3_testCase_1_input(data[2].test_case_input[0]);
 
-        setLanguage_id(
-          JSON.parse(localStorage.getItem("test4"))["language_Id_question_1"] ||
-            54
-        );
-        setLanguage_id_question_1(
-          JSON.parse(localStorage.getItem("test4"))["language_Id_question_1"] ||
-            54
-        );
-        setLanguage_id_question_2(
-          JSON.parse(localStorage.getItem("test4"))["language_Id_question_2"] ||
-            54
-        );
-        setLanguage_id_question_3(
-          JSON.parse(localStorage.getItem("test4"))["language_Id_question_3"] ||
-            54
-        );
+                  set_q3_testCase_1_expected_output(
+                    data[2].test_case_output[0]
+                  );
+                  set_q3_testCase_2_input(data[2].test_case_input[1]);
+                  set_q3_testCase_2_expected_output(
+                    data[2].test_case_output[1]
+                  );
+                  set_q3_testCase_3_input(data[2].test_case_input[2]);
+                  set_q3_testCase_3_expected_output(
+                    data[2].test_case_output[2]
+                  );
+                }
+              });
+          getData();
+          console.log(JSON.parse(localStorage.getItem("test4"))["input_1"]);
+          setInput(JSON.parse(localStorage.getItem("test4"))["input_1"]);
+          setInput_question_1(
+            JSON.parse(localStorage.getItem("test4"))["input_1"]
+          );
+          setInput_question_2(
+            JSON.parse(localStorage.getItem("test4"))["input_2"]
+          );
+          setInput_question_3(
+            JSON.parse(localStorage.getItem("test4"))["input_3"]
+          );
+
+          setUser_input(localStorage.getItem("test4")["user_input_1"] || ``);
+          setUser_input(
+            JSON.parse(localStorage.getItem("test4"))["user_input_1"] || ``
+          );
+          setUser_input_question_1(
+            JSON.parse(localStorage.getItem("test4"))["user_input_1"] || ``
+          );
+          setUser_input_question_2(
+            JSON.parse(localStorage.getItem("test4"))["user_input_2"] || ``
+          );
+          setUser_input_question_3(
+            JSON.parse(localStorage.getItem("test4"))["user_input_3"] || ``
+          );
+
+          setLanguage_id(
+            JSON.parse(localStorage.getItem("test4"))[
+              "language_Id_question_1"
+            ] || 54
+          );
+          setLanguage_id_question_1(
+            JSON.parse(localStorage.getItem("test4"))[
+              "language_Id_question_1"
+            ] || 54
+          );
+          setLanguage_id_question_2(
+            JSON.parse(localStorage.getItem("test4"))[
+              "language_Id_question_2"
+            ] || 54
+          );
+          setLanguage_id_question_3(
+            JSON.parse(localStorage.getItem("test4"))[
+              "language_Id_question_3"
+            ] || 54
+          );
+        }
       }
     }
   }, []);
@@ -1328,6 +1362,8 @@ export default function Compiler() {
       else if (element.webkitRequestFullscreen)
         element.webkitRequestFullscreen();
       else if (element.msRequestFullscreen) element.msRequestFullscreen();
+      element.style.overflowY = `auto`;
+      element.classList.add(`style-4`);
     }
   }
   document.addEventListener("fullscreenchange", function () {
@@ -1398,18 +1434,22 @@ export default function Compiler() {
       </Modal>
       {countWindowAwayModal && (
         <>
-          <h4 style={{ color: "red" }}>
+          <h1 style={{ color: "red" }}>
             Screen Change Detected !! {countWindowAway === 1 ? "1st" : "LAST"}{" "}
             WARNING
-          </h4>
-          <h6>
+          </h1>
+          <h3>
             Screen changed detected.Test will get auto submitted if you try to
             change screen again !!
-          </h6>
+          </h3>
           <button
-            className="btn btn-secondary"
+            className="btn"
             onClick={(e) => handleCloseSChange(e)}
-            style={{ color: "#10B65C", margin: "0px 0px 10px 3px" }}
+            style={{
+              backgroundColor: "#10B65C",
+              margin: "0px 0px 10px 3px",
+              color: "white",
+            }}
           >
             Okay
           </button>
@@ -1742,7 +1782,7 @@ export default function Compiler() {
                 className="basicRec"
                 style={{
                   marginTop: "5px",
-                  height: "210px",
+                  height: "240px",
                   backgroundColor: "#F7F7F7",
                 }}
               >
@@ -1757,7 +1797,7 @@ export default function Compiler() {
                       className="scrollbar customInput"
                       spellCheck={false}
                       defaultValue={user_input}
-                      style={{ height: 140 }}
+                      style={{ height: 170 }}
                       onChange={userInput}
                     ></textarea>
                   </Tab>

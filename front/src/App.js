@@ -8,7 +8,6 @@ import Login from "./screens/Login";
 import Logout from "./screens/logout";
 import Result from "./screens/Result";
 import Error from "./screens/Error";
-import "./css/App.css";
 import AdminHome from "./screens/Admin/Home";
 import AdminAddQs from "./screens/Admin/AddQs";
 import SetQuestion from "./screens/Admin/SetQuestion";
@@ -20,10 +19,11 @@ import ScheduledTest from "./screens/Admin/ScheduledTest";
 import ViewSchdlTest from "./screens/Admin/ViewSchdlTest";
 import Compiler from "./screens/Test/Compiler";
 import CompScreen from "./screens/Test/compScreen";
-import Personality from "./screens/Test/Personality";
 import PersonalityResultComp from "./components/Result/personalityResultComp";
 import ACEEditor from "./components/TestScreeen/AceEditor";
-
+import Page_404 from "./screens/Page_404";
+import "./css/App.css";
+import ImageUpload from "./components/Admin/ImageUpload";
 function App() {
   return (
     <div className="App" id="element">
@@ -93,17 +93,9 @@ function App() {
                   element={<ViewSchdlTest />}
                 />
                 <Route path="/admin/compiler" exact element={<Compiler />} />
-                <Route path="/per" exact element={<Personality />} />
-                <Route
-                  path="/per/result"
-                  exact
-                  element={<PersonalityResultComp />}
-                />
-                <Route
-                  path="/per/editor"
-                  exact
-                  element={<ACEEditor />}
-                />
+                <Route path="/uploadImg" exact element={<ImageUpload />} />
+                {/* do not change */}
+                <Route path="*" element={<Page_404 />} />
               </Routes>
             </Router>
           </Col>

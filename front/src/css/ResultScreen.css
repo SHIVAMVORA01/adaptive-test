@@ -1,33 +1,28 @@
-.factor_5_modal{
-    font-family: Poppins;
-font-style: normal;
-font-weight: Bold;
-font-size: 20px;
-line-height: 30px;
-
-color: #081466;
+.factor_5_modal {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: Bold;
+  font-size: 20px;
+  line-height: 30px;
+  color: #081466;
 }
-.factor_5_modal_result{
-    font-family: Poppins;
-    font-style: normal;
-    font-weight: 600;
-    font-size: 16px;
-    line-height: 24px;
-    text-align: justify;
-    color: #0F1420;
+.factor_5_modal_result {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  text-align: justify;
+  color: #0f1420;
 }
 .radarCh .apexcharts-menu-icon {
   display: none;
 }
 
-.Para{
-  margin-top: 23px;
-  position: absolute; 
+.Para {
+  margin-top: 20px;
   font-family: Poppins;
   font-weight: 1000;
   font-size: 20px;
-  line-height: 36px; 
   color: #081466;
-  margin-left: 30px;
-  margin-left: 30px;
 }

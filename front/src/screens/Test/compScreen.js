@@ -3,12 +3,13 @@ import axios from "axios";
 import { Row, Col, Modal, Button } from "react-bootstrap";
 import "../../css/Comprehension.css";
 import TestHeaderComp from "../../components/TestScreeen/TestHeaderComp";
-
+import crypt from "../../components/TestScreeen/crypt";
 import { useNavigate } from "react-router";
 import CustomTimer from "../Admin/CustomTimer";
 import getCurrentTime from "../../components/TestScreeen/dateCalc";
 import axiosInstance from "../../axios";
 import { isExpired, decodeToken } from "react-jwt";
+import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
 
 function CompScreen() {
   //prev pages
@@ -32,141 +33,159 @@ function CompScreen() {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    var full_screen_element = document.fullscreenElement;
-
-    if (full_screen_element === null) {
-      setShow(true);
-      setMd(false);
-      isReload(true);
-    }
-    if (!localStorage.getItem("test3")) {
-      let user = localStorage.getItem("username");
-      if (localStorage.getItem("test6")) {
-        let ax = JSON.parse(localStorage.getItem("test6"));
-        let ar = ax["marks"];
-        let total = 0;
-        axiosInstance
-          .post("api/marks/5", {
-            data: {
-              username: user,
-              marks: ar,
-              testId: localStorage.getItem("testId"),
-            },
-          })
-          .then((res) => {
-            console.log("done");
-            localStorage.removeItem("test6");
-          })
-          .catch((e) => console.log(e));
+    let flag = true;
+    if (!(localStorage.getItem("test6") && !localStorage.getItem("test3"))) {
+      if (!localStorage.getItem("test3")) {
+        navigate(ProtectUrl.protect());
+        flag = false;
       }
-      let txx = getCurrentTime();
-      let hh = txx.hh;
-      let mm = txx.mm;
-      let ss = txx.ss;
-      localStorage.setItem(
-        "test3",
-        JSON.stringify({
-          username: user,
-          STime: Date(),
-          FSTimer: "10",
-          marks: [],
-          parano: -1,
-          qsno: -1,
-          strtTime: hh + ":" + mm + ":" + ss,
-        })
-      );
     }
-    var test = JSON.parse(localStorage.getItem("test3"));
-    const token = localStorage.getItem("access_token");
-    // const isMyTokenExpired = isExpired(token);
-    const isMyTokenExpired = false;
+    if (flag) {
+      var full_screen_element = document.fullscreenElement;
 
-    if (isMyTokenExpired) {
-      navigate("/login");
-      return;
-    } else {
-      if (localStorage.getItem("result")) {
-        navigate("/result");
+      if (full_screen_element === null) {
+        setShow(true);
+        setMd(false);
+        isReload(true);
+      }
+      if (!localStorage.getItem("test3")) {
+        let user = localStorage.getItem("username");
+        if (localStorage.getItem("test6")) {
+          let ax = JSON.parse(localStorage.getItem("test6"));
+          let ar = ax["marks"];
+          let total = 0;
+          axiosInstance
+            .post("api/marks/5", {
+              data: {
+                username: user,
+                marks: ar,
+                testId: localStorage.getItem("testId"),
+              },
+            })
+            .then((res) => {
+              console.log("done");
+              localStorage.removeItem("test6");
+            })
+            .catch((e) => console.log(e));
+        }
+        let txx = getCurrentTime();
+        let hh = txx.hh;
+        let mm = txx.mm;
+        let ss = txx.ss;
+        localStorage.setItem(
+          "test3",
+          JSON.stringify({
+            username: user,
+            STime: Date(),
+            FSTimer: "10",
+            marks: [],
+            parano: -1,
+            qsno: -1,
+            strtTime: hh + ":" + mm + ":" + ss,
+          })
+        );
+      }
+      var test = JSON.parse(localStorage.getItem("test3"));
+      const token = localStorage.getItem("access_token");
+      const isMyTokenExpired = isExpired(token);
+
+      if (isMyTokenExpired) {
+        navigate("/login");
+        return;
       } else {
-        if (parseInt(test["parano"]) === -1 && parseInt(test["qsno"]) === -1) {
-          const data = async () => {
-            await axios
-              .get("http://127.0.0.1:8000/api/para")
-              .then((res) => {
-                let aa = converttime(res.data.time);
-                var tf = aa;
-                // setTimeFF(tf);
-
-                var ob = new Date();
-                console.log(test["strtTime"]);
-                console.log(ob.toLocaleTimeString());
-                var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-                var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-                var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
-
-                var timeStart = new Date(
-                  new Date().toLocaleDateString() + " " + test["strtTime"]
-                );
-                var timeEnd = new Date(
-                  new Date().toLocaleDateString() + " " + h + ":" + m + ":" + s
-                );
-                var hourDiff = (timeEnd - timeStart) / 1000;
-                console.log(timeEnd);
-                console.log(timeStart);
-                console.log(hourDiff);
-                console.log(tf);
-                setTimeFF(tf - hourDiff);
-
-                console.log(res.data[0]);
-                let a = res.data.data;
-                let n = 0;
-                for (let i = 0; i < a.length; i++) {
-                  n = n + a[i].questions.length;
-                }
-                let ar = new Array(n).fill(-1);
-                let Maxar = new Array(n).fill(2);
-                test["marks"] = ar;
-                test["parano"] = 0;
-                test["qsno"] = 0;
-                test["passage"] = a;
-                test["count"] = 0;
-                test["testtime"] = aa;
-                test["maxMarks"] = Maxar;
-                localStorage.setItem("test3", JSON.stringify(test));
-                setAns(ar);
-                setPassage(res.data.data);
-              })
-              .catch((e) => {
-                console.log(e);
-              });
-          };
-          data();
+        if (localStorage.getItem("result")) {
+          navigate("/result");
         } else {
-          var tf = test["testtime"];
-          var ob = new Date();
-          console.log(test["strtTime"]);
-          console.log(ob.toLocaleTimeString());
-          var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-          var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-          var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
+          if (
+            parseInt(test["parano"]) === -1 &&
+            parseInt(test["qsno"]) === -1
+          ) {
+            let xx = localStorage.getItem("testId");
+            const data = async () => {
+              await axios
+                .get(`http://127.0.0.1:8000/api/para/${xx}`)
+                .then((res) => {
+                  let aa = converttime(res.data.time);
+                  var tf = aa;
+                  // setTimeFF(tf);
 
-          var timeStart = new Date(
-            new Date().toLocaleDateString() + " " + test["strtTime"]
-          );
-          var timeEnd = new Date(
-            new Date().toLocaleDateString() + " " + h + ":" + m + ":" + s
-          );
-          var hourDiff = (timeEnd - timeStart) / 1000;
-          console.log(timeEnd);
-          console.log(timeStart);
-          console.log(hourDiff);
-          console.log(tf);
-          setTimeFF(tf - hourDiff);
-          setPassage(test["passage"]);
-          setQsNo(parseInt(test["qsno"]));
-          setParano(parseInt(test["parano"]));
-          setCount(parseInt(test["count"]));
-          setAns(test["marks"]);
+                  var ob = new Date();
+                  console.log(test["strtTime"]);
+                  console.log(ob.toLocaleTimeString());
+                  var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+                  var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+                  var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
+
+                  var timeStart = new Date(
+                    new Date().toLocaleDateString() + " " + test["strtTime"]
+                  );
+                  var timeEnd = new Date(
+                    new Date().toLocaleDateString() +
+                      " " +
+                      h +
+                      ":" +
+                      m +
+                      ":" +
+                      s
+                  );
+                  var hourDiff = (timeEnd - timeStart) / 1000;
+                  console.log(timeEnd);
+                  console.log(timeStart);
+                  console.log(hourDiff);
+                  console.log(tf);
+                  setTimeFF(tf - hourDiff);
+
+                  console.log(res.data[0]);
+                  let a = res.data.data;
+                  let n = 0;
+                  for (let i = 0; i < a.length; i++) {
+                    n = n + a[i].questions.length;
+                  }
+                  let ar = new Array(n).fill(-1);
+                  let Maxar = new Array(n).fill(2);
+                  test["marks"] = ar;
+                  test["parano"] = 0;
+                  test["qsno"] = 0;
+                  test["passage"] = a;
+                  test["count"] = 0;
+                  test["testtime"] = aa;
+                  test["maxMarks"] = Maxar;
+                  localStorage.setItem("test3", JSON.stringify(test));
+                  setAns(ar);
+                  setPassage(res.data.data);
+                })
+                .catch((e) => {
+                  console.log(e);
+                });
+            };
+            data();
+          } else {
+            var tf = test["testtime"];
+            var ob = new Date();
+            console.log(test["strtTime"]);
+            console.log(ob.toLocaleTimeString());
+            var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+            var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+            var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
+
+            var timeStart = new Date(
+              new Date().toLocaleDateString() + " " + test["strtTime"]
+            );
+            var timeEnd = new Date(
+              new Date().toLocaleDateString() + " " + h + ":" + m + ":" + s
+            );
+            var hourDiff = (timeEnd - timeStart) / 1000;
+            console.log(timeEnd);
+            console.log(timeStart);
+            console.log(hourDiff);
+            console.log(tf);
+            setTimeFF(tf - hourDiff);
+            setPassage(test["passage"]);
+            setQsNo(parseInt(test["qsno"]));
+            setParano(parseInt(test["parano"]));
+            setCount(parseInt(test["count"]));
+            setAns(test["marks"]);
+          }
         }
       }
     }
@@ -186,6 +205,8 @@ function CompScreen() {
       else if (element.webkitRequestFullscreen)
         element.webkitRequestFullscreen();
       else if (element.msRequestFullscreen) element.msRequestFullscreen();
+      element.style.overflowY = `auto`;
+      element.classList.add(`style-4`);
     }
   }
   document.addEventListener("fullscreenchange", function () {
@@ -224,7 +245,7 @@ function CompScreen() {
     for (let i = 0; i < radio.length; i++) {
       if (radio[i].checked) {
         let ar = ans;
-        ar[count] = parseInt(radio[i].value);
+        ar[count] = parseInt(crypt.decryptVal(radio[i].value));
         test["marks"] = ar;
         test["gotMarks"] = ar;
         test["count"] = count + 1;
@@ -346,7 +367,7 @@ function CompScreen() {
                     noTotal={true}
                     header="Verbal Reasoning"
                     nextpage={"result"}
-                    start={false}
+                    start={!testFinshBool}
                     reset={testFinshBool}
                     setMd={setMd}
                   ></TestHeaderComp>
@@ -389,13 +410,13 @@ function CompScreen() {
           </Row>
 
           <Row style={{ height: window.screen.height - 300 }}>
-            <Col className="passage" style={{overflow:'none'}}>
+            <Col className="passage" style={{ overflow: "none" }}>
               <div
                 style={{
                   backgroundColor: "#293E6F",
                   boxShadow: "1px 1px 7px 2px rgba(0, 0, 0, 0.25)",
                   borderRadius: "14px",
-                  margin: "5px 5px 15px 5px",          
+                  margin: "5px 5px 15px 5px",
                 }}
               >
                 <div
@@ -433,21 +454,20 @@ function CompScreen() {
                   fontWeight: "normal",
                   padding: "0 10px",
                   fontSize: "17.5px",
-                  width:'100%',
-                  height:'75%',
+                  width: "100%",
+                  height: "75%",
                   fontSize: "17.5px",
-                  lineHeight: "20px",
-                  backgroundColor:'#F7F7F7',
+                  lineHeight: "22px",
+                  backgroundColor: "#F7F7F7",
                   contentEditable: false,
                   outline: "none",
                   border: "none",
+                  color: "black",
                 }}
+                disabled
                 value={passage[parano].para}
                 className="style-4"
-                
               />
-                
-              
             </Col>
             <Col className="question scrollbar" id="style-4">
               <div style={{ marginBottom: "10px", padding: "30px" }}>
@@ -478,25 +498,27 @@ function CompScreen() {
 
                   {passage[parano].questions[qsno].options.map((opt) => {
                     return (
-                      <p>
+                      <div className="form-check" style={{ margin: "15px 0" }}>
                         <input
                           type="radio"
                           id={opt.id}
                           name={`question-${qsno}`}
-                          class="radio qsRadio"
-                          value={opt.marks}
+                          className="form-check-input qsRadio"
+                          value={crypt.encryptVal(opt.marks)}
                         />
                         <label
-                          class="option"
+                          className="form-check-label option textdivOpt"
                           id="option-one-label"
+                          for={opt.id}
                           style={{
                             marginLeft: "15px",
                             fontWeight: "400",
+                            width: "100%",
                           }}
                         >
                           {opt.title}
                         </label>
-                      </p>
+                      </div>
                     );
                   })}
                   <button

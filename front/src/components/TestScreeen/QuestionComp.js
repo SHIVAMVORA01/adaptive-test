@@ -1,5 +1,11 @@
 import React from "react";
 import { Col, Row } from "react-bootstrap";
+import crypt from "./crypt";
+import TextAreaAutoSize from "./TextAreaAutoSize";
+import $ from "jquery";
+import { Image } from "cloudinary-react";
+import Zoom from "react-medium-image-zoom";
+import "react-medium-image-zoom/dist/styles.css";
 
 function QuestionComp({
   ans,
@@ -8,19 +14,28 @@ function QuestionComp({
   options,
   level,
   qsno,
+  qsimg,
 }) {
+  function checkBoxToggle(e, optId) {
+    $(".form-check input.qsRadio").removeAttr("checked");
+    var input = $(`.form-check input#${optId}`);
+    input.attr("checked", "checked");
+    e.preventDefault();
+  }
   return (
     <div id="quesComp" style={{ padding: "10px 20px" }}>
       {qsno <= ans.length && (
         <>
-          <Row>
-            <Col>
-              <div style={{ float: "right", fontWeight: "500" }}>
-                Difficulty Level :{" "}
-                {level === 2 ? "Medium" : level === 3 ? "Hard" : "Easy"}
-              </div>
-            </Col>
-          </Row>
+          {!isPersonality && (
+            <Row>
+              <Col>
+                <div style={{ float: "right", fontWeight: "500" }}>
+                  Difficulty Level :{" "}
+                  {level === 2 ? "Medium" : level === 3 ? "Hard" : "Easy"}
+                </div>
+              </Col>
+            </Row>
+          )}
           <Row>
             <Col>
               <div style={{ padding: "10px 0 20px 0", fontWeight: "600" }}>
@@ -30,121 +45,172 @@ function QuestionComp({
           </Row>
           <Row>
             <Col>
-              <div style={{ padding: "5px 0 20px 0px", fontWeight: "700" }}>
-                {question}
+              {qsimg !== null && (
+                <Image
+                  cloudName="chaitanya1911"
+                  publicId={qsimg}
+                  width="500"
+                  crop="scale"
+                  alt="img"
+                ></Image>
+              )}
+              <div className="TestQs">
+                <TextAreaAutoSize
+                  text={question}
+                  isQs={true}
+                ></TextAreaAutoSize>
               </div>
+              {/* <textarea onKeyUp={textAreaAdjust} style={{height:'auto',overflow:"hidden",width:'100%'}} value= {question}></textarea> */}
             </Col>
           </Row>
           <div style={{ padding: "15px 0 10px 0" }}>
             {!isPersonality &&
               options.map((option, index) => {
                 return (
-                  <p key={index} style={{ padding: "5px 0" }}>
+                  <div
+                    className="form-check"
+                    style={{ margin: "10px 5px" }}
+                    key={index}
+                  >
                     <input
+                      className="form-check-input qsRadio"
                       type="radio"
                       id={index}
                       name={question}
-                      class="radio qsRadio"
-                      value={option.mrks}
-                      style={{ height: "13px" }}
+                      value={crypt.encryptVal(option.mrks)}
+                      style={{}}
                     />
-                    <label
-                      class="option"
-                      id="option-one-label"
-                      style={{ marginLeft: "15px", fontWeight: "400" }}
-                    >
-                      {option.opt}
-                    </label>
-                  </p>
+
+                    <TextAreaAutoSize
+                      text={option.opt}
+                      checkBoxToggle={checkBoxToggle}
+                      optId={index}
+                    ></TextAreaAutoSize>
+                  </div>
                 );
               })}
             {isPersonality && (
               <>
-                <p key={1} style={{ padding: "5px 0" }}>
+                <div
+                  className="form-check"
+                  style={{ padding: "5px 0", marginBottom: "10px" }}
+                >
                   <input
                     type="radio"
-                    id={1}
+                    id={"qsRadio1"}
                     name={question}
-                    class="radio qsRadio"
+                    class="qsRadio"
                     value={1}
                     style={{ height: "13px" }}
                   />
                   <label
-                    class="option"
-                    id="option-one-label"
-                    style={{ marginLeft: "15px", fontWeight: "400" }}
+                    className="form-check-label textdivOpt"
+                    for={"qsRadio1"}
+                    style={{
+                      width: "95%",
+                      marginLeft: "15px",
+                      fontWeight: "400",
+                    }}
                   >
                     Very Inaccurate
                   </label>
-                </p>
-                <p key={2} style={{ padding: "5px 0" }}>
+                </div>
+                <div
+                  className="form-check"
+                  style={{ padding: "5px 0", marginBottom: "10px" }}
+                >
                   <input
                     type="radio"
-                    id={2}
+                    id={"qsRadio2"}
                     name={question}
-                    class="radio qsRadio"
+                    class="qsRadio"
                     value={2}
                     style={{ height: "13px" }}
                   />
                   <label
-                    class="option"
-                    id="option-one-label"
-                    style={{ marginLeft: "15px", fontWeight: "400" }}
+                    className="form-check-label textdivOpt"
+                    for={"qsRadio2"}
+                    style={{
+                      width: "95%",
+                      marginLeft: "15px",
+                      fontWeight: "400",
+                    }}
                   >
                     Moderately Inaccurate
                   </label>
-                </p>
-                <p key={3} style={{ padding: "5px 0" }}>
+                </div>
+                <div
+                  className="form-check"
+                  style={{ padding: "5px 0", marginBottom: "10px" }}
+                >
                   <input
                     type="radio"
-                    id={3}
+                    id={"qsRadio3"}
                     name={question}
-                    class="radio qsRadio"
+                    class="qsRadio"
                     value={3}
                     style={{ height: "13px" }}
                   />
                   <label
-                    class="option"
-                    id="option-one-label"
-                    style={{ marginLeft: "15px", fontWeight: "400" }}
+                    className="form-check-label textdivOpt"
+                    for={"qsRadio3"}
+                    style={{
+                      width: "95%",
+                      marginLeft: "15px",
+                      fontWeight: "400",
+                    }}
                   >
-                    Neither Accurate Nor Inaccurate
+                    Neither Accurate nor Inaccurate
                   </label>
-                </p>
-                <p key={4} style={{ padding: "5px 0" }}>
+                </div>
+                <div
+                  className="form-check"
+                  style={{ padding: "5px 0", marginBottom: "10px" }}
+                >
                   <input
                     type="radio"
-                    id={4}
+                    id={"qsRadio4"}
                     name={question}
-                    class="radio qsRadio"
+                    class="qsRadio"
                     value={4}
                     style={{ height: "13px" }}
                   />
                   <label
-                    class="option"
-                    id="option-one-label"
-                    style={{ marginLeft: "15px", fontWeight: "400" }}
+                    className="form-check-label textdivOpt"
+                    for={"qsRadio4"}
+                    style={{
+                      width: "95%",
+                      marginLeft: "15px",
+                      fontWeight: "400",
+                    }}
                   >
                     Moderately Accurate
                   </label>
-                </p>
-                <p key={5} style={{ padding: "5px 0" }}>
+                </div>
+                <div
+                  className="form-check"
+                  style={{ padding: "5px 0", marginBottom: "10px" }}
+                >
                   <input
                     type="radio"
-                    id={5}
+                    id={"qsRadio5"}
                     name={question}
-                    class="radio qsRadio"
+                    class="qsRadio"
                     value={5}
                     style={{ height: "13px" }}
                   />
                   <label
-                    class="option"
-                    id="option-one-label"
-                    style={{ marginLeft: "15px", fontWeight: "400" }}
+                    className="form-check-label textdivOpt"
+                    for={"qsRadio5"}
+                    style={{
+                      width: "95%",
+                      marginLeft: "15px",
+                      fontWeight: "400",
+                    }}
                   >
                     Very Accurate
                   </label>
-                </p>
+                </div>
               </>
             )}
             <button
