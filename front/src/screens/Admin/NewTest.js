@@ -22,9 +22,9 @@ function NewTest() {
   const [aptDic, setAptDic] = useState({ time: "00:00:20", totalQs: 1 });
   const [CFDic, setCFDic] = useState({ time: "00:00:20", totalQs: 1 });
   const [DDic, setDDic] = useState({ time: "00:00:20", totalQs: 1 });
-  const [PDic, setPDic] = useState({ time: "00:00:20", totalQs: 1 });
-  const [CDic, setCDic] = useState({ time: "00:00:20", totalQs: 1 });
-  const [AWDic, setAWDic] = useState({ time: "00:00:20", totalQs: 1 });
+  const [PDic, setPDic] = useState({ time: "00:00:20", totalQs: 35 }); //$
+  const [CDic, setCDic] = useState({ time: "00:00:20", totalQs: 3 });
+  const [AWDic, setAWDic] = useState({ time: "00:00:20", totalQs: 3 });
 
   const [CurrentDic, setCurrentDic] = useState({
     time: "00:00:20",
@@ -65,7 +65,6 @@ function NewTest() {
           setHard(d[Wssid].hard);
           setMed(d[Wssid].medium);
           setQs(d[Wssid].qs);
-          //setTime(d[Wssid].time)
           if (d[Wssid].medium.length !== 0) {
             setCurrentDic(aptDic);
           } else {
@@ -168,7 +167,6 @@ function NewTest() {
     setHard(d[Wssid].hard);
     setMed(d[Wssid].medium);
     setQs(d[Wssid].qs);
-    //setTime(d[Wssid].time)
     console.log(AWDic);
 
     if (d[Wssid].medium.length > 0) {

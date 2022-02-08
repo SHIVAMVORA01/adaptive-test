@@ -17,7 +17,25 @@ from django.db.models import Q
 from dateutil import tz
 import cloudinary
 import cloudinary.search
+from django.contrib.auth.models import User,auth
 CFG = {'DB': None}
+
+@csrf_exempt
+def login(request):
+     if request.method == 'POST' :
+        data=JSONParser().parse(request)['data']
+        username = data['username']
+        password = data['password']
+        
+        user = auth.authenticate(username = username,password = password)
+        if user is not None:
+            auth.login(request,user)
+            if User.objects.get(username=username).is_staff ==True:
+                return JsonResponse({"exist":1,"admin":1},safe=False)
+            else :
+                return JsonResponse({"exist":1,"admin":0},safe=False)   
+        else:
+            return JsonResponse({"exist":0},safe=False)
 
 @csrf_exempt
 def subqs(request,subject=0,tid=0):
@@ -233,7 +251,7 @@ def results(request,name):
             except Results.DoesNotExist:
                 print('No previous entry')
             result = Results.objects.create(student = user,startTime = d,test=Test.objects.get(id=data['testId']),
-            marks={"ap":0,'cf':0,'c':0,'d':0,'p':0,'a':0,"avg_ap":avg_ap,'avg_cf':avg_cf,'avg_c':avg_c,'avg_d':avg_d,'avg_p':avg_p,'avg_a':avg_a,'apMax':[],'cfMax':[],'cMax':[],'dMax':[],'pMax':[],'aMax':[],'apGot':[],'cfGot':[],'cGot':[],'dGot':[],'pGot':[],'aGot':[]}
+            marks={"ap":0,'cf':0,'c':0,'d':0,'p':0,'a':0,"avg_ap":avg_ap,'avg_cf':avg_cf,'avg_c':avg_c,'avg_d':avg_d,'avg_p':avg_p,'avg_a':avg_a,'apMax':[],'cfMax':[],'cMax':[],'dMax':[],'pMax':[],'aMax':[],'apGot':[],'cfGot':[],'cGot':[],'dGot':[],'pGot':[evaluate(request,{'Nick':name,'Sex':'Male','Age':21,'Q':[0]*(121),'Country':'India'})],'aGot':[]}
             )
             result.save()
             return JsonResponse({'resultExists':False},safe=False)
@@ -427,10 +445,13 @@ def addQs(request):
                 for qs in qData:                   
                     f=Questions.objects.get(id=qs.split('question')[1])
                     f.title=qData[qs]
-                    f.type=data['type']     
+                    f.type=data['type']    
+                    try:
+                        cloudinary.uploader.destroy(public_id=f.imgId)
+                    except:
+                        pass 
                     if data['image']!='':
                         try:
-                            cloudinary.uploader.destroy(public_id=f.imgId)
                             imgU=cloudinary.uploader.upload(data['image'],folder='adaptive_test/{0}'.format(data['sectionName']),overwrite=True,resource_type='image')
                             f.imgId=imgU['public_id']
                         except:

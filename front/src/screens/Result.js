@@ -2,11 +2,10 @@ import React, { useEffect, useState } from "react";
 import { isExpired, decodeToken } from "react-jwt";
 import { useNavigate } from "react-router";
 import axiosInstance from "../axios";
-import { Col, Row } from "react-bootstrap";
+import { Col, Modal, Row } from "react-bootstrap";
 import TestHeaderComp from "../components/TestScreeen/TestHeaderComp";
 import Chart from "react-apexcharts";
 import "../css/ResultScreen.css";
-import $ from "jquery";
 import PersonalityResultComp from "../components/Result/personalityResultComp";
 import GenericPdfDownloader from "../components/Result/GenericPdfDownloader";
 
@@ -22,6 +21,7 @@ function Result() {
   const [opt, setOpt] = useState({});
   const [opt1, setOpt1] = useState({});
   const [optRadar, setOptRadar] = useState({});
+  const [show, setShow] = useState(false);
 
   useEffect(() => {
     var t = localStorage.getItem("test");
@@ -145,7 +145,7 @@ function Result() {
         })
         .then((res) => {
           console.log("done");
-          localStorage.setItem('result',true)
+          localStorage.setItem("result", true);
           if (tNo !== 1) {
             localStorage.removeItem(`test${tNo}`);
           } else {
@@ -305,6 +305,52 @@ function Result() {
 
   return (
     <div>
+      <Modal
+        show={show}
+        onHide={() => setShow(false)}
+        aria-labelledby="example-custom-modal-styling-title"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="example-custom-modal-styling-title">
+            Detailed Report
+            <GenericPdfDownloader
+              rootElementId={"generatePdf"}
+              downloadFileName="detailed_report"
+            ></GenericPdfDownloader>
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p>
+            <Row>
+              {personalityData[0] !== undefined && (
+                <PersonalityResultComp
+                  SEP={personalityData[0].SEP}
+                  SEFP={personalityData[0].SEFP}
+                  LO={personalityData[0].LO}
+                  HI={personalityData[0].HI}
+                  SE={personalityData[0].SE}
+                  SAP={personalityData[0].SAP}
+                  SAFP={personalityData[0].SAFP}
+                  SA={personalityData[0].SA}
+                  SC={personalityData[0].SC}
+                  SCP={personalityData[0].SCP}
+                  SCFP={personalityData[0].SCFP}
+                  flev={personalityData[0].flev}
+                  SOP={personalityData[0].SOP}
+                  SOFP={personalityData[0].SOFP}
+                  SO={personalityData[0].SO}
+                  Nick={personalityData[0].Nick}
+                  Country={personalityData[0].Country}
+                  SNP={personalityData[0].SNP}
+                  SNFP={personalityData[0].SNFP}
+                  Category={personalityData[0].Category}
+                  SN={personalityData[0].SN}
+                />
+              )}{" "}
+            </Row>
+          </p>
+        </Modal.Body>
+      </Modal>
       <Row>
         <Col md="12">
           <div
@@ -366,7 +412,6 @@ function Result() {
           </div>
         </Col>
       </Row>
-      {/* <GenericPdfDownloader rootElementId={'generatePdf'} downloadFileName="CustomPdf" ></GenericPdfDownloader> */}
       <Row>
         <p className="Para">Personality Test Analysis</p>
         <Col style={{ marginTop: "5px" }}>
@@ -580,7 +625,7 @@ function Result() {
      } </Row> */}
       <button
         type="button"
-        className="btn btn-secondary"
+        className="btn"
         onClick={(e) => navigate("/logout")}
         style={{
           marginTop: "20px",
@@ -590,6 +635,20 @@ function Result() {
         }}
       >
         Logout
+      </button>
+      <button
+        type="button"
+        className="btn"
+        onClick={(e) => setShow(true)}
+        style={{
+          marginTop: "20px",
+          marginLeft: "5px",
+          backgroundColor: "#10b65c",
+          color: "white",
+          border: "none",
+        }}
+      >
+        View Detailed Report
       </button>
     </div>
   );

@@ -2,6 +2,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+   #Authentication
+   path('api/log',views.login),
+
+   #student side
    path('api/qs',views.qs),
    path('api/subs',views.subs),
    path('api/results/<str:name>',views.results),

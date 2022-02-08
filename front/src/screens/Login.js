@@ -47,6 +47,17 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axiosInstance
+    .post("/api/log",{
+      data:{
+      username: formData.username,
+      password: formData.password,
+      }
+    })
+    .then( async res=>{
+      console.log(res.data)
+      if(res.data.exist){
+        if(!res.data.admin){
+          axiosInstance
       .post("token/", {
         username: formData.username,
         password: formData.password,
@@ -93,6 +104,15 @@ function Login() {
           alert("test not available");
         }
       });
+        }
+        else{
+          navigate("/admin/home")
+        }
+      }
+      else{
+        alert("User Doesn't exists")
+      }
+    })
   };
   async function availabilty() {
     let aa = 0;

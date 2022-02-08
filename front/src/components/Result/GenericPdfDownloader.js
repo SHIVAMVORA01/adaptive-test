@@ -27,7 +27,19 @@ const GenericPdfDownloader = ({ rootElementId, downloadFileName }) => {
     });
   };
 
-  return <button onClick={downloadPdfDocument}>Download Pdf</button>;
+  return (
+    <button
+      onClick={downloadPdfDocument}
+      style={{
+        backgroundColor: "white",
+        marginLeft: "10px",
+        outline: "none",
+        border: "0",
+      }}
+    >
+      <i class="fa fa-download" aria-hidden="true"></i>
+    </button>
+  );
 };
 
 export default GenericPdfDownloader;

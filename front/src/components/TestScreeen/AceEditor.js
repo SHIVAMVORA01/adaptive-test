@@ -13,14 +13,13 @@ function ACEEditor({
   set_render_state,
   render_state,
   language_id,
-  height,
 }) {
   const [language, setLanguage] = useState();
   useEffect(() => {
     if (parseInt(language_id) === 54) {
-      setLanguage("cpp");
+      setLanguage("c_cpp");
     } else if (parseInt(language_id) === 50) {
-      setLanguage("c");
+      setLanguage("c_cpp");
     } else if (parseInt(language_id) === 62) {
       setLanguage("java");
     } else if (parseInt(language_id) === 71) {

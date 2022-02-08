@@ -15,7 +15,8 @@
   text-align: justify;
   color: #0f1420;
 }
-.radarCh .apexcharts-menu-icon {
+.radarCh .apexcharts-menu-icon,
+.modal-dialog .apexcharts-menu-icon {
   display: none;
 }
 
@@ -25,4 +26,8 @@
   font-weight: 1000;
   font-size: 20px;
   color: #081466;
+}
+.modal-dialog {
+  max-width: 900px !important;
+  margin: 1.75rem auto;
 }

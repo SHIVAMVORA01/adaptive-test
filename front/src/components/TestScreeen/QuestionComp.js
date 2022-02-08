@@ -60,7 +60,6 @@ function QuestionComp({
                   isQs={true}
                 ></TextAreaAutoSize>
               </div>
-              {/* <textarea onKeyUp={textAreaAdjust} style={{height:'auto',overflow:"hidden",width:'100%'}} value= {question}></textarea> */}
             </Col>
           </Row>
           <div style={{ padding: "15px 0 10px 0" }}>
