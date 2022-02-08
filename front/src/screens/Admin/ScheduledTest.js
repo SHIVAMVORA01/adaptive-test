@@ -274,6 +274,7 @@ function ScheduledTest() {
                           backgroundColor: "white",
                           borderColor: "#F0F0F0",
                           marginBottom: "1px",
+                          border: "none",
                         }}
                         key={index}
                       >
@@ -292,8 +293,23 @@ function ScheduledTest() {
                           marginTop: "10px",
                         }}
                       ></i>
+                      
+                    </Col>
+                    <Col md={1}>
+                      <i
+                        onClick={() => delSTest(t.id)}
+                        class="fa fa-eye"
+                        style={{
+                          backgroundColor: "white",
+                          color: "green",
+                          float: "right",
+                          marginRight: "15px",
+                          marginTop: "10px",
+                        }}
+                      ></i>
                     </Col>
                   </Row>
+                  
                 );
               })}
             </div>
