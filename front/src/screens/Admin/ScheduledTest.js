@@ -293,6 +293,19 @@ function ScheduledTest() {
                         }}
                       ></i>
                     </Col>
+                    <Col md={1}>
+                      <i
+                        onClick={() => delSTest(t.id)}
+                        class="fa fa-eye"
+                        style={{
+                          backgroundColor: "white",
+                          color: "green",
+                          float: "right",
+                          marginRight: "15px",
+                          marginTop: "10px",
+                        }}
+                      ></i>
+                    </Col>
                   </Row>
                 );
               })}
