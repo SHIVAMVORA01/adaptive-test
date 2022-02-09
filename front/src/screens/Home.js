@@ -31,7 +31,7 @@ function Home() {
                             </div>
                         </Col>
                         <Col md={5} lg={4}>
-                            <img alt="illustration1" src="front\src\img\illustration1.svg" className="welcomeImage"></img>
+                            <img alt="illustration1" src="C:\Users\voras\Desktop\adaptive-test\front\src\img\illustration1.svg" className="welcomeImage"></img>
                         </Col>
                     </Row>
                 </Container>
