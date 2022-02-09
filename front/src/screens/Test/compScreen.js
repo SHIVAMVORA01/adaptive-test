@@ -60,6 +60,7 @@ function CompScreen() {
                 username: user,
                 marks: ar,
                 testId: localStorage.getItem("testId"),
+                check_result:0
               },
             })
             .then((res) => {

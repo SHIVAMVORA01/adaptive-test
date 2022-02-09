@@ -27,7 +27,7 @@
   font-size: 20px;
   color: #081466;
 }
-.modal-dialog {
+#result_page {
   max-width: 900px !important;
   margin: 1.75rem auto;
 }

@@ -20,7 +20,9 @@ class MyUser(models.Model):
     email = models.EmailField()
     age = models.IntegerField()
     gender = models.CharField(max_length=50)
-    mobile = models.IntegerField()
+    mobile = models.IntegerField(blank=True,null=True)
+    percent_10_std=models.IntegerField(default=1)
+    percent_12_std=models.IntegerField(default=1)
     def __str__(self):
         return self.name
 

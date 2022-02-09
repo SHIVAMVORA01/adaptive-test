@@ -7,16 +7,6 @@ import $ from "jquery";
 import "../css/LoginScreen.css";
 import axios from "axios";
 
-function showHide(e) {
-  $(e.target).toggleClass("fa-eye fa-eye-slash");
-  var input = $($(e.target).attr("toggle"));
-  if (input.attr("type") == "password") {
-    input.attr("type", "text");
-  } else {
-    input.attr("type", "password");
-  }
-}
-
 function Login() {
   const navigate = useNavigate();
   useEffect(() => {
@@ -27,10 +17,19 @@ function Login() {
       if (localStorage.getItem("result")) {
         navigate("/result");
       } else {
-        navigate("/testScreen");
+        navigate("/details");
       }
     }
   }, []);
+  function showHide(e) {
+    $(e.target).toggleClass("fa-eye fa-eye-slash");
+    var input = $($(e.target).attr("toggle"));
+    if (input.attr("type") == "password") {
+      input.attr("type", "text");
+    } else {
+      input.attr("type", "password");
+    }
+  }
 
   const initialFormData = Object.freeze({
     username: "",
@@ -47,72 +46,62 @@ function Login() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axiosInstance
-    .post("/api/log",{
-      data:{
-      username: formData.username,
-      password: formData.password,
-      }
-    })
-    .then( async res=>{
-      console.log(res.data)
-      if(res.data.exist){
-        if(!res.data.admin){
-          axiosInstance
-      .post("token/", {
-        username: formData.username,
-        password: formData.password,
+      .post("/api/log", {
+        data: {
+          username: formData.username,
+          password: formData.password,
+        },
       })
       .then(async (res) => {
-        let xx = await availabilty();
-        if (xx !== -1) {
-          localStorage.setItem("testId", xx); //imp
-          var ob = new Date();
-          var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-          var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-          var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
-          localStorage.setItem("access_token", res.data.access);
-          localStorage.setItem("username", formData.username);
-          localStorage.setItem("refresh_token", res.data.refresh);
-          const data = async () =>
+        console.log(res.data);
+        if (res.data.exist) {
+          if (!res.data.admin) {
             axiosInstance
-              .post(`api/results/${formData.username}`, {
-                data: { testId: xx },
+              .post("token/", {
+                username: formData.username,
+                password: formData.password,
               })
-              .then((res) => {
-                if (res.data.resultExists) {
-                  navigate("/result");
+              .then(async (res) => {
+                let xx = await availabilty();
+                if (xx !== -1) {
+                  localStorage.setItem("testId", xx); //imp
+                  var ob = new Date();
+                  var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+                  var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+                  var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
+                  localStorage.setItem("access_token", res.data.access);
+                  localStorage.setItem("username", formData.username);
+                  localStorage.setItem("refresh_token", res.data.refresh);
+                  const data = async () =>
+                    axiosInstance
+                      .post(`api/results/${formData.username}`, {
+                        data: { testId: xx },
+                      })
+                      .then((res) => {
+                        if (res.data.resultExists) {
+                          if(res.data.end){
+                            navigate("/result");
+                          }
+                          else{
+                            alert("Already started on different device");
+                            navigate("/logout");
+                          }
+                        } else {
+                          navigate("/details");
+                        }
+                      });
+                  data();
                 } else {
-                  localStorage.setItem(
-                    "test",
-                    JSON.stringify({
-                      username: formData.username,
-                      STime: Date(),
-                      strtTime: +h + ":" + m + ":" + s,
-                      FSTimer: "10",
-                      question: [],
-                      marks: [],
-                      currentQsNo: 1,
-                    })
-                  );
-                  axiosInstance.defaults.headers["Authorization"] =
-                    "JWT " + localStorage.getItem("access_token");
-                  navigate("/testScreen");
+                  alert("test not available");
                 }
               });
-          data();
+          } else {
+            navigate("/admin/home");
+          }
         } else {
-          alert("test not available");
+          alert("User Doesn't exists");
         }
       });
-        }
-        else{
-          navigate("/admin/home")
-        }
-      }
-      else{
-        alert("User Doesn't exists")
-      }
-    })
   };
   async function availabilty() {
     let aa = 0;

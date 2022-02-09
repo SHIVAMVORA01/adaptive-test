@@ -24,6 +24,7 @@ import ACEEditor from "./components/TestScreeen/AceEditor";
 import Page_404 from "./screens/Page_404";
 import "./css/App.css";
 import ImageUpload from "./components/Admin/ImageUpload";
+import DetailScreen from "./screens/DetailScreen";
 function App() {
   return (
     <div className="App" id="element">
@@ -93,7 +94,8 @@ function App() {
                   element={<ViewSchdlTest />}
                 />
                 <Route path="/admin/compiler" exact element={<Compiler />} />
-                <Route path="/uploadImg" exact element={<ImageUpload />} />
+                <Route path="/details" exact element={<DetailScreen />} />
+
                 {/* do not change */}
                 <Route path="*" element={<Page_404 />} />
               </Routes>

@@ -254,6 +254,8 @@ function ScheduledTest() {
                       backgroundColor: "white",
                       borderColor: "#F0F0F0",
                       marginBottom: "1px",
+                      boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+                      borderRadius: "10px",
                     }}
                   >
                     <Col>
@@ -293,11 +295,10 @@ function ScheduledTest() {
                           marginTop: "10px",
                         }}
                       ></i>
-                      
                     </Col>
                     <Col md={1}>
                       <i
-                        onClick={() => delSTest(t.id)}
+                        onClick={() => {}}
                         class="fa fa-eye"
                         style={{
                           backgroundColor: "white",
@@ -309,7 +310,6 @@ function ScheduledTest() {
                       ></i>
                     </Col>
                   </Row>
-                  
                 );
               })}
             </div>
@@ -336,7 +336,16 @@ function ScheduledTest() {
             >
               {utests.map((t, index) => {
                 return (
-                  <>
+                  <Row
+                    style={{
+                      backgroundColor: "white",
+                      borderColor: "#F0F0F0",
+                      marginBottom: "1px",
+                      boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <Col>
                     <button
                       type="button"
                       onClick={(e) => upcomingTest(e, t)}
@@ -345,12 +354,27 @@ function ScheduledTest() {
                         backgroundColor: "white",
                         borderColor: "#F0F0F0",
                         marginBottom: "1px",
+                        border: "none",
                       }}
                       key={index}
                     >
                       {t.test_name}
                     </button>
-                  </>
+                    </Col>
+                    <Col md={1}>
+                      <i
+                        onClick={() => {}}
+                        class="fa fa-eye"
+                        style={{
+                          backgroundColor: "white",
+                          color: "green",
+                          float: "right",
+                          marginRight: "15px",
+                          marginTop: "10px",
+                        }}
+                      ></i>
+                    </Col>
+                  </Row>
                 );
               })}
             </div>

@@ -128,6 +128,7 @@ function Result() {
           maxMarks: maxMarks,
           gotMarks: gotMarks,
           testId: localStorage.getItem("testId"),
+          check_result:1
         };
       } else {
         let ax = JSON.parse(current);
@@ -306,6 +307,7 @@ function Result() {
   return (
     <div>
       <Modal
+        id="result_page"
         show={show}
         onHide={() => setShow(false)}
         aria-labelledby="example-custom-modal-styling-title"

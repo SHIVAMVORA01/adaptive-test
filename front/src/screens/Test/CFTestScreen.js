@@ -72,6 +72,7 @@ function CFTestScreen() {
                 maxMarks: maxMarks,
                 testId: localStorage.getItem("testId"),
                 gotMarks: gotMarks,
+                check_result:0
               },
             })
             .then((res) => {
