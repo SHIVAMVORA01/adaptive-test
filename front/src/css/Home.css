@@ -1,0 +1,152 @@
+.paragraph {
+    font-family: Poppins;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 36px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #293E6F;
+    margin-top: 30px;
+    width: 300px;
+}
+@media screen and ( min-width: 780px) {
+    .firstPara {
+        border-right: 1px solid #293E6F;
+    }
+}
+@media screen and ( max-width: 780px) {
+    .contactHeading {
+        font-weight: 600;
+        margin-top: 30px;
+        border-top: 1px solid #293E6F;
+        border-bottom: 1px solid #293E6F;
+    }
+    .footerLine {
+        font-size: 20px;
+    }
+}
+@media screen and ( min-width: 500px) {
+    .buttonDiv {
+        text-align: start;
+    }
+}
+.welcomeDiv {
+    background-image: url("C:\Users\voras\Desktop\adaptive-test\front\src\img\Group 10.png");
+}
+
+.mainHeading {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 72px;
+    color: #293E6F;
+    text-align: center;
+}
+
+.subHeadingsProfile {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 28px;
+    line-height: 57px;
+    color: #293E6F;
+}
+
+.subHeadingsProfile1 {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 18.8px;
+    line-height: 29px;
+    color: #293E6F;
+}
+
+.divHeadings {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 30px;
+    line-height: 60px;
+    text-align: center;
+    color: #293E6F;
+}
+
+.welcomeImageDiv {
+    display: flex;
+    align-items: center;
+}
+
+.welcomeImage {
+    height: 90%;
+    width: 90%;
+}
+
+.welcomeImage1 {
+    height: 100%;
+    width: 100%;
+}
+
+.aboutDiv {
+    display: flex;
+    align-items: center;
+}
+
+.titleDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 3%;
+    margin-left: 5%;
+}
+
+.introPara {
+    font-family: Poppins;
+    font-style: normal;
+    font-weight: 300;
+    font-size: 16.8px;
+    line-height: 29px;
+    text-align: justify;
+    color: #293E6F;
+}
+
+.landingPara {
+    margin-top: 7%;
+}
+
+.landingPara1 {
+    margin-top: 5%;
+}
+
+@media (max-width: 768px) {
+    .titleDiv {
+        margin-left: 0;
+        text-align: center;
+        margin-top: 3%;
+    }
+    .subHeadingsProfile {
+        text-align: start;
+    }
+    .landingPara {
+        text-align: start;
+        margin-top: 5%;
+    }
+    .landingPara1 {
+        text-align: start;
+        margin-top: 5%;
+    }
+    .welcomeImage {
+        display: none;
+    }
+    .welcomeImage1 {
+        display: none;
+    }
+    .titleDiv {
+        align-items: center;
+    }
+    .colImageDiv {
+        display: none !important;
+    }
+}

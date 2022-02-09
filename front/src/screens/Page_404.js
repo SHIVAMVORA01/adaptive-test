@@ -35,8 +35,8 @@ function Page_404() {
       </Row>
       <Row>
         <Col style={{ textAlign: "center" }}>
-          <button className="btn EPbut" onClick={() => navigate("/logout")}>
-            Log In
+          <button className="btn EPbut" onClick={() => navigate("/Home")}>
+            Home
           </button>
         </Col>
       </Row>

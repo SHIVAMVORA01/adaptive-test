@@ -628,7 +628,7 @@ function Result() {
       <button
         type="button"
         className="btn"
-        onClick={(e) => navigate("/logout")}
+        onClick={(e) => navigate("/Home")}
         style={{
           marginTop: "20px",
           backgroundColor: "red",

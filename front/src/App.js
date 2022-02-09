@@ -67,6 +67,7 @@ function App() {
                 <Route path="/admin/addQs" exact element={<AdminAddQs />} />
                 <Route path="/admin/setQs" exact element={<SetQuestion />} />
                 <Route path="/admin/newTest" exact element={<NewTest />} />
+                <Route path="/home" exact element={<Home />} />
                 <Route
                   path="/admin/personality"
                   exact
