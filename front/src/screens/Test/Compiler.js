@@ -222,7 +222,7 @@ export default function Compiler() {
           let data;
           let xx = localStorage.getItem("testId");
           const getData = async () =>
-            await axios
+            await axiosInstance
               .get(`http://127.0.0.1:8000/api/codingTests/${xx}`)
               .then((res) => {
                 console.log(res.data.cQs);

@@ -21,7 +21,7 @@
   }
 
 .welcomeDiv {
-    background-image: url("C:\Users\voras\Desktop\adaptive-test\front\src\img\Group 10.png");
+    background-image: url("/src/img/Group 10.png");
 
 }
 
@@ -191,9 +191,3 @@
     }
    
 }
-
-
-
-
-
-

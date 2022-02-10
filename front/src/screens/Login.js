@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { isExpired, decodeToken } from "react-jwt";
 import $ from "jquery";
 import "../css/LoginScreen.css";
-import axios from "axios";
 
 function Login() {
   const [utests, setUTests] = useState([]);
@@ -57,16 +56,19 @@ function Login() {
       .then(async (res) => {
         console.log(res.data);
         if (res.data.exist) {
-          if (!res.data.admin) {
+          let adminn = res.data.admin;
             axiosInstance
               .post("token/", {
                 username: formData.username,
                 password: formData.password,
               })
               .then(async (res) => {
-                let xx = await availabilty();
-                if (xx !== -1) {
+                let acc_token = "JWT " + res.data.access;
+              axiosInstance.defaults.headers["Authorization"] = acc_token;
+                let xx = await availabilty(acc_token);
+                if (xx !== -1 || adminn) {
                   localStorage.setItem("testId", xx); //imp
+                  localStorage.setItem("admin", "user");
                   var ob = new Date();
                   var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
                   var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
@@ -81,10 +83,9 @@ function Login() {
                       })
                       .then((res) => {
                         if (res.data.resultExists) {
-                          if(res.data.end){
+                          if (res.data.end) {
                             navigate("/result");
-                          }
-                          else{
+                          } else {
                             alert("Already started on different device");
                             navigate("/logout");
                           }
@@ -92,22 +93,25 @@ function Login() {
                           navigate("/details");
                         }
                       });
+                      if (adminn) {
+                        localStorage.setItem("admin", "admin");
+                        localStorage.removeItem("testId");
+                        navigate("/admin/home");
+                      } else {
                   data();
+                      }
                 } else {
                   alert("test not available");
                 }
               });
           } else {
-            navigate("/admin/home");
-          }
-        } else {
           alert("User Doesn't exists");
         }
       });
   };
   async function availabilty() {
     let aa = 0;
-    await axios
+    await axiosInstance
       .get("http://127.0.0.1:8000/api/test/0")
       .then((res) => {
         aa = res.data.testId;
@@ -183,7 +187,7 @@ function Login() {
             </form>
           </div>
         </Col>
-        <Col style={{ padding: "0", margin: "0"}}>
+        <Col style={{ padding: "0", margin: "0" }}>
           <div>
           <Row style={{ margin: "0 0 0 10%" }}>
         <Col style={{ marginRight: "0%", height:"900px"}}>
@@ -250,7 +254,6 @@ function Login() {
       </Col>
       </Row>
       </div>
-  
   );
 }
 

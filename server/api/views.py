@@ -1,8 +1,9 @@
 import json
+from django.http import HttpResponseBadRequest
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
 from api.models import Questions,Options,Results,Subject,Test,CodingTest,Para,Paraopt,Paraqs,MyUser
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
 from rest_framework import status
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -19,6 +20,18 @@ import cloudinary
 import cloudinary.search
 from django.contrib.auth.models import User,auth
 CFG = {'DB': None}
+
+def checkAuthorization(auth):
+    if (auth!='null'):
+        _token=auth.split(" ")[1]
+        try:
+            token=AccessToken(_token)
+            if(token):
+                return True
+            else:
+                return False
+        except:
+            return False
 
 @csrf_exempt
 def login(request):
@@ -39,179 +52,187 @@ def login(request):
 
 @csrf_exempt
 def subqs(request,subject=0,tid=0):
-    if request.method == 'GET': 
-        a=[]
-        b=[]
-        c=[]
-        test = Test.objects.get(id=tid)
-        sub =Subject.objects.get(id=subject)
-        qs = Questions.objects.filter(subject=sub)
-        # if() to get time and avg score
-        avg,time,qsno=0,"00:00:00",0
-        if sub.sub_name == 'Aptitude':
-            avg=test.apt['avg']
-            time=test.apt['time']
-            qsno=test.apt['qs']
-        elif sub.sub_name == 'Computer Fundamentals':
-            avg =test.cf['avg']
-            time=test.cf['time']
-            qsno=test.cf['qs']
-        elif sub.sub_name == 'Coding':
-            avg =test.c['avg']
-            time=test.c['time'] 
-            qsno=test.c['qs']  
-        elif sub.sub_name == 'Domain':
-            avg =test.dom['avg']
-            time=test.dom['time'] 
-            qsno=test.dom['qs']   
-        elif sub.sub_name == 'Personality':
-            avg =test.p['avg'] 
-            time=test.p['time'] 
-            qsno=test.p['qs']  
-        elif sub.sub_name == 'Analytical Writing':
-            avg =test.aw['avg']
-            time=test.aw['time']
-            qsno=test.aw['qs']
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'GET':
+            a=[]
+            b=[]
+            c=[]
+            test = Test.objects.get(id=tid)
+            sub =Subject.objects.get(id=subject)
+            qs = Questions.objects.filter(subject=sub)
+            # if() to get time and avg score
+            avg,time,qsno=0,"00:00:00",0
+            if sub.sub_name == 'Aptitude':
+                avg=test.apt['avg']
+                time=test.apt['time']
+                qsno=test.apt['qs']
+            elif sub.sub_name == 'Computer Fundamentals':
+                avg =test.cf['avg']
+                time=test.cf['time']
+                qsno=test.cf['qs']
+            elif sub.sub_name == 'Coding':
+                avg =test.c['avg']
+                time=test.c['time'] 
+                qsno=test.c['qs']  
+            elif sub.sub_name == 'Domain':
+                avg =test.dom['avg']
+                time=test.dom['time'] 
+                qsno=test.dom['qs']   
+            elif sub.sub_name == 'Personality':
+                avg =test.p['avg'] 
+                time=test.p['time'] 
+                qsno=test.p['qs']  
+            elif sub.sub_name == 'Analytical Writing':
+                avg =test.aw['avg']
+                time=test.aw['time']
+                qsno=test.aw['qs']
 
-        if int(subject)!=4:
-            for x in qs:
+            if int(subject)!=4:
+                for x in qs:
+                        aa={}
+                        aaOption=[]
+                        aa['ques']=x.title
+                        aa['id']=x.id
+                        aa['img'] = x.imgId
+                        ans = Options.objects.filter(question=x)
+                        for asss in ans:
+                            aaaOpt={}
+                            aaaOpt['opt']=asss.title
+                            aaaOpt['id']=asss.id
+                            aaaOpt['mrks']=asss.marks
+                            aaOption.append(aaaOpt)
+
+                        aa['options']=aaOption
+                        if x.type==1:
+                            a.append(aa)
+                        elif x.type==2:
+                            b.append(aa)
+                        elif x.type==3:
+                            c.append(aa)
+                
+                return JsonResponse({'avg':avg,'qs':qsno,'time':time,'easy':a,'medium':b,'hard':c},safe=False)
+            elif int(subject)==4:
+                for x in qs:
                     aa={}
-                    aaOption=[]
                     aa['ques']=x.title
                     aa['id']=x.id
-                    aa['img'] = x.imgId
-                    ans = Options.objects.filter(question=x)
-                    for asss in ans:
-                        aaaOpt={}
-                        aaaOpt['opt']=asss.title
-                        aaaOpt['id']=asss.id
-                        aaaOpt['mrks']=asss.marks
-                        aaOption.append(aaaOpt)
-
-                    aa['options']=aaOption
-                    if x.type==1:
-                        a.append(aa)
-                    elif x.type==2:
-                        b.append(aa)
-                    elif x.type==3:
-                        c.append(aa)
-            
-            return JsonResponse({'avg':avg,'qs':qsno,'time':time,'easy':a,'medium':b,'hard':c},safe=False)
-        elif int(subject)==4:
-            for x in qs:
-                aa={}
-                aa['ques']=x.title
-                aa['id']=x.id
-                a.append(aa)
-            return JsonResponse({'qs':qsno,'avg':avg,'time':time,'allQs':a},safe=False )#error for personality
+                    a.append(aa)
+                return JsonResponse({'qs':qsno,'avg':avg,'time':time,'allQs':a},safe=False )#error for personality
+    else:
+        return HttpResponseBadRequest()
 
 @csrf_exempt
 def subs(request):
-    if request.method == 'GET':
-        f={}
-        subs=Subject.objects.all()
-        for sub in subs:
-            f[sub.sub_name]={}
-            f[sub.sub_name]={}
-            f[sub.sub_name]['easy']=[]
-            f[sub.sub_name]['medium']=[]
-            f[sub.sub_name]['hard']=[]
-            f[sub.sub_name]['qs']=sub.sub_qs
-            f[sub.sub_name]['time']=sub.sub_time
-        codingTest=CodingTest.objects.all()
-        for c in codingTest:
-            c=CodingTestSerializer(c).data
-            if c['type']==1:
-                f['Coding']['easy'].append(c)
-            elif c['type']==2:
-                f['Coding']['medium'].append(c)
-            elif c['type']==3:
-                f['Coding']['hard'].append(c)
-        paras=Para.objects.all()
-        for para in paras:
-            x={}
-            x['title'] = para.title
-            x['paraId'] = para.id
-            x['para'] = para.data
-            questions = Paraqs.objects.filter(para=para)
-            qs = []
-            for question in questions:
-                op={}
-                options = Paraopt.objects.filter(paraqs=question)
-                op['question'] = question.title
-                op['paraQsId'] = question.id
-                op['options'] =OptionSerializer(options,many=True).data
-                qs.append(op)
-            x['questions'] = qs 
-            f['Analytical Writing']['medium'].append(x)  
-            
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'GET':
+            f={}
+            subs=Subject.objects.all()
+            for sub in subs:
+                f[sub.sub_name]={}
+                f[sub.sub_name]={}
+                f[sub.sub_name]['easy']=[]
+                f[sub.sub_name]['medium']=[]
+                f[sub.sub_name]['hard']=[]
+                f[sub.sub_name]['qs']=sub.sub_qs
+                f[sub.sub_name]['time']=sub.sub_time
+            codingTest=CodingTest.objects.all()
+            for c in codingTest:
+                c=CodingTestSerializer(c).data
+                if c['type']==1:
+                    f['Coding']['easy'].append(c)
+                elif c['type']==2:
+                    f['Coding']['medium'].append(c)
+                elif c['type']==3:
+                    f['Coding']['hard'].append(c)
+            paras=Para.objects.all()
+            for para in paras:
+                x={}
+                x['title'] = para.title
+                x['paraId'] = para.id
+                x['para'] = para.data
+                questions = Paraqs.objects.filter(para=para)
+                qs = []
+                for question in questions:
+                    op={}
+                    options = Paraopt.objects.filter(paraqs=question)
+                    op['question'] = question.title
+                    op['paraQsId'] = question.id
+                    op['options'] =OptionSerializer(options,many=True).data
+                    qs.append(op)
+                x['questions'] = qs 
+                f['Analytical Writing']['medium'].append(x)  
+                
 
-        qs=Questions.objects.all()
-        for q in qs:
-            a={}
-            
-            if str(q.subject.sub_name)!='Coding' and str(q.subject.sub_name)!='Analytical Writing':
-                a['ques']=q.title
-                a['id']=q.id
-                a['imgId']=q.imgId
-                a['options']=[]
-                opts=Options.objects.filter(question=q)
-                for opt in opts:
-                    o={}
-                    o['opt']=opt.title
-                    o['id']=opt.id
-                    o['mrks']=opt.marks
-                    a['options'].append(o)
-                if q.type==1:
-                    f[str(q.subject)]['easy'].append(a)
-                if q.type==2:
-                    f[str(q.subject)]['medium'].append(a)
-                elif q.type==3:
-                    f[str(q.subject)]['hard'].append(a)
-        
-        
-
-    return JsonResponse({'data':f},safe=False)
-
+            qs=Questions.objects.all()
+            for q in qs:
+                a={}
+                
+                if str(q.subject.sub_name)!='Coding' and str(q.subject.sub_name)!='Analytical Writing':
+                    a['ques']=q.title
+                    a['id']=q.id
+                    a['imgId']=q.imgId
+                    a['options']=[]
+                    opts=Options.objects.filter(question=q)
+                    for opt in opts:
+                        o={}
+                        o['opt']=opt.title
+                        o['id']=opt.id
+                        o['mrks']=opt.marks
+                        a['options'].append(o)
+                    if q.type==1:
+                        f[str(q.subject)]['easy'].append(a)
+                    if q.type==2:
+                        f[str(q.subject)]['medium'].append(a)
+                    elif q.type==3:
+                        f[str(q.subject)]['hard'].append(a)
+            return JsonResponse({'data':f},safe=False)
+    else:
+        return HttpResponseBadRequest()
+           
 @csrf_exempt
 def createUser(request):
-    if request.method == "POST":
-        data = JSONParser().parse(request)['data']
-        user = User.objects.get(username = data['username'])
-        if(MyUser.objects.filter(user=user).exists()):
-            MyUser.objects.get(user=user).delete()
-        newuser = MyUser.objects.create(user=user,name=data['name'],email=data['email'],age=int(data['age']),gender=data['gender'],mobile=int(data['mobileNo']),percent_10_std=int(data['percent_10_std']),percent_12_std=int(data['percent_12_std']))
-        newuser.save()
-        return JsonResponse("created",safe=False)     
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == "POST":
+            data = JSONParser().parse(request)['data']
+            user = User.objects.get(username = data['username'])
+            if(MyUser.objects.filter(user=user).exists()):
+                MyUser.objects.get(user=user).delete()
+            newuser = MyUser.objects.create(user=user,name=data['name'],email=data['email'],age=int(data['age']),gender=data['gender'],mobile=int(data['mobileNo']),percent_10_std=int(data['percent_10_std']),percent_12_std=int(data['percent_12_std']))
+            newuser.save()
+            return JsonResponse("created",safe=False)     
+    else:
+        return HttpResponseBadRequest()
 
 def qs(request):
-    a=[]
-    c=[]
-    b=[]
-    if request.method =='GET':
-        qs = Questions.objects.all()
-        for x in qs:
-            aa={}
-            aaOption=[]
-            aa['ques']=x.title
-            ans = Options.objects.filter(question=x)
-            for asss in ans:
-                aaaOpt={}
-                aaaOpt['opt']=asss.title
-                aaaOpt['mrks']=asss.marks
-                aaOption.append(aaaOpt)
-            
-            aa['options']=aaOption
-            if x.type==1:
-                a.append(aa)
-            elif x.type==2:
-                b.append(aa)
-            elif x.type==3:
-                c.append(aa)
-
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        a=[]
+        c=[]
+        b=[]
+        if request.method =='GET':
+            qs = Questions.objects.all()
+            for x in qs:
+                aa={}
+                aaOption=[]
+                aa['ques']=x.title
+                ans = Options.objects.filter(question=x)
+                for asss in ans:
+                    aaaOpt={}
+                    aaaOpt['opt']=asss.title
+                    aaaOpt['mrks']=asss.marks
+                    aaOption.append(aaaOpt)
                 
-    return JsonResponse({'easy':a,'medium':b,'hard':c},safe=False)
+                aa['options']=aaOption
+                if x.type==1:
+                    a.append(aa)
+                elif x.type==2:
+                    b.append(aa)
+                elif x.type==3:
+                    c.append(aa)
 
+                    
+        return JsonResponse({'easy':a,'medium':b,'hard':c},safe=False)
+    else:
+        return HttpResponseBadRequest()
 class BlackListTokenView(APIView):
     permission_classes=[AllowAny]
 
@@ -226,54 +247,56 @@ class BlackListTokenView(APIView):
 
 @csrf_exempt
 def results(request,name):
-    user = User.objects.get(username = name) 
-    if request.method == 'POST':
-        data=JSONParser().parse(request)['data']
-        test = Test.objects.get(id=data['testId'])
-        subs = Subject.objects.all() #change this when we change the model for subjects
-        print(subs)
-        avg_ap,avg_cf,avg_c,avg_d,avg_p,avg_a=0,0,0,0,0,0
-        for sub in subs:
-            if sub.sub_name == 'Aptitude':
-                avg_ap=test.apt['avg']
-            elif sub.sub_name == 'Computer Fundamentals':
-                avg_cf =test.cf['avg']
-            elif sub.sub_name == 'Coding':
-                avg_c =test.c['avg']   
-            elif sub.sub_name == 'Domain':
-                avg_d =test.dom['avg']    
-            elif sub.sub_name == 'Personality':
-                avg_p =test.p['avg']    
-            elif sub.sub_name == 'Analytical Writing':
-                avg_a =test.aw['avg']  
-        if(user):
-            d = datetime.datetime.utcnow()
-            try:
-                if name != 'a':
-                    rr=Results.objects.get(student = user,test=Test.objects.get(id=data['testId']))
-                    if rr:
-                        if rr.endTime!=None:
-                            return JsonResponse({'end':True,'resultExists':True},safe=False)
-                        else:    
-                            return JsonResponse({'end':False,'resultExists':True},safe=False)
-                else:
-                    Results.objects.get(student = user,test=Test.objects.get(id=data['testId'])).delete()
-            except Results.DoesNotExist:
-                print('No previous entry')
-            result = Results.objects.create(student = user,startTime = d,test=Test.objects.get(id=data['testId']),
-            marks={"ap":0,'cf':0,'c':0,'d':0,'p':0,'a':0,"avg_ap":avg_ap,'avg_cf':avg_cf,'avg_c':avg_c,'avg_d':avg_d,'avg_p':avg_p,'avg_a':avg_a,'apMax':[],'cfMax':[],'cMax':[],'dMax':[],'pMax':[],'aMax':[],'apGot':[],'cfGot':[],'cGot':[],'dGot':[],'pGot':[evaluate(request,{'Nick':name,'Sex':'Male','Age':21,'Q':[0]*(121),'Country':'India'})],'aGot':[]}
-            )
-            result.save()
-            return JsonResponse({'end':False,'resultExists':False},safe=False)
-        else:
-            return JsonResponse("User Doesn't exist",safe=False)
-    elif request.method=='GET':
-        if user:
-            testId=request.GET.get('testId')
-            data=chartData(user,testId)
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        user = User.objects.get(username = name) 
+        if request.method == 'POST':
+            data=JSONParser().parse(request)['data']
+            test = Test.objects.get(id=data['testId'])
+            subs = Subject.objects.all() #change this when we change the model for subjects
+            print(subs)
+            avg_ap,avg_cf,avg_c,avg_d,avg_p,avg_a=0,0,0,0,0,0
+            for sub in subs:
+                if sub.sub_name == 'Aptitude':
+                    avg_ap=test.apt['avg']
+                elif sub.sub_name == 'Computer Fundamentals':
+                    avg_cf =test.cf['avg']
+                elif sub.sub_name == 'Coding':
+                    avg_c =test.c['avg']   
+                elif sub.sub_name == 'Domain':
+                    avg_d =test.dom['avg']    
+                elif sub.sub_name == 'Personality':
+                    avg_p =test.p['avg']    
+                elif sub.sub_name == 'Analytical Writing':
+                    avg_a =test.aw['avg']  
+            if(user):
+                d = datetime.datetime.utcnow()
+                try:
+                    if name != 'a' and user.is_staff!=True:
+                        rr=Results.objects.get(student = user,test=Test.objects.get(id=data['testId']))
+                        if rr:
+                            if rr.endTime!=None:
+                                return JsonResponse({'end':True,'resultExists':True},safe=False)
+                            else:    
+                                return JsonResponse({'end':False,'resultExists':True},safe=False)
+                    else:
+                        Results.objects.get(student = user,test=Test.objects.get(id=data['testId'])).delete()
+                except Results.DoesNotExist:
+                    print('No previous entry')
+                result = Results.objects.create(student = user,startTime = d,test=Test.objects.get(id=data['testId']),
+                marks={"ap":0,'cf':0,'c':0,'d':0,'p':0,'a':0,"avg_ap":avg_ap,'avg_cf':avg_cf,'avg_c':avg_c,'avg_d':avg_d,'avg_p':avg_p,'avg_a':avg_a,'apMax':[],'cfMax':[],'cMax':[],'dMax':[],'pMax':[],'aMax':[],'apGot':[],'cfGot':[],'cGot':[],'dGot':[],'pGot':[evaluate(request,{'Nick':name,'Sex':'Male','Age':21,'Q':[0]*(121),'Country':'India'})],'aGot':[]}
+                )
+                result.save()
+                return JsonResponse({'end':False,'resultExists':False},safe=False)
+            else:
+                return JsonResponse("User Doesn't exist",safe=False)
+        elif request.method=='GET':
+            if user:
+                testId=request.GET.get('testId')
+                data=chartData(user,testId)
             
             return JsonResponse(data,safe=False)
-
+    else:
+        return HttpResponseBadRequest()
 def converttoist(datex):
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
@@ -341,379 +364,411 @@ def chartData(user,testId=-1):
 
 @csrf_exempt
 def resultTest(request,id):
-    testData=Results.objects.filter(test=Test.objects.get(id=id))
-    a={}
-    a=ResultSerializer(testData,many=True)
-    
-    cc=[]
-    for x in a.data:
-        c={}
-        c['name']=User.objects.get(id=x['student']).username
-        c['sdate']="{0} {1}".format(x['startTime'].split('T')[0],x['startTime'].split('T')[1].split('.')[0])
-        c['sdate'] = converttoist(c['sdate'])
-
-        c['edate']="{0} {1}".format(x['endTime'].split('T')[0],x['endTime'].split('T')[1].split('.')[0])
-        c['edate'] = converttoist(c['edate'])
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        testData=Results.objects.filter(test=Test.objects.get(id=id))
+        a={}
+        a=ResultSerializer(testData,many=True)
         
-        c['apt'] = x['marks']['ap']
-        c['fund'] = x['marks']['cf']
-        c['code'] = x['marks']['c']
-        c['dom'] = x['marks']['d']
-        c['analy'] = x['marks']['a']
-        c['marks']=x['marks']['ap']+x['marks']['cf']+x['marks']['c']+x['marks']['d']+x['marks']['a']
-        cc.append(c)
+        cc=[]
+        for x in a.data:
+            c={}
+            c['name']=User.objects.get(id=x['student']).username
+            c['sdate']="{0} {1}".format(x['startTime'].split('T')[0],x['startTime'].split('T')[1].split('.')[0])
+            c['sdate'] = converttoist(c['sdate'])
 
-    return JsonResponse({'testData':a.data,'studentNameArr':cc},safe=False)
+            c['edate']="{0} {1}".format(x['endTime'].split('T')[0],x['endTime'].split('T')[1].split('.')[0])
+            c['edate'] = converttoist(c['edate'])
+            
+            c['apt'] = x['marks']['ap']
+            c['fund'] = x['marks']['cf']
+            c['code'] = x['marks']['c']
+            c['dom'] = x['marks']['d']
+            c['analy'] = x['marks']['a']
+            c['marks']=x['marks']['ap']+x['marks']['cf']+x['marks']['c']+x['marks']['d']+x['marks']['a']
+            cc.append(c)
 
+        return JsonResponse({'testData':a.data,'studentNameArr':cc},safe=False)
+    else:
+        return HttpResponseBadRequest()
 
 @csrf_exempt        
 def marks(request,sid=0):
-    if request.method == 'POST':
-        data=JSONParser().parse(request)['data']
-        sid = int(sid)
-        d = datetime.datetime.utcnow()
-        user = User.objects.get(username = data['username'])
-        if(user):
-            result = Results.objects.get(student = user,test=Test.objects.get(id=data['testId']))
-            
-            if(result):
-                if sid == 1:
-                   result.marks['ap'] = data['marks']
-                   result.marks['apMax'] = data['maxMarks']
-                   result.marks['apGot'] = data['gotMarks']
-                elif sid == 2:
-                    result.marks['cf'] = data['marks']
-                    result.marks['cfMax'] = data['maxMarks']
-                    result.marks['cfGot'] = data['gotMarks']
-                elif sid == 3:
-                    result.marks['c'] = data['marks']
-                    result.marks['cMax'] = data['maxMarks']
-                    result.marks['cGot'] = data['gotMarks']
-                elif sid == 4:
-                    result.marks['d'] = data['marks']
-                    result.marks['dMax'] = data['maxMarks']
-                    result.marks['dGot'] = data['gotMarks']
-                elif sid == 5:
-                    result.marks['p'] = data['marks']
-                    result.marks['pGot']=[evaluate(request,{'Nick':data['username'],'Sex':'Male','Age':21,'Q':data['marks'],'Country':'India'})]
-                elif sid == 6:
-                    result.marks['a'] = data['marks'] 
-                    result.marks['aMax'] = data['maxMarks']
-                    result.marks['aGot'] = data['gotMarks']
-                    
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'POST':
+            data=JSONParser().parse(request)['data']
+            sid = int(sid)
+            d = datetime.datetime.utcnow()
+            user = User.objects.get(username = data['username'])
+            if(user):
+                result = Results.objects.get(student = user,test=Test.objects.get(id=data['testId']))
+                
+                if(result):
+                    if sid == 1:
+                        result.marks['ap'] = data['marks']
+                        result.marks['apMax'] = data['maxMarks']
+                        result.marks['apGot'] = data['gotMarks']
+                    elif sid == 2:
+                        result.marks['cf'] = data['marks']
+                        result.marks['cfMax'] = data['maxMarks']
+                        result.marks['cfGot'] = data['gotMarks']
+                    elif sid == 3:
+                        result.marks['c'] = data['marks']
+                        result.marks['cMax'] = data['maxMarks']
+                        result.marks['cGot'] = data['gotMarks']
+                    elif sid == 4:
+                        result.marks['d'] = data['marks']
+                        result.marks['dMax'] = data['maxMarks']
+                        result.marks['dGot'] = data['gotMarks']
+                    elif sid == 5:
+                        result.marks['p'] = data['marks']
+                        result.marks['pGot']=[evaluate(request,{'Nick':data['username'],'Sex':'Male','Age':21,'Q':data['marks'],'Country':'India'})]
+                    elif sid == 6:
+                        result.marks['a'] = data['marks'] 
+                        result.marks['aMax'] = data['maxMarks']
+                        result.marks['aGot'] = data['gotMarks']
+                        
+                    else:
+                        print('**error**')
+                        return JsonResponse("Error",safe=False)
+                    if data['check_result']:
+                        result.endTime = d
+                    result.save()
+                    if data['check_result']:
+                        data=chartData(user,data['testId'])
+                    return JsonResponse(data,safe=False)
                 else:
-                    print('**error**')
-                    return JsonResponse("Error",safe=False)
-                if data['check_result']:
-                    result.endTime = d
-                result.save()
-                data=chartData(user,data['testId'])
-                return JsonResponse(data,safe=False)
+                    return JsonResponse("Restart Test",safe=False)
             else:
-                return JsonResponse("Restart Test",safe=False)
-        else:
-            return JsonResponse("User Doesn't exist",safe=False) 
+                return JsonResponse("User Doesn't exist",safe=False) 
+    else:
+        return HttpResponseBadRequest()
 
 @csrf_exempt
 def uploadCloudinary(request):
-    if request.method=='POST':
-        data=JSONParser().parse(request)['data']
-        try:
-            cloudinary.uploader.upload(data['image'],folder='demo',public_id='imageId',overwrite=True,resource_type='image')
-            return JsonResponse("successfully uploaded",safe=False)
-        except:
-            print('Something went wrong')
-            return JsonResponse("Error occured",safe=False)
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method=='POST':
+            data=JSONParser().parse(request)['data']
+            try:
+                cloudinary.uploader.upload(data['image'],folder='demo',public_id='imageId',overwrite=True,resource_type='image')
+                return JsonResponse("successfully uploaded",safe=False)
+            except:
+                print('Something went wrong')
+                return JsonResponse("Error occured",safe=False)
+    else:
+        return HttpResponseBadRequest()
 @csrf_exempt
 def getImgs(request):
-    if request.method=='GET':
-        try:
-            imgs=cloudinary.Search().expression('folder=demo').execute()
-            print(imgs)
-            return JsonResponse(imgs["resources"],safe=False)
-        except:
-            print('Something went wrong')
-            return JsonResponse("Error occured",safe=False)
-
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method=='GET':
+            try:
+                imgs=cloudinary.Search().expression('folder=demo').execute()
+                print(imgs)
+                return JsonResponse(imgs["resources"],safe=False)
+            except:
+                print('Something went wrong')
+                return JsonResponse("Error occured",safe=False)
+    else:
+        return HttpResponseBadRequest()
 @csrf_exempt        
 def addQs(request):
-    if request.method == 'POST':
-        data=JSONParser().parse(request)['data']
-        if str(data['sectionName'])!='Coding' and str(data['sectionName'])!='Analytical Writing':
-            if data['action']=='Save':
-                if data['image']!='':
-                    try:
-                        imgU=cloudinary.uploader.upload(data['image'],folder='adaptive_test/{0}'.format(data['sectionName']),overwrite=True,resource_type='image')
-                        imgId=imgU['public_id']
-                    except:
-                        imgId=None
-                else:
-                    imgId=None
-                f=Questions(subject=Subject.objects.get(sub_name=data['sectionName']),imgId=imgId,title=data['questionNew'],type=data['type'])
-                f.save()
-            elif data['action']=='Update':               
-                qData = {x: data[x] for x in data if 'question' in x}
-                for qs in qData:                   
-                    f=Questions.objects.get(id=qs.split('question')[1])
-                    f.title=qData[qs]
-                    f.type=data['type']    
-                    try:
-                        cloudinary.uploader.destroy(public_id=f.imgId)
-                    except:
-                        pass 
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'POST':
+            data=JSONParser().parse(request)['data']
+            if str(data['sectionName'])!='Coding' and str(data['sectionName'])!='Analytical Writing':
+                if data['action']=='Save':
                     if data['image']!='':
                         try:
                             imgU=cloudinary.uploader.upload(data['image'],folder='adaptive_test/{0}'.format(data['sectionName']),overwrite=True,resource_type='image')
-                            f.imgId=imgU['public_id']
+                            imgId=imgU['public_id']
                         except:
-                            print('error occured') 
+                            imgId=None
                     else:
-                        f.imgId=None
+                        imgId=None
+                    f=Questions(subject=Subject.objects.get(sub_name=data['sectionName']),imgId=imgId,title=data['questionNew'],type=data['type'])
                     f.save()
-                    Options.objects.filter(question=f).delete()
-            optionData = {x: data[x] for x in data if 'Option' in x}
-            for z in optionData:
-                if z==data['rightOpt']:
-                    if data['type']==1:
-                        marks=1
-                    elif data['type']==2:
-                        marks=2
-                    elif data['type']==3:
-                        marks=5
-                else:
-                    marks=0
-                ff=Options(question=f,marks=marks,title=optionData[z])
-                ff.save()
-        elif str(data['sectionName'])=='Coding':
-            test_case_input=[data['testCase1Input'],data['testCase2Input'],data['testCase3Input']]
-            test_case_output=[data['testCase1Output'],data['testCase2Output'],data['testCase3Output']]
-            if int(data['type'])==1:
-                    marks=10
-            elif int(data['type'])==2:
-                marks=20
-            elif int(data['type'])==3:
-                marks=30
-            if data['action']=='Save':            
-                f=CodingTest(question=data['questionNew'],marks=marks,type=data['type'],input_format=data['inputFormat'],
-                output_format=data['outputFormat'],constraints=data['constraints'],sample_input=[data['sampleInput']],sample_output=[data['sampleOutput']],explanation=data['explanation'],
-                test_case_input=test_case_input,test_case_output=test_case_output)
-                f.save()
-            elif data['action']=='Update':
-                qData = {x: data[x] for x in data if 'question' in x}
-                for qs in qData:
-                    f=CodingTest.objects.get(id=qs.split('question')[1])
-                    f.question=qData[qs]
-                    f.marks=marks
-                    f.type=data['type']
-                    f.input_format=data['inputFormat']
-                    f.output_format=data['outputFormat']
-                    f.constraints=data['constraints']
-                    f.sample_input=[data['sampleInput']]
-                    f.sample_output=[data['sampleOutput']]
-                    f.explanation=data['explanation']
-                    f.test_case_input=test_case_input
-                    f.test_case_output=test_case_output
-                    f.save()
-        elif str(data['sectionName'])=='Analytical Writing':
-            rightOptArrAnalytical=data['rightOptArrAnalytical']
-            paragraphTitle=data['paragraphTitle']
-            paragraph=data['paragraph']
-            action=str(data['action'])
-            qsDict=data['qsDict']
-            paraId=data['paraId']
-            if action=='Update':
-                para=Para.objects.get(id=paraId)
-                para.title=paragraphTitle
-                para.data=paragraph
-                para.save()
-                Paraqs.objects.filter(para=para).delete()
-            elif action=='Save':
-                para=Para(title=paragraphTitle,data=paragraph)
-                para.save()     
-            qslen = len(qsDict)
-            qsmrks = 0
-            if qslen>1:    
-                if qslen%2==0:
-                    qsmrks= (20/qslen)
-                else:
-                    qsmrks=math.ceil(20/qslen)
-            else:
-                qsmrks=20          
-            for x in qsDict:
-                qs=Paraqs(para=para,title=qsDict[x]['title'])
-                qs.save()
-                for y in qsDict[x]['options']:
-                    if str(rightOptArrAnalytical[x])==str(y):
-                        marks=qsmrks
+                elif data['action']=='Update':               
+                    qData = {x: data[x] for x in data if 'question' in x}
+                    for qs in qData:                   
+                        f=Questions.objects.get(id=qs.split('question')[1])
+                        f.title=qData[qs]
+                        f.type=data['type']    
+                        try:
+                            cloudinary.uploader.destroy(public_id=f.imgId)
+                        except:
+                            pass 
+                        if data['image']!='':
+                            try:
+                                imgU=cloudinary.uploader.upload(data['image'],folder='adaptive_test/{0}'.format(data['sectionName']),overwrite=True,resource_type='image')
+                                f.imgId=imgU['public_id']
+                            except:
+                                print('error occured') 
+                        else:
+                            f.imgId=None
+                        f.save()
+                        Options.objects.filter(question=f).delete()
+                optionData = {x: data[x] for x in data if 'Option' in x}
+                for z in optionData:
+                    if z==data['rightOpt']:
+                        if data['type']==1:
+                            marks=1
+                        elif data['type']==2:
+                            marks=2
+                        elif data['type']==3:
+                            marks=5
                     else:
                         marks=0
-                    paraOpt=Paraopt(paraqs=qs,title=data[y],marks=marks)
-                    print(paraOpt.marks)
-                    paraOpt.save()
+                    ff=Options(question=f,marks=marks,title=optionData[z])
+                    ff.save()
+            elif str(data['sectionName'])=='Coding':
+                test_case_input=[data['testCase1Input'],data['testCase2Input'],data['testCase3Input']]
+                test_case_output=[data['testCase1Output'],data['testCase2Output'],data['testCase3Output']]
+                if int(data['type'])==1:
+                        marks=10
+                elif int(data['type'])==2:
+                    marks=20
+                elif int(data['type'])==3:
+                    marks=30
+                if data['action']=='Save':            
+                    f=CodingTest(question=data['questionNew'],marks=marks,type=data['type'],input_format=data['inputFormat'],
+                    output_format=data['outputFormat'],constraints=data['constraints'],sample_input=[data['sampleInput']],sample_output=[data['sampleOutput']],explanation=data['explanation'],
+                    test_case_input=test_case_input,test_case_output=test_case_output)
+                    f.save()
+                elif data['action']=='Update':
+                    qData = {x: data[x] for x in data if 'question' in x}
+                    for qs in qData:
+                        f=CodingTest.objects.get(id=qs.split('question')[1])
+                        f.question=qData[qs]
+                        f.marks=marks
+                        f.type=data['type']
+                        f.input_format=data['inputFormat']
+                        f.output_format=data['outputFormat']
+                        f.constraints=data['constraints']
+                        f.sample_input=[data['sampleInput']]
+                        f.sample_output=[data['sampleOutput']]
+                        f.explanation=data['explanation']
+                        f.test_case_input=test_case_input
+                        f.test_case_output=test_case_output
+                        f.save()
+            elif str(data['sectionName'])=='Analytical Writing':
+                rightOptArrAnalytical=data['rightOptArrAnalytical']
+                paragraphTitle=data['paragraphTitle']
+                paragraph=data['paragraph']
+                action=str(data['action'])
+                qsDict=data['qsDict']
+                paraId=data['paraId']
+                if action=='Update':
+                    para=Para.objects.get(id=paraId)
+                    para.title=paragraphTitle
+                    para.data=paragraph
+                    para.save()
+                    Paraqs.objects.filter(para=para).delete()
+                elif action=='Save':
+                    para=Para(title=paragraphTitle,data=paragraph)
+                    para.save()     
+                qslen = len(qsDict)
+                qsmrks = 0
+                if qslen>1:    
+                    if qslen%2==0:
+                        qsmrks= (20/qslen)
+                    else:
+                        qsmrks=math.ceil(20/qslen)
+                else:
+                    qsmrks=20          
+                for x in qsDict:
+                    qs=Paraqs(para=para,title=qsDict[x]['title'])
+                    qs.save()
+                    for y in qsDict[x]['options']:
+                        if str(rightOptArrAnalytical[x])==str(y):
+                            marks=qsmrks
+                        else:
+                            marks=0
+                        paraOpt=Paraopt(paraqs=qs,title=data[y],marks=marks)
+                        print(paraOpt.marks)
+                        paraOpt.save()
 
-        return JsonResponse("Done",safe=False) 
+            return JsonResponse("Done",safe=False) 
+    else:
+        return HttpResponseBadRequest()
 
 @csrf_exempt
 def delQs(request):
-    if request.method == 'POST':
-        data=JSONParser().parse(request)['data']
-        sid=int(data['sid'])
-        for x in data['delQs']:
-            if sid != 5 and sid != 6:
-                Questions.objects.get(id=x).delete()
-            elif sid==5:
-                CodingTest.objects.get(id=x).delete()
-            elif sid==6:
-                Para.objects.get(id=x).delete()
-        return JsonResponse('success',safe=False)
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'POST':
+            data=JSONParser().parse(request)['data']
+            sid=int(data['sid'])
+            for x in data['delQs']:
+                if sid != 5 and sid != 6:
+                    Questions.objects.get(id=x).delete()
+                elif sid==5:
+                    CodingTest.objects.get(id=x).delete()
+                elif sid==6:
+                    Para.objects.get(id=x).delete()
+            return JsonResponse('success',safe=False)
+    else:
+        return HttpResponseBadRequest()
 @csrf_exempt
 def saveTest(request):
-    if request.method == 'POST':
-        data=JSONParser().parse(request)['data']
-        tst=Test(test_name=data['createTest']['testName'],test_start=data['createTest']['sTime'],test_end=data['createTest']['eTime'])
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'POST':
+            data=JSONParser().parse(request)['data']
+            tst=Test(test_name=data['createTest']['testName'],test_start=data['createTest']['sTime'],test_end=data['createTest']['eTime'])
 
-        for x in range(0,len(data['saveTest'])):
-            avgMrk=0
-            if str(data['saveTest'][x]['sub'])=='Coding' or str(data['saveTest'][x]['sub'])=='Analytical Writing':
-                avgMrk=30
-            else:
-                avgMrk=math.ceil(int(data['saveTest'][x]['totalQs'])*2*0.7) # 70% average
-            b=Subject.objects.get(sub_name=data['saveTest'][x]['sub'])
-            if(b.sub_name=="Aptitude"):
-                tst.apt = {
-                    "qs":data['saveTest'][x]['totalQs'],
-                    "time":data['saveTest'][x]['time'],
-                    "avg":avgMrk
-                }
-            elif(b.sub_name=="Computer Fundamentals"):
-                tst.cf = {
-                    "qs":data['saveTest'][x]['totalQs'],
-                    "time":data['saveTest'][x]['time'],
-                    "avg":avgMrk
-                }
-            elif(b.sub_name=="Domain"):
-                tst.dom = {
-                    "qs":data['saveTest'][x]['totalQs'],
-                    "time":data['saveTest'][x]['time'],
-                    "avg":avgMrk
-                }
-            elif(b.sub_name=="Personality"):
-                tst.p = {
-                    "qs":data['saveTest'][x]['totalQs'],
-                    "time":data['saveTest'][x]['time'],
-                    "avg":avgMrk
-                }
-            elif(b.sub_name=="Coding"):
-                tst.c = {
-                    "qs":3,
-                    "time":data['saveTest'][x]['time'],
-                    "avg":avgMrk
-                }
-            else:
-                tst.aw = {
-                    "qs":3,
-                    "time":data['saveTest'][x]['time'],
-                    "avg":avgMrk
-                }                   
-            print(b.sub_name)
-            print("*****************")
-            b.sub_qs=data['saveTest'][x]['totalQs']
-            b.sub_time=data['saveTest'][x]['time']
-            b.avg_score=avgMrk
-            b.save()
-            tst.save()
-        return JsonResponse('success',safe=False)
-
+            for x in range(0,len(data['saveTest'])):
+                avgMrk=0
+                if str(data['saveTest'][x]['sub'])=='Coding' or str(data['saveTest'][x]['sub'])=='Analytical Writing':
+                    avgMrk=30
+                else:
+                    avgMrk=math.ceil(int(data['saveTest'][x]['totalQs'])*2*0.7) # 70% average
+                b=Subject.objects.get(sub_name=data['saveTest'][x]['sub'])
+                if(b.sub_name=="Aptitude"):
+                    tst.apt = {
+                        "qs":data['saveTest'][x]['totalQs'],
+                        "time":data['saveTest'][x]['time'],
+                        "avg":avgMrk
+                    }
+                elif(b.sub_name=="Computer Fundamentals"):
+                    tst.cf = {
+                        "qs":data['saveTest'][x]['totalQs'],
+                        "time":data['saveTest'][x]['time'],
+                        "avg":avgMrk
+                    }
+                elif(b.sub_name=="Domain"):
+                    tst.dom = {
+                        "qs":data['saveTest'][x]['totalQs'],
+                        "time":data['saveTest'][x]['time'],
+                        "avg":avgMrk
+                    }
+                elif(b.sub_name=="Personality"):
+                    tst.p = {
+                        "qs":data['saveTest'][x]['totalQs'],
+                        "time":data['saveTest'][x]['time'],
+                        "avg":avgMrk
+                    }
+                elif(b.sub_name=="Coding"):
+                    tst.c = {
+                        "qs":3,
+                        "time":data['saveTest'][x]['time'],
+                        "avg":avgMrk
+                    }
+                else:
+                    tst.aw = {
+                        "qs":3,
+                        "time":data['saveTest'][x]['time'],
+                        "avg":avgMrk
+                    }                   
+                print(b.sub_name)
+                print("*****************")
+                b.sub_qs=data['saveTest'][x]['totalQs']
+                b.sub_time=data['saveTest'][x]['time']
+                b.avg_score=avgMrk
+                b.save()
+                tst.save()
+            return JsonResponse('success',safe=False)
+    else:
+        return HttpResponseBadRequest()
 @csrf_exempt
 def tests(request,idd=0):
-    if request.method == 'GET':
-        d = datetime.datetime.utcnow()
-        ll=Test.objects.filter(test_start__lte = d,test_end__gte=d)
-        if(ll.exists()):
-            return JsonResponse({'testId':ll[0].id},safe=False)
-        else:
-            return JsonResponse({'testId':-1},safe=False)    
-
-    elif request.method == 'POST':
-        data=JSONParser().parse(request)['data']
-        print(data)
-        if not data['delete']:
-            if not data['update']:
-                test = Test.objects.create(test_name =data['name'],test_start=data['start'],test_end=data['end'])
-                test.save()
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'GET':
+            d = datetime.datetime.utcnow()
+            ll=Test.objects.filter(test_start__lte = d,test_end__gte=d)
+            if(ll.exists()):
+                return JsonResponse({'testId':ll[0].id},safe=False)
             else:
-                test=Test.objects.get(id=data['id'])
-                test.test_name=data['name']
-                test.test_start=data['start']
-                test.test_end=data['end']
-                test.save()
-        else:
-            Test.objects.get(id=data['id']).delete()
-    elif request.method == 'DELETE':
-        Test.objects.get(id=idd).delete()        
-        return JsonResponse('Created',safe=False)   
+                return JsonResponse({'testId':-1},safe=False)    
+
+        elif request.method == 'POST':
+            data=JSONParser().parse(request)['data']
+            print(data)
+            if not data['delete']:
+                if not data['update']:
+                    test = Test.objects.create(test_name =data['name'],test_start=data['start'],test_end=data['end'])
+                    test.save()
+                else:
+                    test=Test.objects.get(id=data['id'])
+                    test.test_name=data['name']
+                    test.test_start=data['start']
+                    test.test_end=data['end']
+                    test.save()
+            else:
+                Test.objects.get(id=data['id']).delete()
+        elif request.method == 'DELETE':
+            Test.objects.get(id=idd).delete()        
+            return JsonResponse('Created',safe=False) 
+    else:
+        return HttpResponseBadRequest()  
 
 @csrf_exempt    
 def getTests(request):
-    if request.method == 'GET':
-        d = datetime.datetime.utcnow()
-        stests = Test.objects.filter(Q(test_end__lte=d) | Q(test_start__lt=d))
-        utests = Test.objects.filter(test_start__gt=d) 
-        stestS = TestSerializer(stests,many=True)
-        utestS = TestSerializer(utests,many=True)
-        return JsonResponse({"stests":stestS.data,"utests":utestS.data},safe=False)
-
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'GET':
+            d = datetime.datetime.utcnow()
+            stests = Test.objects.filter(Q(test_end__lte=d) | Q(test_start__lt=d))
+            utests = Test.objects.filter(test_start__gt=d) 
+            stestS = TestSerializer(stests,many=True)
+            utestS = TestSerializer(utests,many=True)
+            return JsonResponse({"stests":stestS.data,"utests":utestS.data},safe=False)
+    else:
+        return HttpResponseBadRequest()
 
 @csrf_exempt
 def getCodingTests(request,tid=0):
-    if request.method == 'GET':
-        test = Test.objects.get(id=tid)
-        t1=CodingTestSerializer(CodingTest.objects.filter(type=1),many=True).data
-        t2=CodingTestSerializer(CodingTest.objects.filter(type=2),many=True).data
-        t3=CodingTestSerializer(CodingTest.objects.filter(type=3),many=True).data
-        itemsType1={}
-        itemsType2={}
-        itemsType3={}
-        if len(t1)>0:
-            itemsType1=CodingTest.objects.get(id=list(random.sample(t1,1)[0].items())[0][1])
-            itemsType1=CodingTestSerializer(itemsType1).data
-        if len(t2)>0:
-            itemsType2=CodingTest.objects.get(id=list(random.sample(t2,1)[0].items())[0][1])
-            itemsType2=CodingTestSerializer(itemsType2).data
-        if len(t3)>0:
-            itemsType3=CodingTest.objects.get(id=list(random.sample(t3,1)[0].items())[0][1])
-            itemsType3=CodingTestSerializer(itemsType3).data
-        sub =Subject.objects.get(id=6)
-        return JsonResponse({'time':test.c['time'],'cQs':[itemsType1,itemsType2,itemsType3]},safe=False)
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'GET':
+            test = Test.objects.get(id=tid)
+            t1=CodingTestSerializer(CodingTest.objects.filter(type=1),many=True).data
+            t2=CodingTestSerializer(CodingTest.objects.filter(type=2),many=True).data
+            t3=CodingTestSerializer(CodingTest.objects.filter(type=3),many=True).data
+            itemsType1={}
+            itemsType2={}
+            itemsType3={}
+            if len(t1)>0:
+                itemsType1=CodingTest.objects.get(id=list(random.sample(t1,1)[0].items())[0][1])
+                itemsType1=CodingTestSerializer(itemsType1).data
+            if len(t2)>0:
+                itemsType2=CodingTest.objects.get(id=list(random.sample(t2,1)[0].items())[0][1])
+                itemsType2=CodingTestSerializer(itemsType2).data
+            if len(t3)>0:
+                itemsType3=CodingTest.objects.get(id=list(random.sample(t3,1)[0].items())[0][1])
+                itemsType3=CodingTestSerializer(itemsType3).data
+            sub =Subject.objects.get(id=6)
+            return JsonResponse({'time':test.c['time'],'cQs':[itemsType1,itemsType2,itemsType3]},safe=False)
+    else:
+        return HttpResponseBadRequest()
+
 @csrf_exempt
 def comprehension(request,tid=0):
-    if request.method == 'GET':
-        test = Test.objects.get(id=tid)
-        sub = Subject.objects.get(id=5)
-        paras = Para.objects.order_by('?')[:3]
-        f=[]
-        for para in paras:
-            x={}
-            x['title'] = para.title
-            x['para'] = para.data
-            questions = Paraqs.objects.filter(para=para)
-            qs = []
-            for question in questions:
-                op={}
-                options = Paraopt.objects.filter(paraqs=question)
-                op['question'] = question.title
-                op['options'] =OptionSerializer(options,many=True).data
-                qs.append(op)
-            x['questions'] = qs 
-            f.append(x)    
-        return JsonResponse({'data':f,'time':test.aw['time']},safe=False)   
-
-
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == 'GET':
+            test = Test.objects.get(id=tid)
+            sub = Subject.objects.get(id=5)
+            paras = Para.objects.order_by('?')[:3]
+            f=[]
+            for para in paras:
+                x={}
+                x['title'] = para.title
+                x['para'] = para.data
+                questions = Paraqs.objects.filter(para=para)
+                qs = []
+                for question in questions:
+                    op={}
+                    options = Paraopt.objects.filter(paraqs=question)
+                    op['question'] = question.title
+                    op['options'] =OptionSerializer(options,many=True).data
+                    qs.append(op)
+                x['questions'] = qs 
+                f.append(x)    
+            return JsonResponse({'data':f,'time':test.aw['time']},safe=False)   
+    else:
+        return HttpResponseBadRequest()
 
 @csrf_exempt
 def personalityR(request):
-    if request.method=='POST':
-        return evaluate(request, CFG['DB'])
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method=='POST':
+            return evaluate(request, CFG['DB'])
+    else:
+        return HttpResponseBadRequest()
 
 def evaluate_api(request,data=0):
     """API endpoint."""

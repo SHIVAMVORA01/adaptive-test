@@ -8,13 +8,14 @@ import illustration3 from "../img/illustration3.svg";
 import Chaitanya from "../img/Chaitanya.jpeg";
 import Alankrit from "../img/Alankrit.jpeg";
 import Shivam from "../img/Shivam.jpeg";
+import Group_10 from "../img/Group 10.png";
 
 
 function Home() {
     const navigate = useNavigate();
     return (
         <div>
-            <div className="welcomeDiv"  >
+            <div className="welcomeDiv">
                 <div>
                     <div className="titleDiv">
                         <label className="mainheading">Welcome to the<br />Placement Test Portal</label>

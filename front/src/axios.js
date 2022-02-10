@@ -37,6 +37,8 @@ axiosInstance.interceptors.response.use(
       return Promise.reject(error);
     }
     console.log(error.response);
+    if (error.response.status === 400)
+      window.location.href = "/error_bad_request";
 
     if (
       error.response.data.code === "token_not_valid" &&

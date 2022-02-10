@@ -5,7 +5,6 @@ import { useNavigate } from "react-router";
 import Clock from "../../img/Clock.svg";
 import "../../css/AdminHomeScreen.css";
 import $ from "jquery";
-import axios from "axios";
 import sidFunc from "./sidFunc";
 import DateTimePicker from "react-datetime-picker";
 import TimeField from "react-simple-timefield";
@@ -41,19 +40,19 @@ function NewTest() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    var ssid;
-    if (localStorage.getItem("isNewTestReload") !== null) {
-      ssid = 0;
-      setSid(ssid + 1);
-    } else {
-      localStorage.setItem("isNewTestReload", false);
-      ssid = location.state.sid;
-      setSid(ssid + 1);
-    }
     const data = async () =>
-      await axios
+      await axiosInstance
         .get(`http://127.0.0.1:8000/api/subs`)
         .then((res) => {
+          var ssid;
+          if (localStorage.getItem("isNewTestReload") !== null) {
+            ssid = 0;
+            setSid(ssid + 1);
+          } else {
+            localStorage.setItem("isNewTestReload", false);
+            ssid = location.state.sid;
+            setSid(ssid + 1);
+          }
           var d = res.data.data;
           console.log(d);
           setAxData(d);
@@ -75,7 +74,7 @@ function NewTest() {
           console.log(e);
         });
     const getTest = async () => {
-      await axios
+      await axiosInstance
         .get("http://127.0.0.1:8000/api/admin/tests")
         .then((res) => {
           let ar = [];
@@ -251,10 +250,8 @@ function NewTest() {
               Start Time:
               <DateTimePicker
                 className={"TimePicker"}
-                style={{outline: "none"}}
                 onChange={(e) => {
                   setSDate(e);
-                  
                 }}
                 value={sDate}
                 required
@@ -347,22 +344,22 @@ function NewTest() {
             <div
               className="mainRec"
               style={{
-                height: (sid === 6 ||sid === 4) ? 310 : 460,
-                marginTop: (sid === 6||sid === 4) ? "50px" : "0",
+                height: sid === 6 || sid === 4 ? 310 : 460,
+                marginTop: sid === 6 || sid === 4 ? "50px" : "0",
               }}
             >
               <div
                 className="AdminSetSection"
-                style={{ marginBottom: (sid === 6||sid === 4) ? "70px" : "0" }}
+                style={{ marginBottom: sid === 6 || sid === 4 ? "70px" : "0" }}
               >
                 <div className="basicRec secNm">{sectionName}</div>
                 <Row style={{ margin: "24px 0", padding: "0px 0px" }}>
                   <Col
                     md={6}
-                    className={(sid===6||sid===4)?'onHoverDiv':''}
+                    className={sid === 6 || sid === 4 ? "onHoverDiv" : ""}
                     style={{ padding: "0px" }}
                     onClick={(e) => {
-                      if (parseInt(sid - 1) === 5 || sid===4) {
+                      if (parseInt(sid - 1) === 5 || sid === 4) {
                         navigate("/admin/setQs", {
                           state: {
                             type: "Medium",
@@ -377,7 +374,7 @@ function NewTest() {
                     <div className="basicRec avQs">
                       Available{" "}
                       {parseInt(sid - 1) !== 5 ? "Question" : "Paragraph"}
-                      {(sid - 1 !== 5 && sid !== 4) && (
+                      {sid - 1 !== 5 && sid !== 4 && (
                         <>
                           <Row style={{ padding: "20px 10px 0px 40px" }}>
                             <Col>
@@ -394,7 +391,7 @@ function NewTest() {
                             <Col style={{ padding: "0px 0px 0px 15px" }}>
                               Easy
                             </Col>
-                            <Col >Medium</Col>
+                            <Col>Medium</Col>
                             <Col>
                               <Row style={{ padding: "0px 0px 0px 15px" }}>
                                 Hard
@@ -403,7 +400,7 @@ function NewTest() {
                           </Row>
                         </>
                       )}
-                      {(sid - 1 === 5 ||sid===4) && (
+                      {(sid - 1 === 5 || sid === 4) && (
                         <div style={{ marginLeft: "20%" }}>
                           <Row style={{ padding: "20px 10px 0px 40px" }}>
                             <Col>
@@ -420,7 +417,7 @@ function NewTest() {
                     </div>
                   </Col>
                   <Col md={6} style={{ padding: "0px" }}>
-                    {sid - 1 !== 5 && sid!==4 && (
+                    {sid - 1 !== 5 && sid !== 4 && (
                       <>
                         <Row>
                           <Col>
@@ -490,7 +487,7 @@ function NewTest() {
                         </Row>
                       </>
                     )}
-                    {(parseInt(sid - 1) === 5 || parseInt(sid)===4) && (
+                    {(parseInt(sid - 1) === 5 || parseInt(sid) === 4) && (
                       <>
                         <Row style={{ margin: "10px 0" }}>
                           <Col style={{ padding: "0px" }}>
@@ -531,7 +528,7 @@ function NewTest() {
                                     } else if (sid - 1 === 3) {
                                       setPDic({
                                         time: e.target.value,
-                                        totalQs: 35 //$,
+                                        totalQs: 35, //$,
                                       });
                                     } else if (sid - 1 == 4) {
                                       setCDic({
@@ -569,7 +566,7 @@ function NewTest() {
                                     } else if (sid - 1 === 3) {
                                       setPDic({
                                         time: "00:59:59",
-                                        totalQs: 35 //$,
+                                        totalQs: 35, //$,
                                       });
                                     } else if (sid - 1 == 4) {
                                       setCDic({
@@ -660,7 +657,7 @@ function NewTest() {
                                     } else if (sid - 1 === 3) {
                                       setPDic({
                                         time: CurrentDic.time,
-                                        totalQs: 35 //$,
+                                        totalQs: 35, //$,
                                       });
                                     } else if (sid - 1 == 4) {
                                       setCDic({
@@ -691,9 +688,11 @@ function NewTest() {
                                       : 35 //$
                                     : CurrentDic.totalQs
                                 }
-                                disabled={sid === 6 || sid === 5 || sid === 4
-                                  ? true:false}
-                                  
+                                disabled={
+                                  sid === 6 || sid === 5 || sid === 4
+                                    ? true
+                                    : false
+                                }
                               />
                             </div>
                           </Col>
@@ -702,7 +701,7 @@ function NewTest() {
                     )}
                   </Col>
                 </Row>
-                {parseInt(sid - 1) !== 5 &&parseInt(sid) !== 4 && (
+                {parseInt(sid - 1) !== 5 && parseInt(sid) !== 4 && (
                   <Row style={{ margin: "44px 0" }}>
                     {" "}
                     <Col>
@@ -742,7 +741,7 @@ function NewTest() {
                               } else if (sid - 1 === 3) {
                                 setPDic({
                                   time: e.target.value,
-                                  totalQs: 35 //$,
+                                  totalQs: 35, //$,
                                 });
                               } else if (sid - 1 == 4) {
                                 setCDic({
@@ -780,7 +779,7 @@ function NewTest() {
                               } else if (sid - 1 === 3) {
                                 setPDic({
                                   time: "00:59:59",
-                                  totalQs: 35 //$,
+                                  totalQs: 35, //$,
                                 });
                               } else if (sid - 1 == 4) {
                                 setCDic({
@@ -859,7 +858,7 @@ function NewTest() {
                               } else if (sid - 1 === 3) {
                                 setPDic({
                                   time: CurrentDic.time,
-                                  totalQs: 35 //$,
+                                  totalQs: 35, //$,
                                 });
                               } else if (sid - 1 == 4) {
                                 setCDic({
@@ -890,8 +889,9 @@ function NewTest() {
                                 : 35 //$
                               : CurrentDic.totalQs
                           }
-                          disabled={sid === 6 || sid === 5 || sid === 4
-                            ? true:false}
+                          disabled={
+                            sid === 6 || sid === 5 || sid === 4 ? true : false
+                          }
                         />
                       </div>
                     </Col>

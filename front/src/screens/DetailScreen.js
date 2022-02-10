@@ -71,25 +71,13 @@ function DetailScreen() {
   };
 
   return (
-
-        <Col style={{ padding: "0", margin: "0" }}>
-          <div
-            className="rectangleInstuc"
-            style={{
-              minHeight: "550px",
-              padding: "5px 35px 30px 35px",
-              margin: "0 40px",
-            }}
-          >
-            <Row style={{ textAlign: "center", margin: "30px 0px" }}>
-            <div style={{ color: "#788094" }}>
+    <div style={{ color: "#788094" }}>
       <Row>
         <Col>
           <div style={{ margin: "5px 60px" }}>
             <Row>
               <Col>
-                <div id="title" style={{fontSize:"22px"}}>Please fill in your details</div>
-                <br></br>
+                <div id="title">Please fill in your Details</div>
               </Col>
             </Row>
             <form onSubmit={(e) => handleSubmit(e)}>
@@ -100,8 +88,8 @@ function DetailScreen() {
                     onChange={handleChange}
                     name="name"
                     type="text"
-                    placeholder="Name"
-                    style={{ width: "100%", outline: "none",}}
+                    placeholder="* Name"
+                    style={{ width: "100%" }}
                     required
                   ></input>
                 </Col>
@@ -113,8 +101,8 @@ function DetailScreen() {
                     onChange={handleChange}
                     name="email"
                     type="email"
-                    placeholder="Email Id"
-                    style={{ width: "100%", outline: "none",}}
+                    placeholder="* Email Id"
+                    style={{ width: "100%" }}
                     required
                   ></input>
                 </Col>
@@ -126,8 +114,8 @@ function DetailScreen() {
                     onChange={handleChange}
                     name="age"
                     type="number"
-                    placeholder="Age"
-                    style={{ width: "100%" , outline: "none", }}
+                    placeholder="* Age"
+                    style={{ width: "100%" }}
                     required
                   ></input>
                 </Col>
@@ -146,7 +134,7 @@ function DetailScreen() {
                     name="gender"
                     required
                   >
-                    <option value="">Select Gender</option>
+                    <option value="">* Select Gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
@@ -180,10 +168,10 @@ function DetailScreen() {
                     className="loginInpRec"
                     onChange={handleChange}
                     name="percent_10_std"
-                    placeholder="10th percentage"
+                    placeholder="* 10th percentage"
                     type="number"
                     max="100"
-                    style={{ width: "100%" , outline: "none",}}
+                    style={{ width: "100%" }}
                     required
                   ></input>
                 </Col>
@@ -194,24 +182,22 @@ function DetailScreen() {
                     className="loginInpRec"
                     onChange={handleChange}
                     name="percent_12_std"
-                    placeholder="12th percentage"
+                    placeholder="* 12th percentage"
                     type="number"
                     max="100"
-                    style={{ width: "100%" , outline: "none",}}
+                    style={{ width: "100%" }}
                     required
                   ></input>
                 </Col>
               </Row>
 
-              <Row style={{ marginTop: "35px", paddingLeft: "450px" ,  position: "relative"}}>
+              <Row style={{ marginTop: "35px", paddingLeft: "200px" }}>
                 <Col>
                   <button
                     style={{
                       backgroundColor: "#10B65C",
+                      width: "150px",
                       border: "none",
-                      width: "150px" , 
-                      outline: "none",
-                      textAlign: "center",
                     }}
                     type="submit"
                     className="btn btn-primary"
@@ -223,11 +209,64 @@ function DetailScreen() {
             </form>
           </div>
         </Col>
+        <Col style={{ padding: "0", margin: "0" }}>
+          <div
+            className="rectangleInstuc"
+            style={{
+              minHeight: "550px",
+              padding: "5px 35px 30px 35px",
+              margin: "0 40px",
+            }}
+          >
+            <Row style={{ textAlign: "center", margin: "30px 0px" }}>
+              <Col>
+                <div id="instruc">Instructions</div>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                1. Only full-screen mode is available for students to give
+                tests.
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "10px" }}>
+              <Col>
+                2. If a student attempts to reduce the screen, a message will
+                appear stating that the student has only 10 seconds to return to
+                full-screen mode before the test is auto-submitted and the
+                result page is presented.{" "}
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "10px" }}>
+              <Col>
+                3. If a student refreshes the screen by accident, his progress
+                is not lost. The progress will be saved, and the timer will be
+                reset to where it was before being refreshed.{" "}
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "10px" }}>
+              <Col>
+                4. If a student tries to switch tabs, desktops, or browsers
+                during the test, a warning will appear twice, indicating that
+                the screen has been changed. If the student continues to try to
+                move the tab despite multiple warnings, his test will be
+                auto-submitted.{" "}
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "10px" }}>
+              <Col>
+                5. A student cannot take more than one test at the same time. If
+                he tries to open the same test in a different tab, he will be
+                instantly logged out of the one he just closed.{" "}
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "25px" }}>
+              <Col>print(“ALL THE BEST”)</Col>
+            </Row>
+          </div>
+        </Col>
       </Row>
-      </div>
-      </Row>
-      </div>
-      </Col>
+    </div>
   );
 }
 
