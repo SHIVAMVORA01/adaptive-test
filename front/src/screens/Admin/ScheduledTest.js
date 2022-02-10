@@ -131,7 +131,7 @@ function ScheduledTest() {
   }
   function delTest(e) {
     axiosInstance
-      .post("api/test/0", {
+      .delete(`api/test/${testId}`, {
         data: {
           name: header,
           start: valueStart,
@@ -151,7 +151,7 @@ function ScheduledTest() {
   function delSTest(idd) {
     if (window.confirm("Delete this test?")) {
       axiosInstance
-        .delete(`http://127.0.0.1:8000/api/test/${idd}`)
+        .delete(`api/test/${idd}`)
         .then((res) => {
           let arr = stests.filter((test) => {
             return test.id !== idd;
@@ -164,38 +164,38 @@ function ScheduledTest() {
     }
   }
 
-  function startTest(tid){
-    localStorage.setItem("testId",tid);
-    localStorage.setItem("admin","admin");
+  function startTest(tid) {
+    localStorage.setItem("testId", tid);
+    localStorage.setItem("admin", "admin");
     var ob = new Date();
-        var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-        var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-        var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
-        var usern = localStorage.getItem("username") 
-        const data = async () =>
-        axiosInstance
-          .post(`api/results/${usern}`, {
-            data: { testId: tid },
-          })
-          .then(res=>{
-            localStorage.setItem(
-              "test",
-              JSON.stringify({
-                username:usern ,
-                STime: Date(),
-                strtTime: +h + ":" + m + ":" + s,
-                FSTimer: "10",
-                question: [],
-                marks: [],
-                currentQsNo: 1,
-              })
-            );
-            axiosInstance.defaults.headers["Authorization"] =
-              "JWT " + localStorage.getItem("access_token");
-            navigate("/testScreen");
-          })
-          .catch(e=>console.log(e))
-          data();
+    var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+    var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+    var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
+    var usern = localStorage.getItem("username");
+    const data = async () =>
+      axiosInstance
+        .post(`api/results/${usern}`, {
+          data: { testId: tid },
+        })
+        .then((res) => {
+          localStorage.setItem(
+            "test",
+            JSON.stringify({
+              username: usern,
+              STime: Date(),
+              strtTime: +h + ":" + m + ":" + s,
+              FSTimer: "10",
+              question: [],
+              marks: [],
+              currentQsNo: 1,
+            })
+          );
+          axiosInstance.defaults.headers["Authorization"] =
+            "JWT " + localStorage.getItem("access_token");
+          navigate("/testScreen");
+        })
+        .catch((e) => console.log(e));
+    data();
   }
 
   return (
@@ -289,7 +289,8 @@ function ScheduledTest() {
                       backgroundColor: "white",
                       borderColor: "#F0F0F0",
                       marginBottom: "1px",
-                      boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+                      boxShadow:
+                        "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
                       borderRadius: "10px",
                     }}
                   >
@@ -363,29 +364,32 @@ function ScheduledTest() {
                       backgroundColor: "white",
                       borderColor: "#F0F0F0",
                       marginBottom: "1px",
-                      boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+                      boxShadow:
+                        "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
                       borderRadius: "10px",
                     }}
                   >
                     <Col>
-                    <button
-                      type="button"
-                      onClick={(e) => upcomingTest(e, t)}
-                      style={{
-                        width: "100%",
-                        backgroundColor: "white",
-                        borderColor: "#F0F0F0",
-                        marginBottom: "1px",
-                        border: "none",
-                      }}
-                      key={index}
-                    >
-                      {t.test_name}
-                    </button>
+                      <button
+                        type="button"
+                        onClick={(e) => upcomingTest(e, t)}
+                        style={{
+                          width: "100%",
+                          backgroundColor: "white",
+                          borderColor: "#F0F0F0",
+                          marginBottom: "1px",
+                          border: "none",
+                        }}
+                        key={index}
+                      >
+                        {t.test_name}
+                      </button>
                     </Col>
                     <Col md={1}>
                       <i
-                        onClick={() => {startTest(t.id)}}
+                        onClick={() => {
+                          startTest(t.id);
+                        }}
                         class="fa fa-eye"
                         style={{
                           backgroundColor: "white",

@@ -2,7 +2,6 @@ import React from "react";
 import { Col, Row } from "react-bootstrap";
 import crypt from "./crypt";
 import TextAreaAutoSize from "./TextAreaAutoSize";
-import $ from "jquery";
 import { Image } from "cloudinary-react";
 import Zoom from "react-medium-image-zoom";
 import "react-medium-image-zoom/dist/styles.css";
@@ -15,13 +14,8 @@ function QuestionComp({
   level,
   qsno,
   qsimg,
+  checkBoxToggle,
 }) {
-  function checkBoxToggle(e, optId) {
-    $(".form-check input.qsRadio").removeAttr("checked");
-    var input = $(`.form-check input#${optId}`);
-    input.attr("checked", "checked");
-    e.preventDefault();
-  }
   return (
     <div id="quesComp" style={{ padding: "10px 20px" }}>
       {qsno <= ans.length && (

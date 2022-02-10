@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import axiosInstance from "../axios";
 import TestHeaderComp from "../components/TestScreeen/TestHeaderComp";
 import QuestionComp from "../components/TestScreeen/QuestionComp";
 import { Col, Modal, Button, Row } from "react-bootstrap";
@@ -7,6 +7,7 @@ import QuestionNavigatorComp from "../components/TestScreeen/QuestionNavigatorCo
 import "../css/TestScreen.css";
 import { useNavigate } from "react-router";
 import { isExpired, decodeToken } from "react-jwt";
+import $ from "jquery";
 import CustomTimer from "./Admin/CustomTimer";
 import crypt from "../components/TestScreeen/crypt";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
@@ -68,10 +69,10 @@ function TestScreen() {
         } else {
           let xx = localStorage.getItem("testId");
           const getData = async () =>
-            await axios
+            await axiosInstance
               .get(`http://127.0.0.1:8000/api/subs/1/${xx}`)
               .then((res) => {
-                console.log(res.data)
+                console.log(res.data);
                 let a = converttime(res.data.time);
                 var tf = a;
                 var totalQs = res.data.qs;
@@ -296,13 +297,22 @@ function TestScreen() {
       test["currentQsNo"] = test["currentQsNo"] + 1;
       localStorage.setItem("test", JSON.stringify(test));
       e.target.reset();
+      checkBoxToggle(e);
+      console.log(e.target);
     }
   }
   function handleCloseSChange(e) {
     setCountWindowAwayModal(false);
     GoInFullscreen(document.querySelector("#element"));
   }
-
+  function checkBoxToggle(e, optId = undefined) {
+    $(".form-check input.qsRadio").removeAttr("checked");
+    if (optId !== undefined) {
+      var input = $(`.form-check input#${optId}`);
+      input.attr("checked", "checked");
+    }
+    e.preventDefault();
+  }
   return (
     <div>
       <Modal
@@ -404,6 +414,7 @@ function TestScreen() {
                       qs[qsno] !== undefined &&
                       !countWindowAwayModal && (
                         <QuestionComp
+                          checkBoxToggle={checkBoxToggle}
                           ans={ans}
                           qsno={qsno}
                           level={current}

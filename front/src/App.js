@@ -156,25 +156,106 @@ function App() {
             />
             <Route path="/home" exact element={<Home />} />
             <Route path="/" exact element={<Home />} />
-            <Route path="/admin/personality" exact element={<PTestScreen />} />
-            <Route path="/admin/computer" exact element={<CFTestScreen />} />
-            <Route path="/admin/domain" exact element={<DTestScreen />} />
-            <Route path="/admin/analytical" exact element={<CompScreen />} />
+            <Route
+              path="/admin/personality"
+              exact
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <PTestScreen />
+                  </Col>
+                </Row>
+              }
+            />
+            <Route
+              path="/admin/computer"
+              exact
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <CFTestScreen />
+                  </Col>
+                </Row>
+              }
+            />
+            <Route
+              path="/admin/domain"
+              exact
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <DTestScreen />
+                  </Col>
+                </Row>
+              }
+            />
+            <Route
+              path="/admin/analytical"
+              exact
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <CompScreen />
+                  </Col>
+                </Row>
+              }
+            />
             <Route
               path="/admin/scheduledTest"
               exact
-              element={<ScheduledTest />}
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <ScheduledTest />
+                  </Col>
+                </Row>
+              }
             />
             <Route
               path="/admin/viewScheduledTest"
               exact
-              element={<ViewSchdlTest />}
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <ViewSchdlTest />
+                  </Col>
+                </Row>
+              }
             />
-            <Route path="/admin/compiler" exact element={<Compiler />} />
-            <Route path="/details" exact element={<DetailScreen />} />
+            <Route
+              path="/admin/compiler"
+              exact
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <Compiler />
+                  </Col>
+                </Row>
+              }
+            />
+            <Route
+              path="/details"
+              exact
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <DetailScreen />
+                  </Col>
+                </Row>
+              }
+            />
 
             {/* do not change */}
-            <Route path="*" element={<Page_404 />} />
+            <Route
+              path="*"
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <Page_404 />
+                  </Col>
+                </Row>
+              }
+            />
           </Routes>
         </Router>
       </div>

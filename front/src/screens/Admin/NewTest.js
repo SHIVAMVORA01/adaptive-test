@@ -88,58 +88,42 @@ function NewTest() {
     data();
   }, []);
 
-  function checkOngoing() {
-    let current = new Date();
-    for (let i = 0; i < tests.length; i++) {
-      let ss = new Date(tests[i].test_start).getTime();
-      let ee = new Date(tests[i].test_end).getTime();
-      if (current.getTime() >= ss && current.getTime() <= ee) {
-        return 1;
-      }
-    }
-    return 0;
-  }
-
   function saveTest(e) {
     e.preventDefault();
     let sx = new Date(sDate);
     let ex = new Date(eDate);
-    if (!checkOngoing()) {
-      if (ex.getTime() > sx.getTime()) {
-        if (!clash(sx.getTime(), ex.getTime())) {
-          let creaTest = { testName: tName, sTime: sDate, eTime: eDate };
-          console.log(creaTest);
-          let a = [
-            { sub: "Aptitude", time: aptDic.time, totalQs: aptDic.totalQs },
-            {
-              sub: "Computer Fundamentals",
-              time: CFDic.time,
-              totalQs: CFDic.totalQs,
-            },
-            { sub: "Domain", time: DDic.time, totalQs: DDic.totalQs },
-            { sub: "Personality", time: PDic.time, totalQs: PDic.totalQs },
-            { sub: "Coding", time: CDic.time, totalQs: CDic.totalQs },
-            {
-              sub: "Analytical Writing",
-              time: AWDic.time,
-              totalQs: AWDic.totalQs,
-            },
-          ];
-          axiosInstance
-            .post("api/admin/saveTest", {
-              data: { saveTest: a, createTest: creaTest },
-            })
-            .then((res) => {
-              navigate("/admin/home");
-            });
-        } else {
-          alert("This test will clash with an existing test");
-        }
+    if (ex.getTime() > sx.getTime()) {
+      if (!clash(sx.getTime(), ex.getTime())) {
+        let creaTest = { testName: tName, sTime: sDate, eTime: eDate };
+        console.log(creaTest);
+        let a = [
+          { sub: "Aptitude", time: aptDic.time, totalQs: aptDic.totalQs },
+          {
+            sub: "Computer Fundamentals",
+            time: CFDic.time,
+            totalQs: CFDic.totalQs,
+          },
+          { sub: "Domain", time: DDic.time, totalQs: DDic.totalQs },
+          { sub: "Personality", time: PDic.time, totalQs: PDic.totalQs },
+          { sub: "Coding", time: CDic.time, totalQs: CDic.totalQs },
+          {
+            sub: "Analytical Writing",
+            time: AWDic.time,
+            totalQs: AWDic.totalQs,
+          },
+        ];
+        axiosInstance
+          .post("api/admin/saveTest", {
+            data: { saveTest: a, createTest: creaTest },
+          })
+          .then((res) => {
+            navigate("/admin/home");
+          });
       } else {
-        alert("Start time should be less than End time");
+        alert("This test will clash with an existing test");
       }
     } else {
-      alert("Cannot save another test while one test is ongoing");
+      alert("Start time should be less than End time");
     }
   }
   function clash(stx, etx) {
