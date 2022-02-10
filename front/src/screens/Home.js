@@ -1,18 +1,29 @@
 import React from "react";
-import { Container, Row, Col, Button } from "react-bootstrap";
+import { Container, Row, Col, Button, Footer } from "react-bootstrap";
 import "../css/Home.css";
 import { useNavigate } from "react-router";
+import illustration1 from "../img/illustration1.svg";
+import illustration2 from "../img/illustration2.svg";
+import illustration3 from "../img/illustration3.svg";
+import Chaitanya from "../img/Chaitanya.jpeg";
+import Alankrit from "../img/Alankrit.jpeg";
+import Shivam from "../img/Shivam.jpeg";
+
+
 function Home() {
-  const navigate = useNavigate();
-  return (
-    <div>
-         <div className="welcomeDiv" >
+    const navigate = useNavigate();
+    return (
+        <div>
+            <div className="welcomeDiv"  >
                 <div>
                     <div className="titleDiv">
-                        <label className="mainHeading">Welcome to the<br/>Placement Profile Portal</label>
-                        <label className="subHeadingsProfile">Attempt the tests now</label>
-                        <Button style={{ background: "#10B65C", color: "#FFF", width: "200px", fontSize: "20px", marginTop: "2%", border: "none" }} onClick={() => { navigate("/logout") }}>Login</Button>
-                        <br/>
+                        <label className="mainheading">Welcome to the<br />Placement Test Portal</label>
+                        <label className="subHeadingsProfile">One Step towards a successful career</label>
+                        <div>
+                            <Button className="buttonDiv" style={{ background: "#10B65C", color: "#FFF", width: "200px", fontSize: "20px", marginTop: "2%", border: "none" }} onClick={() => { navigate("/logout") }}>Login</Button>
+                            <Button className="buttonDiv" style={{ background: "#10B65C", color: "#FFF", width: "200px", fontSize: "20px", marginTop: "2%", border: "none" }} onClick={() => { navigate("/logout") }}>Preview</Button>
+                            <br />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -31,14 +42,14 @@ function Home() {
                             </div>
                         </Col>
                         <Col md={5} lg={4}>
-                            <img alt="illustration1" src="C:\Users\voras\Desktop\adaptive-test\front\src\img\illustration1.svg" className="welcomeImage"></img>
+                            <img alt="illustration1" src={illustration1} className="welcomeImage2"></img>
                         </Col>
                     </Row>
                 </Container>
                 <Container>
                     <Row>
                         <Col md={5} lg={4}>
-                            <img alt="logo" src="front\src\img\illustration1.svg" className="welcomeImage"></img>
+                            <img alt="logo" src={illustration2} className="welcomeImage3"></img>
                         </Col>
                         <Col md={7} lg={8}>
                             <div className="landingPara1">
@@ -54,18 +65,52 @@ function Home() {
                             <div className="landingPara" >
                                 <label className="subHeadingsProfile1">How will this portal benefit the undergraduate?</label>
                                 <label className="introPara">This portal helps the faculty placement coordinators identify and assess students' key skills and expertise, as well as their readiness for placements. Different modules in this portal cover all relevant aspects such as cognitive, domain, personality, and others that will aid them in their preparation for placements. </label>
-                                <br/>
+                                <br />
                             </div>
                         </Col>
                         <Col md={5} lg={4} className="colImageDiv">
-                            <img alt="illustration2" src="front\src\img\illustration1.svg" className="welcomeImage"></img>
+                            <img alt="illustration2" src={illustration3} className="welcomeImage"></img>
                         </Col>
                     </Row>
+                    <Container id="team" className="mb-5 ourteam pt-5">
+                        <div>
+                            <h3 style={{ fontSize: "25px", lineHeight: "25px", fontWeight: "600", fontFamily: "Poppins", color: "#293E6F", textAlign: "center" }}>Our Team</h3>
+
+                        </div>
+                        <Row>
+                            <Col style={{ textAlign: "center", marginTop: "35px" }} md={4}>
+                                <div style={{ display: "flex", alignItems: 'center', justifyContent: "center" }}>
+                                    <div>
+                                        <img className="user" alt="logo" src={Alankrit}></img>
+                                        <div className="username">Alankrit Arya</div>
+                                        <div className="role">Developer</div>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col style={{ textAlign: "center", marginTop: "35px" }} md={4}>
+                                <div style={{ display: "flex", alignItems: 'center', justifyContent: "center" }}>
+                                    <div>
+                                        <img className="user" alt="logo" src={Chaitanya}></img>
+                                        <div className="username">Chaitanya Kumbhar</div>
+                                        <div className="role">Developer</div>
+                                    </div>
+                                </div>
+                            </Col>
+                            <Col style={{ textAlign: "center", marginTop: "35px" }} md={4}>
+                                <div style={{ display: "flex", alignItems: 'center', justifyContent: "center" }}>
+                                    <div>
+                                        <img className="user" alt="logo" src={Shivam}></img>
+                                        <div className="username">Shivam Vora</div>
+                                        <div className="role">Developer</div>
+                                    </div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Container>
                 </Container>
             </div>
-    </div>
-   
-  );
+        </div>
+    );
 }
 
 export default Home;

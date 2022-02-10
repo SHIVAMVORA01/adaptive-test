@@ -10,48 +10,40 @@
     margin-top: 30px;
     width: 300px;
 }
-@media screen and ( min-width: 780px) {
-    .firstPara {
-        border-right: 1px solid #293E6F;
-    }
-}
-@media screen and ( max-width: 780px) {
-    .contactHeading {
-        font-weight: 600;
-        margin-top: 30px;
-        border-top: 1px solid #293E6F;
-        border-bottom: 1px solid #293E6F;
-    }
-    .footerLine {
-        font-size: 20px;
-    }
-}
-@media screen and ( min-width: 500px) {
-    .buttonDiv {
-        text-align: start;
-    }
-}
+
+.buttonDiv {
+    width: 234px;
+    background-color: #10b65c;
+    border-radius: 14px;
+    margin-bottom: 50px;
+    margin-right: 10px;
+    margin-top: 20px;
+  }
+
 .welcomeDiv {
     background-image: url("C:\Users\voras\Desktop\adaptive-test\front\src\img\Group 10.png");
+
 }
 
-.mainHeading {
+.mainheading {
     font-family: Poppins;
     font-style: normal;
     font-weight: 600;
-    font-size: 40px;
-    line-height: 72px;
+    font-size: 30px;
+    line-height: 55px;
     color: #293E6F;
     text-align: center;
+    padding: 30px;
 }
 
 .subHeadingsProfile {
     font-family: Poppins;
     font-style: normal;
     font-weight: 300;
-    font-size: 28px;
+    font-size: 20px;
     line-height: 57px;
     color: #293E6F;
+   
 }
 
 .subHeadingsProfile1 {
@@ -67,7 +59,7 @@
     font-family: Poppins;
     font-style: normal;
     font-weight: 600;
-    font-size: 30px;
+    font-size: 24px;
     line-height: 60px;
     text-align: center;
     color: #293E6F;
@@ -81,6 +73,14 @@
 .welcomeImage {
     height: 90%;
     width: 90%;
+}
+.welcomeImage2 {
+    height: 75%;
+    width: 75%;
+}
+.welcomeImage3 {
+    height: 85%;
+    width: 85%;
 }
 
 .welcomeImage1 {
@@ -98,8 +98,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 3%;
-    margin-left: 5%;
+    
 }
 
 .introPara {
@@ -120,11 +119,49 @@
     margin-top: 5%;
 }
 
+.ourteam {
+    margin-top: 0.5rem !important;
+}
+
+.user {
+    border-radius: 50%;
+    height: 200px;
+    width: 200px;
+}
+
+.username {
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #081466;
+    margin-top: 10px;
+}
+
+.role {
+    font-family: Poppins;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 30px;
+    letter-spacing: 0em;
+    text-align: center;
+    color: #0F1420;
+}
+
+@media screen and ( min-width: 780px) {
+    .firstPara {
+        border-right: 1px solid #293E6F;
+    }
+}
+
 @media (max-width: 768px) {
     .titleDiv {
         margin-left: 0;
         text-align: center;
-        margin-top: 3%;
     }
     .subHeadingsProfile {
         text-align: start;
@@ -143,6 +180,12 @@
     .welcomeImage1 {
         display: none;
     }
+    .welcomeImage2 {
+        display: none;
+    }
+    .welcomeImage3 {
+        display: none;
+    }
     .titleDiv {
         align-items: center;
     }
@@ -150,3 +193,9 @@
         display: none !important;
     }
 }
+
+
+
+
+
+
