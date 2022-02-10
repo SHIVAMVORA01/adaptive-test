@@ -125,7 +125,7 @@ function ScheduledTest() {
       handleClose(e);
     } else {
       valueStart > cDate
-        ? alert("ENDATE should be GREATER than start Date")
+        ? alert("End Date should be GREATER than start Date")
         : alert("start Date time should be greater than current date time");
     }
   }

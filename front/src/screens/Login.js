@@ -8,6 +8,8 @@ import "../css/LoginScreen.css";
 import axios from "axios";
 
 function Login() {
+  const [utests, setUTests] = useState([]);
+  const [stests, setSTests] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
     const token = localStorage.getItem("access_token");
@@ -181,64 +183,74 @@ function Login() {
             </form>
           </div>
         </Col>
-        <Col style={{ padding: "0", margin: "0" }}>
+        <Col style={{ padding: "0", margin: "0"}}>
+          <div>
+          <Row style={{ margin: "0 0 0 10%" }}>
+        <Col style={{ marginRight: "0%", height:"900px"}}>
+          {" "}
           <div
-            className="rectangleInstuc"
-            style={{
-              minHeight: "550px",
-              padding: "5px 35px 30px 35px",
-              margin: "0 40px",
-            }}
+            className="basicRec"
           >
-            <Row style={{ textAlign: "center", margin: "30px 0px" }}>
-              <Col>
-                <div id="instruc">Instructions</div>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                1. Only full-screen mode is available for students to give
-                tests.
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "10px" }}>
-              <Col>
-                2. If a student attempts to reduce the screen, a message will
-                appear stating that the student has only 10 seconds to return to
-                full-screen mode before the test is auto-submitted and the
-                result page is presented.{" "}
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "10px" }}>
-              <Col>
-                3. If a student refreshes the screen by accident, his progress
-                is not lost. The progress will be saved, and the timer will be
-                reset to where it was before being refreshed.{" "}
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "10px" }}>
-              <Col>
-                4. If a student tries to switch tabs, desktops, or browsers
-                during the test, a warning will appear twice, indicating that
-                the screen has been changed. If the student continues to try to
-                move the tab despite multiple warnings, his test will be
-                auto-submitted.{" "}
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "10px" }}>
-              <Col>
-                5. A student cannot take more than one test at the same time. If
-                he tries to open the same test in a different tab, he will be
-                instantly logged out of the one he just closed.{" "}
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "25px" }}>
-              <Col>print(“ALL THE BEST”)</Col>
-            </Row>
+            <h4 style={{ paddingLeft: "30%", paddingTop: "10px" }}>
+              Upcoming Test
+            </h4>
+            <div className="lineThrough"></div>
+            <div
+              className="scrollbar"
+              id="style-4"
+              style={{ height: window.screen.height - 480 }}
+            >
+              {utests.map((t, index) => {
+                return (
+                  <Row
+                    style={{
+                      backgroundColor: "white",
+                      borderColor: "#F0F0F0",
+                      marginBottom: "1px",
+                      boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <Col>
+                    <button
+                      type="button"           
+                      style={{
+                        width: "100%",
+                        backgroundColor: "white",
+                        borderColor: "#F0F0F0",
+                        marginBottom: "1px",
+                        border: "none",
+                      }}
+                      key={index}
+                    >
+                      {t.test_name}
+                    </button>
+                    </Col>
+                    <Col md={1}>
+                      <i
+                        onClick={() => {}}
+                        class="fa fa-eye"
+                        style={{
+                          backgroundColor: "white",
+                          color: "green",
+                          float: "right",
+                          marginRight: "15px",
+                          marginTop: "10px",
+                        }}
+                      ></i>
+                    </Col>
+                  </Row>
+                );
+              })}
+            </div>
           </div>
         </Col>
       </Row>
-    </div>
+      </div>
+      </Col>
+      </Row>
+      </div>
+  
   );
 }
 

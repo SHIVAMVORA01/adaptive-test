@@ -53,3 +53,18 @@ input:focus {
 .field-icon:hover {
   cursor: pointer;
 }
+.SchdlTest {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 24px;
+  line-height: 36px;
+
+  color: #293e6f !important;
+}
+
+.lineThrough {
+  margin-top: 10px;
+  border: 2px solid #eff2f7;
+  transform: rotate(0.22deg);
+}
