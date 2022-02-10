@@ -251,8 +251,10 @@ function NewTest() {
               Start Time:
               <DateTimePicker
                 className={"TimePicker"}
+                style={{outline: "none"}}
                 onChange={(e) => {
                   setSDate(e);
+                  
                 }}
                 value={sDate}
                 required
