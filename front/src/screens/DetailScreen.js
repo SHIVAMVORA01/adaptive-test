@@ -3,7 +3,7 @@ import { Col, Form, InputGroup, Row } from "react-bootstrap";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router-dom";
 import { isExpired, decodeToken } from "react-jwt";
-import $ from "jquery";
+import ProtectUrl from "../components/TestScreeen/ProtectUrl";
 import "../css/LoginScreen.css";
 
 function DetailScreen() {
@@ -20,15 +20,22 @@ function DetailScreen() {
   const [formData, updateFormData] = useState(initialFormData);
   const navigate = useNavigate();
   useEffect(() => {
+    let username = localStorage.getItem("admin");
+    let path = ProtectUrl.protect();
     const token = localStorage.getItem("access_token");
     const isMyTokenExpired = isExpired(token);
-
     if (!isMyTokenExpired) {
       if (localStorage.getItem("result")) {
         navigate("/result");
       } else {
-        navigate("/details");
+        if (username === "user" && path !== "") {
+          navigate(ProtectUrl.protect());
+        } else if (username === "admin" || username === null) {
+          navigate(-1);
+        }
       }
+    } else if (isMyTokenExpired) {
+      navigate("/logout");
     }
   }, []);
   const handleChange = (e) => {

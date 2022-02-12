@@ -301,22 +301,6 @@ export default function PersonalityResultComp({
       <div class="container">
         <div class="starter-template" id="generatePdf">
           <p>
-            {" "}
-            <b>
-              NOTE: The report sent to your computer screen upon the completion
-              of the IPIP-NEO is only a temporary web page. When you exit your
-              web browser you will not be able to return to this URL to
-              re-access your report. No copies of the report are sent to anyone.
-              IF YOU WANT A PERMANENT COPY OF THE REPORT, YOU MUST SAVE THE WEB
-              PAGE TO YOUR HARD DRIVE OR OTHER STORAGE MEDIUM, AND/OR PRINT THE
-              REPORT WHILE YOU ARE STILL VIEWING IT IN YOUR WEB BROWSER.
-              Probably the best way to save the report is to select and copy the
-              entire page (Ctrl-A, Ctrl-C on most browsers), paste it into a
-              word processor, and save the document.
-            </b>{" "}
-          </p>
-
-          <p>
             This report compares {Nick} from the country {Country} to other
             {Category}. (The name used in this report is either a nickname
             chosen by the person taking the test, or, if a valid nickname was

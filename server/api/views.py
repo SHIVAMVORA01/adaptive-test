@@ -300,7 +300,7 @@ def results(request,name):
 def converttoist(datex):
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
-    utc = datetime.datetime.strptime(datex, '%Y-%m-%d %H:%M:%S')
+    utc = datetime.datetime.strptime(datex.split('.')[0], '%Y-%m-%d %H:%M:%S')
     
     # Tell the datetime object that it's in UTC time zone since 
     # datetime objects are 'naive' by default
@@ -571,7 +571,7 @@ def addQs(request):
                     if qslen%2==0:
                         qsmrks= (20/qslen)
                     else:
-                        qsmrks=math.ceil(20/qslen)
+                        qsmrks=math.floor(20/qslen)
                 else:
                     qsmrks=20          
                 for x in qsDict:
@@ -690,6 +690,7 @@ def tests(request,idd=0):
                     test.test_start=data['start']
                     test.test_end=data['end']
                     test.save()
+                return JsonResponse('done',safe=False) 
         elif request.method == 'DELETE':
             Test.objects.get(id=idd).delete()        
             return JsonResponse('Created',safe=False) 
@@ -698,16 +699,68 @@ def tests(request,idd=0):
 
 @csrf_exempt    
 def getTests(request):
-    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
-        if request.method == 'GET':
-            d = datetime.datetime.utcnow()
-            stests = Test.objects.filter(Q(test_end__lte=d) | Q(test_start__lt=d))
-            utests = Test.objects.filter(test_start__gt=d) 
-            stestS = TestSerializer(stests,many=True)
-            utestS = TestSerializer(utests,many=True)
-            return JsonResponse({"stests":stestS.data,"utests":utestS.data},safe=False)
+    if request.method == 'GET':
+        d = datetime.datetime.utcnow()
+        stests = Test.objects.filter(Q(test_end__lte=d) | Q(test_start__lt=d))
+        utests = Test.objects.filter(test_start__gt=d) 
+        stestS = TestSerializer(stests,many=True)
+        utestS = TestSerializer(utests,many=True)
+        presentTest=Test.objects.filter(test_start__lte = d,test_end__gt=d)
+        bb=[]
+        if(presentTest.exists()):
+            b={}
+            b['name']=presentTest[0].test_name
+            b['start']="{0} {1}".format(presentTest[0].test_start.date(),str(presentTest[0].test_start.time()).split('.')[0])
+            b['start'] = converttoist(b['start'])
+            b['start']=b['start'][0]
+            dicTime=durationBtwnDates(presentTest[0].test_start,presentTest[0].test_end)
+            b['duration']=dicTime['duration']
+            b['ends_in']=durationBtwnDates(datetime.datetime(d.year,d.month,d.day,d.hour,d.minute,d.second),datetime.datetime(presentTest[0].test_end.year,presentTest[0].test_end.month,presentTest[0].test_end.day,presentTest[0].test_end.hour,presentTest[0].test_end.minute,presentTest[0].test_end.second))['total_seconds']
+            bb.append(b)
+        cc=[]
+        for x in utests:
+            c={}
+            c['name']=x.test_name
+            c['start']="{0} {1}".format(x.test_start.date(),x.test_start.time())
+            c['start'] = converttoist(c['start'])
+            c['start']=c['start'][0]
+            dicTime=durationBtwnDates(x.test_start,x.test_end)
+            c['duration']=dicTime['duration']
+            c['starts_in']=durationBtwnDates(datetime.datetime(d.year,d.month,d.day,d.hour,d.minute,d.second),datetime.datetime(x.test_start.year,x.test_start.month,x.test_start.day,x.test_start.hour,x.test_start.minute,x.test_start.second))['total_seconds']
+            cc.append(c)
+        return JsonResponse({"stests":stestS.data,"utests":utestS.data,'upcoming_test':cc,'ongoing_test':bb},safe=False)
+
+def durationBtwnDates(start_date_time,end_date_time):
+    diff=end_date_time-start_date_time
+    seconds_in_day = 24 * 60 * 60
+    vv=divmod(diff.days * seconds_in_day + diff.seconds, 60)
+    time=vv[0]*60+vv[1]
+    total_seconds=vv[0]*60+vv[1]
+    day = time // (24 * 3600)
+    time = time % (24 * 3600)
+    hour = time // 3600
+    time %= 3600
+    minutes = time // 60
+    time %= 60
+    seconds = time
+    if day<1:
+        if hour<1:
+            if minutes<1:
+                duration='{} secs'.format(seconds)
+            elif minutes==1:
+                duration='{} min {} secs'.format(minutes,seconds)
+            else:
+                duration='{} mins {} secs'.format(minutes,seconds)
+        elif hour==1:
+            duration='{} hr {} mins'.format(hour,minutes)
+        else:
+            duration='{} hrs {} mins'.format(hour,minutes)
+    elif day==1:
+        duration='{} day {} hrs'.format(day,hour)
     else:
-        return HttpResponseBadRequest()
+        duration='{} days {} hr'.format(day,hour)
+    return {'day':day,'hour':hour,'minutes':minutes,'seconds':seconds,'duration':duration,'total_seconds':total_seconds}
+
 
 @csrf_exempt
 def getCodingTests(request,tid=0):

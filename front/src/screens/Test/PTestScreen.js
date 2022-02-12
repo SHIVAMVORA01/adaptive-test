@@ -40,7 +40,9 @@ function PTestScreen() {
     let flag = true;
     if (!(localStorage.getItem("test5") && !localStorage.getItem("test6"))) {
       if (!localStorage.getItem("test6")) {
-        navigate(ProtectUrl.protect());
+        let az = ProtectUrl.protect();
+        if (az !== "") navigate(az);
+        navigate(-1);
         flag = false;
       }
     }
@@ -71,7 +73,7 @@ function PTestScreen() {
                 maxMarks: maxMarks,
                 testId: localStorage.getItem("testId"),
                 gotMarks: gotMarks,
-                check_result:0
+                check_result: 0,
               },
             })
             .then((res) => {

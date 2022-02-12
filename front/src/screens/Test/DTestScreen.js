@@ -6,6 +6,7 @@ import { Col, Modal, Button, Row } from "react-bootstrap";
 import QuestionNavigatorComp from "../../components/TestScreeen/QuestionNavigatorComp";
 import "../../css/TestScreen.css";
 import { useNavigate } from "react-router";
+import $ from "jquery";
 import { isExpired, decodeToken } from "react-jwt";
 import CustomTimer from "../Admin/CustomTimer";
 import getCurrentTime from "../../components/TestScreeen/dateCalc";
@@ -41,7 +42,9 @@ function DTestScreen() {
     let flag = true;
     if (!(localStorage.getItem("test4") && !localStorage.getItem("test5"))) {
       if (!localStorage.getItem("test5")) {
-        navigate(ProtectUrl.protect());
+        let az = ProtectUrl.protect();
+        if (az !== "") navigate(az);
+        navigate(-1);
         flag = false;
       }
     }
@@ -69,7 +72,7 @@ function DTestScreen() {
                 maxMarks: maxMarks,
                 testId: localStorage.getItem("testId"),
                 gotMarks: gotMarks,
-                check_result:0
+                check_result: 0,
               },
             })
             .then((res) => {
@@ -207,7 +210,6 @@ function DTestScreen() {
                     setAns(ar);
                     setQsno(test["currentQsNo"] - 1);
                     setQs(test["question"]);
-
                     var ob = new Date();
                     console.log(test["strtTime"]);
                     console.log(ob.toLocaleTimeString());
@@ -287,12 +289,12 @@ function DTestScreen() {
     secs = secs + parseInt(x[0]) * 3600 + parseInt(x[1]) * 60 + parseInt(x[2]);
     return secs;
   }
-
   function getRandomInt(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min) + min); //The maximum is exclusive and the minimum is inclusive
   }
+
   function click(e) {
     e.preventDefault();
     var myans = -1;
@@ -356,13 +358,21 @@ function DTestScreen() {
       test["currentQsNo"] = test["currentQsNo"] + 1;
       localStorage.setItem("test5", JSON.stringify(test));
       e.target.reset();
+      checkBoxToggle(e);
     }
   }
   function handleCloseSChange(e) {
     setCountWindowAwayModal(false);
     GoInFullscreen(document.querySelector("#element"));
   }
-
+  function checkBoxToggle(e, optId = undefined) {
+    $(".form-check input.qsRadio").removeAttr("checked");
+    if (optId !== undefined) {
+      var input = $(`.form-check input#${optId}`);
+      input.attr("checked", "checked");
+    }
+    e.preventDefault();
+  }
   return (
     <div>
       <Modal
@@ -471,6 +481,7 @@ function DTestScreen() {
                           qsno={qsno}
                           level={current}
                           question={qs[qsno].ques}
+                          checkBoxToggle={checkBoxToggle}
                           options={qs[qsno].options}
                           qsimg={qs[qsno].img}
                         ></QuestionComp>

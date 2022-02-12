@@ -51,6 +51,7 @@ function QuestionComp({
               <div className="TestQs">
                 <TextAreaAutoSize
                   text={question}
+                  checkBoxToggle={checkBoxToggle}
                   isQs={true}
                 ></TextAreaAutoSize>
               </div>

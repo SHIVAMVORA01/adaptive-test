@@ -22,6 +22,12 @@ function ScheduledTest() {
   const [valueStartCheck, onChangeStartCheck] = useState(new Date());
   const [valueEndCheck, onChangeEndCheck] = useState(new Date());
 
+  const [apt, setApt] = useState({});
+  const [cf, setCF] = useState({});
+  const [c, setC] = useState({});
+  const [domain, setDomain] = useState({});
+  const [p, setP] = useState({});
+  const [aw, setAW] = useState({});
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -61,6 +67,12 @@ function ScheduledTest() {
     let s1 = new Date(test.test_end);
 
     setHeader(test.test_name);
+    setApt(test.apt);
+    setC(test.c);
+    setCF(test.cf);
+    setDomain(test.dom);
+    setP(test.p);
+    setAW(test.aw);
     let date = s.toLocaleDateString();
     console.log(date);
     console.log(s);
@@ -166,7 +178,6 @@ function ScheduledTest() {
 
   function startTest(tid) {
     localStorage.setItem("testId", tid);
-    localStorage.setItem("admin", "admin");
     var ob = new Date();
     var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
     var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
@@ -232,6 +243,128 @@ function ScheduledTest() {
                 }}
                 value={valueEnd}
               />
+            </Col>
+          </Row>
+          <Row style={{ margin: "2% 0" }}>
+            <Col md={3}>Apt Qs: </Col>
+            <Col md={3}>
+              <input
+                type="number"
+                defaultValue={apt.qs}
+                style={{ width: "100%" }}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+            <Col md={3}>Apt Time: </Col>
+            <Col md={3}>
+              <input
+                type="time"
+                style={{ width: "fit-content" }}
+                defaultValue={apt.time}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+          </Row>
+          <Row style={{ margin: "2% 0" }}>
+            <Col md={3}>CF Qs: </Col>
+            <Col md={3}>
+              <input
+                type="number"
+                defaultValue={cf.qs}
+                style={{ width: "100%" }}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+            <Col md={3}>CF Time: </Col>
+            <Col md={3}>
+              <input
+                type="time"
+                style={{ width: "fit-content" }}
+                defaultValue={cf.time}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+          </Row>
+          <Row style={{ margin: "2% 0" }}>
+            <Col md={3}>C Qs: </Col>
+            <Col md={3}>
+              <input
+                type="number"
+                defaultValue={c.qs}
+                disabled
+                style={{ width: "100%" }}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+            <Col md={3}>C Time: </Col>
+            <Col md={3}>
+              <input
+                type="time"
+                style={{ width: "fit-content" }}
+                defaultValue={c.time}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+          </Row>
+          <Row style={{ margin: "2% 0" }}>
+            <Col md={3}>D Qs: </Col>
+            <Col md={3}>
+              <input
+                type="number"
+                defaultValue={domain.qs}
+                style={{ width: "100%" }}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+            <Col md={3}>D Time: </Col>
+            <Col md={3}>
+              <input
+                type="time"
+                style={{ width: "fit-content" }}
+                defaultValue={domain.time}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+          </Row>
+          <Row style={{ margin: "2% 0" }}>
+            <Col md={3}>P Qs: </Col>
+            <Col md={3}>
+              <input
+                type="number"
+                defaultValue={p.qs}
+                style={{ width: "100%" }}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+            <Col md={3}>P Time: </Col>
+            <Col md={3}>
+              <input
+                type="time"
+                style={{ width: "fit-content" }}
+                defaultValue={p.time}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+          </Row>
+          <Row style={{ margin: "2% 0" }}>
+            <Col md={3}>AW Qs: </Col>
+            <Col md={3}>
+              <input
+                type="number"
+                defaultValue={aw.qs}
+                disabled
+                style={{ width: "100%" }}
+                onChange={(e) => {}}
+              ></input>
+            </Col>
+            <Col md={3}>AW Time: </Col>
+            <Col md={3}>
+              <input
+                type="time"
+                style={{ width: "fit-content" }}
+                defaultValue={aw.time}
+                onChange={(e) => {}}
+              ></input>
             </Col>
           </Row>
         </Modal.Body>

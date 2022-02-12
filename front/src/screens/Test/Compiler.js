@@ -143,16 +143,23 @@ export default function Compiler() {
   const [testFinshBool, setTestFinishBool] = useState(false);
   const [md, setMd] = useState(false);
   const [timeFF, setTimeFF] = useState();
+  const [isValidPath, setIsValidPath] = useState(false);
 
   useEffect(() => {
     let flag = true;
     if (!(localStorage.getItem("test2") && !localStorage.getItem("test4"))) {
       if (!localStorage.getItem("test4")) {
-        navigate(ProtectUrl.protect());
+        let az = ProtectUrl.protect();
+        if (az !== "") {
+          navigate(az);
+        } else {
+          navigate(-1);
+        }
         flag = false;
       }
     }
     if (flag) {
+      setIsValidPath(true);
       var full_screen_element = document.fullscreenElement;
 
       if (full_screen_element === null) {
@@ -179,7 +186,7 @@ export default function Compiler() {
                 maxMarks: maxMarks,
                 testId: localStorage.getItem("testId"),
                 gotMarks: gotMarks,
-                check_result:0
+                check_result: 0,
               },
             })
             .then((res) => {
@@ -1253,6 +1260,11 @@ export default function Compiler() {
     "use strict";
 
     if (submitCode_qs1) {
+      if(
+        q1_testCase_1_output_error!==undefined &&
+        q1_testCase_2_output_error!==undefined &&
+        q1_testCase_3_output_error!==undefined 
+        ){
       if (
         !q1_testCase_1_output_error &&
         !q1_testCase_2_output_error &&
@@ -1270,8 +1282,20 @@ export default function Compiler() {
         document.getElementById("uncontrolled-tab-example-tab-Q1").style.color =
           "white";
       }
+      }else{
+        document.getElementById(
+          "uncontrolled-tab-example-tab-Q1"
+        ).style.backgroundColor = "#6c757d"; //grey
+        document.getElementById("uncontrolled-tab-example-tab-Q1").style.color =
+          "white";
+      }
     }
     if (submitCode_qs2) {
+      if(
+        q2_testCase_1_output_error!==undefined &&
+        q2_testCase_2_output_error!==undefined &&
+        q2_testCase_3_output_error!==undefined 
+        ){
       if (
         !q2_testCase_1_output_error &&
         !q2_testCase_2_output_error &&
@@ -1289,8 +1313,20 @@ export default function Compiler() {
         document.getElementById("uncontrolled-tab-example-tab-Q2").style.color =
           "white";
       }
+    }else{
+      document.getElementById(
+        "uncontrolled-tab-example-tab-Q2"
+      ).style.backgroundColor = "#6c757d"; //grey
+      document.getElementById("uncontrolled-tab-example-tab-Q2").style.color =
+        "white";
+    }
     }
     if (submitCode_qs3) {
+      if(
+        q3_testCase_1_output_error!==undefined &&
+        q3_testCase_2_output_error!==undefined &&
+        q3_testCase_3_output_error!==undefined 
+        ){
       if (
         !q3_testCase_1_output_error &&
         !q3_testCase_2_output_error &&
@@ -1308,6 +1344,13 @@ export default function Compiler() {
         document.getElementById("uncontrolled-tab-example-tab-Q3").style.color =
           "white";
       }
+    }else{
+      document.getElementById(
+        "uncontrolled-tab-example-tab-Q3"
+      ).style.backgroundColor = "#6c757d"; //grey
+      document.getElementById("uncontrolled-tab-example-tab-Q3").style.color =
+        "white";
+    }
     }
     let sum = 0;
     let sum1 = 0;
@@ -1353,13 +1396,14 @@ export default function Compiler() {
       sum = sum + 15;
     }
     let ax = JSON.parse(localStorage.getItem("test4"));
-
-    ax["total_q_marks"] = sum;
-    ax["q1_marks"] = sum1;
-    ax["q2_marks"] = sum2;
-    ax["q3_marks"] = sum3;
-    ax["marks"] = [sum1, sum2, sum3];
-    localStorage.setItem("test4", JSON.stringify(ax));
+    if (ax !== undefined && isValidPath) {
+      ax["total_q_marks"] = sum;
+      ax["q1_marks"] = sum1;
+      ax["q2_marks"] = sum2;
+      ax["q3_marks"] = sum3;
+      ax["marks"] = [sum1, sum2, sum3];
+      localStorage.setItem("test4", JSON.stringify(ax));
+    }
   });
 
   function GoInFullscreen(element) {

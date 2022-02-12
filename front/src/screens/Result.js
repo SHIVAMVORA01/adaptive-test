@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { isExpired, decodeToken } from "react-jwt";
 import { useNavigate } from "react-router";
 import axiosInstance from "../axios";
-import { Col, Modal, Row } from "react-bootstrap";
+import { Col, Modal, Row, Card} from "react-bootstrap";
 import TestHeaderComp from "../components/TestScreeen/TestHeaderComp";
 import Chart from "react-apexcharts";
 import "../css/ResultScreen.css";
@@ -128,7 +128,7 @@ function Result() {
           maxMarks: maxMarks,
           gotMarks: gotMarks,
           testId: localStorage.getItem("testId"),
-          check_result:1
+          check_result: 1,
         };
       } else {
         let ax = JSON.parse(current);
@@ -138,6 +138,7 @@ function Result() {
           username: user,
           marks: total,
           testId: localStorage.getItem("testId"),
+          check_result: 1,
         };
       }
       axiosInstance
@@ -322,35 +323,82 @@ function Result() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <p>
-            <Row>
-              {personalityData[0] !== undefined && (
-                <PersonalityResultComp
-                  SEP={personalityData[0].SEP}
-                  SEFP={personalityData[0].SEFP}
-                  LO={personalityData[0].LO}
-                  HI={personalityData[0].HI}
-                  SE={personalityData[0].SE}
-                  SAP={personalityData[0].SAP}
-                  SAFP={personalityData[0].SAFP}
-                  SA={personalityData[0].SA}
-                  SC={personalityData[0].SC}
-                  SCP={personalityData[0].SCP}
-                  SCFP={personalityData[0].SCFP}
-                  flev={personalityData[0].flev}
-                  SOP={personalityData[0].SOP}
-                  SOFP={personalityData[0].SOFP}
-                  SO={personalityData[0].SO}
-                  Nick={personalityData[0].Nick}
-                  Country={personalityData[0].Country}
-                  SNP={personalityData[0].SNP}
-                  SNFP={personalityData[0].SNFP}
-                  Category={personalityData[0].Category}
-                  SN={personalityData[0].SN}
-                />
-              )}{" "}
-            </Row>
-          </p>
+          <Row>
+            <Col md="6">
+              <Card>
+                <Card.Header
+                  style={{
+                    backgroundColor: "#081466",
+                    borderRadius: "14px 14px 0px 0px",
+                    color: "white",
+                    textAlign: "center",
+                    fontSize: "18px",
+                  }}
+                >Personal Details</Card.Header>
+                <Card.Body>
+                  <Card.Text>
+                    Chaitanya Kumbhar
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md="6">
+              <Card style={{margin:"20px"}}>
+                <Card.Header
+                  style={{
+                    backgroundColor: "#081466",
+                    borderRadius: "14px 14px 0px 0px",
+                    color: "white",
+                    textAlign: "center",
+                    fontSize: "18px",
+                  }}
+                >Total Marks Scored</Card.Header>
+                <Card.Body>
+                  <Card.Text>
+                  <Chart
+                      series={mrksScoredPercent}
+                      options={opt1}
+                      type="radialBar"
+                      height={`300px`}
+                    />
+                  <p
+                  style={{
+                    fontFamily: "Poppins",
+                    fontStyle: "normal",
+                    fontWeight: "normal",
+                    fontSize: "14px",
+                    lineHeight: "21px",
+                    textAlign: "center",
+                    color: "#000000",
+
+                  }}
+                  > This score is seen as an indicator of your overall  profile and performance across different skill aspects. </p>
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+          <Row>
+            <Col md="12">
+            <Card
+            >
+                <Card.Header
+                  style={{
+                    backgroundColor: "#081466",
+                    borderRadius: "14px 14px 0px 0px",
+                    color: "white",
+                    textAlign: "center",
+                    fontSize: "18px",
+                  }}
+                >Scores across various domains</Card.Header>
+                <Card.Body>
+                  <Card.Text>
+                    Chaitanya Kumbhar
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+              </Col>
+          </Row>
         </Modal.Body>
       </Modal>
       <Row>
@@ -625,36 +673,44 @@ function Result() {
       {personalityData[0]!==undefined&&  <PersonalityResultComp SEP={personalityData[0].SEP} SEFP={personalityData[0].SEFP} LO={personalityData[0].LO} HI={personalityData[0].HI} SE={personalityData[0].SE} SAP={personalityData[0].SAP} SAFP={personalityData[0].SAFP} SA={personalityData[0].SA} SC={personalityData[0].SC} SCP={personalityData[0].SCP} SCFP={personalityData[0].SCFP} flev={personalityData[0].flev} SOP={personalityData[0].SOP} SOFP={personalityData[0].SOFP} SO={personalityData[0].SO} Nick={personalityData[0].Nick} Country={personalityData[0].Country}
         SNP={personalityData[0].SNP} SNFP={personalityData[0].SNFP} Category={personalityData[0].Category} SN={personalityData[0].SN} />
      } </Row> */}
-      {localStorage.getItem("admin")==="admin" &&  <button
-        type="button"
-        className="btn"
-        onClick={(e) => {
-          localStorage.removeItem("testId");
-          localStorage.removeItem("result");
-          navigate("/admin/home");
-        }}
-        style={{
-          marginTop: "20px",
-          backgroundColor: "red",
-          color: "white",
-          border: "none",
-        }}
-      >
-        Back
-      </button>}
-      {localStorage.getItem("admin")==="user" &&  <button
-        type="button"
-        className="btn"
-        onClick={(e) => navigate("/logout")}
-        style={{
-          marginTop: "20px",
-          backgroundColor: "red",
-          color: "white",
-          border: "none",
-        }}
-      >
-        Logout
-      </button>}
+      {
+        localStorage.getItem("admin") === "admin" && (
+          <button
+            type="button"
+            className="btn"
+            onClick={(e) => {
+              localStorage.removeItem("testId");
+              localStorage.removeItem("result");
+              navigate("/admin/scheduledTest");
+            }}
+            style={{
+              marginTop: "20px",
+              backgroundColor: "red",
+              color: "white",
+              border: "none",
+            }}
+          >
+            Back
+          </button>
+        )
+      }
+      {
+        localStorage.getItem("admin") === "user" && (
+          <button
+            type="button"
+            className="btn"
+            onClick={(e) => navigate("/logout")}
+            style={{
+              marginTop: "20px",
+              backgroundColor: "red",
+              color: "white",
+              border: "none",
+            }}
+          >
+            Logout
+          </button>
+        )
+      }
       <button
         type="button"
         className="btn"
@@ -669,7 +725,7 @@ function Result() {
       >
         View Detailed Report
       </button>
-    </div>
+    </div >
   );
 }
 

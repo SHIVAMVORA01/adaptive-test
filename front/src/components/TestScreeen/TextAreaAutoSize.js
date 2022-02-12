@@ -4,7 +4,7 @@ import TextareaAutosize from "react-textarea-autosize";
 function TextAreaAutoSize({
   text,
   optId,
-  checkBoxToggle,
+  checkBoxToggle = undefined,
   isQs = false,
   isCoding = false,
 }) {
@@ -18,7 +18,9 @@ function TextAreaAutoSize({
               : "form-check-label style-4 textdivOpt"
           }
           onClick={(e) => {
-            if (!isQs) checkBoxToggle(e, optId);
+            if (!isQs) {
+              if (checkBoxToggle !== undefined) checkBoxToggle(e, optId);
+            }
           }}
           readOnly
           style={{

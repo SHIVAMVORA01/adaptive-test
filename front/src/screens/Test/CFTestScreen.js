@@ -7,6 +7,7 @@ import QuestionNavigatorComp from "../../components/TestScreeen/QuestionNavigato
 import "../../css/TestScreen.css";
 import { useNavigate } from "react-router";
 import { isExpired, decodeToken } from "react-jwt";
+import $ from "jquery";
 import CustomTimer from "../Admin/CustomTimer";
 import getCurrentTime from "../../components/TestScreeen/dateCalc";
 import axiosInstance from "../../axios";
@@ -41,7 +42,9 @@ function CFTestScreen() {
     let flag = true;
     if (!(localStorage.getItem("test") && !localStorage.getItem("test2"))) {
       if (!localStorage.getItem("test2")) {
-        navigate(ProtectUrl.protect());
+        let az = ProtectUrl.protect();
+        if (az !== "") navigate(az);
+        navigate(-1);
         flag = false;
       }
     }
@@ -72,7 +75,7 @@ function CFTestScreen() {
                 maxMarks: maxMarks,
                 testId: localStorage.getItem("testId"),
                 gotMarks: gotMarks,
-                check_result:0
+                check_result: 0,
               },
             })
             .then((res) => {
@@ -331,7 +334,6 @@ function CFTestScreen() {
         test["question"].push(easy[index]);
         test["currentLevel"] = 1;
         if (ans.length - 1 !== qsno) test["maxMarks"].push(1);
-
         easy.splice(index, 1);
         break;
       case 2:
@@ -360,13 +362,21 @@ function CFTestScreen() {
       test["currentQsNo"] = test["currentQsNo"] + 1;
       localStorage.setItem("test2", JSON.stringify(test));
       e.target.reset();
+      checkBoxToggle(e);
     }
   }
   function handleCloseSChange(e) {
     setCountWindowAwayModal(false);
     GoInFullscreen(document.querySelector("#element"));
   }
-
+  function checkBoxToggle(e, optId = undefined) {
+    $(".form-check input.qsRadio").removeAttr("checked");
+    if (optId !== undefined) {
+      var input = $(`.form-check input#${optId}`);
+      input.attr("checked", "checked");
+    }
+    e.preventDefault();
+  }
   return (
     <div>
       <Modal
@@ -474,6 +484,7 @@ function CFTestScreen() {
                           ans={ans}
                           qsno={qsno}
                           level={current}
+                          checkBoxToggle={checkBoxToggle}
                           question={qs[qsno].ques}
                           options={qs[qsno].options}
                           qsimg={qs[qsno].img}

@@ -4,23 +4,105 @@ import axiosInstance from "../axios";
 import { useNavigate } from "react-router-dom";
 import { isExpired, decodeToken } from "react-jwt";
 import $ from "jquery";
+import { MDBDataTable } from "mdbreact";
+import CustomTimer from "./Admin/CustomTimer";
 import "../css/LoginScreen.css";
+import ProtectUrl from "../components/TestScreeen/ProtectUrl";
 
 function Login() {
-  const [utests, setUTests] = useState([]);
-  const [stests, setSTests] = useState([]);
   const navigate = useNavigate();
+  const [md, setMd] = useState(false);
+  const [dataUpcoming, setTDataUpcoming] = useState({});
+  const [dataPresent, setTDataPresent] = useState({});
+  const columnsP = [
+    {
+      label: "NAME",
+      field: "name",
+    },
+    {
+      label: "START",
+      field: "start",
+    },
+    {
+      label: "DURATION",
+      field: "duration",
+    },
+
+    {
+      label: "ENDS IN",
+      field: "ends_in",
+    },
+  ];
+  const columnsU = [
+    {
+      label: "NAME",
+      field: "name",
+    },
+    {
+      label: "START",
+      field: "start",
+    },
+    {
+      label: "DURATION",
+      field: "duration",
+    },
+
+    {
+      label: "STARTS IN",
+      field: "starts_in",
+    },
+  ];
   useEffect(() => {
     const token = localStorage.getItem("access_token");
     const isMyTokenExpired = isExpired(token);
 
     if (!isMyTokenExpired) {
       if (localStorage.getItem("result")) {
+        setMd(true);
         navigate("/result");
       } else {
-        navigate("/details");
+        setMd(true);
+        let pathTo = ProtectUrl.protect();
+        navigate(pathTo === "" ? "/details" : pathTo);
       }
     }
+    const data = async () => {
+      await axiosInstance
+        .get("http://127.0.0.1:8000/api/admin/tests")
+        .then((res) => {
+          let ong = res.data.ongoing_test;
+          if (ong.length > 0)
+            ong[0]["ends_in"] = (
+              <CustomTimer
+                isLogin={true}
+                onlyS={true}
+                reset={md}
+                time={ong[0]["ends_in"]}
+                start={!md}
+                style={{ fontSize: "18px" }}
+              ></CustomTimer>
+            );
+          let upt = res.data.upcoming_test;
+          for (let x = 0; x < upt.length; x++) {
+            upt[x]["starts_in"] = (
+              <CustomTimer
+                isLogin={true}
+                onlyS={true}
+                reset={md}
+                time={upt[x]["starts_in"]}
+                start={!md}
+                style={{ fontSize: "18px" }}
+              ></CustomTimer>
+            );
+          }
+          setTDataUpcoming({ columns: columnsU, rows: upt || [] });
+          setTDataPresent({ columns: columnsP, rows: ong || [] });
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    };
+    data();
   }, []);
   function showHide(e) {
     $(e.target).toggleClass("fa-eye fa-eye-slash");
@@ -57,54 +139,58 @@ function Login() {
         console.log(res.data);
         if (res.data.exist) {
           let adminn = res.data.admin;
-            axiosInstance
-              .post("token/", {
-                username: formData.username,
-                password: formData.password,
-              })
-              .then(async (res) => {
-                let acc_token = "JWT " + res.data.access;
+          axiosInstance
+            .post("token/", {
+              username: formData.username,
+              password: formData.password,
+            })
+            .then(async (res) => {
+              let acc_token = "JWT " + res.data.access;
               axiosInstance.defaults.headers["Authorization"] = acc_token;
-                let xx = await availabilty(acc_token);
-                if (xx !== -1 || adminn) {
-                  localStorage.setItem("testId", xx); //imp
-                  localStorage.setItem("admin", "user");
-                  var ob = new Date();
-                  var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-                  var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-                  var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
-                  localStorage.setItem("access_token", res.data.access);
-                  localStorage.setItem("username", formData.username);
-                  localStorage.setItem("refresh_token", res.data.refresh);
-                  const data = async () =>
-                    axiosInstance
-                      .post(`api/results/${formData.username}`, {
-                        data: { testId: xx },
-                      })
-                      .then((res) => {
-                        if (res.data.resultExists) {
-                          if (res.data.end) {
-                            navigate("/result");
-                          } else {
-                            alert("Already started on different device");
-                            navigate("/logout");
-                          }
+              let xx = await availabilty(acc_token);
+              if (xx !== -1 || adminn) {
+                localStorage.setItem("testId", xx); //imp
+                localStorage.setItem("admin", "user");
+                var ob = new Date();
+                var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+                var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+                var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
+                localStorage.setItem("access_token", res.data.access);
+                localStorage.setItem("username", formData.username);
+                localStorage.setItem("refresh_token", res.data.refresh);
+                const data = async () =>
+                  axiosInstance
+                    .post(`api/results/${formData.username}`, {
+                      data: { testId: xx },
+                    })
+                    .then((res) => {
+                      if (res.data.resultExists) {
+                        if (res.data.end) {
+                          setMd(true);
+                          navigate("/result");
                         } else {
-                          navigate("/details");
+                          setMd(true);
+                          alert("Already started on different device");
+                          navigate("/logout");
                         }
-                      });
-                      if (adminn) {
-                        localStorage.setItem("admin", "admin");
-                        localStorage.removeItem("testId");
-                        navigate("/admin/home");
                       } else {
-                  data();
+                        setMd(true);
+                        navigate("/details");
                       }
+                    });
+                if (adminn) {
+                  localStorage.setItem("admin", "admin");
+                  localStorage.removeItem("testId");
+                  setMd(true);
+                  navigate("/admin/home");
                 } else {
-                  alert("test not available");
+                  data();
                 }
-              });
-          } else {
+              } else {
+                alert("test not available");
+              }
+            });
+        } else {
           alert("User Doesn't exists");
         }
       });
@@ -187,73 +273,72 @@ function Login() {
             </form>
           </div>
         </Col>
-        <Col style={{ padding: "0", margin: "0" }}>
+        <Col style={{ padding: "0", marginTop: "40px" }}>
           <div>
-          <Row style={{ margin: "0 0 0 10%" }}>
-        <Col style={{ marginRight: "0%", height:"900px"}}>
-          {" "}
-          <div
-            className="basicRec"
-          >
-            <h4 style={{ paddingLeft: "30%", paddingTop: "10px" }}>
-              Upcoming Test
-            </h4>
-            <div className="lineThrough"></div>
-            <div
-              className="scrollbar"
-              id="style-4"
-              style={{ height: window.screen.height - 480 }}
-            >
-              {utests.map((t, index) => {
-                return (
-                  <Row
+            <Row style={{ margin: "0 0 20px 10%" }}>
+              <Col style={{ marginRight: "0%" }}>
+                {" "}
+                <div className="basicRec">
+                  <h4
                     style={{
-                      backgroundColor: "white",
-                      borderColor: "#F0F0F0",
-                      marginBottom: "1px",
-                      boxShadow: "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-                      borderRadius: "10px",
+                      paddingTop: "10px",
+                      color: "#293e6f",
+                      textAlign: "center",
                     }}
                   >
-                    <Col>
-                    <button
-                      type="button"           
-                      style={{
-                        width: "100%",
-                        backgroundColor: "white",
-                        borderColor: "#F0F0F0",
-                        marginBottom: "1px",
-                        border: "none",
-                      }}
-                      key={index}
-                    >
-                      {t.test_name}
-                    </button>
-                    </Col>
-                    <Col md={1}>
-                      <i
-                        onClick={() => {}}
-                        class="fa fa-eye"
-                        style={{
-                          backgroundColor: "white",
-                          color: "green",
-                          float: "right",
-                          marginRight: "15px",
-                          marginTop: "10px",
-                        }}
-                      ></i>
-                    </Col>
-                  </Row>
-                );
-              })}
-            </div>
+                    Ongoing Test
+                  </h4>
+
+                  <MDBDataTable
+                    striped
+                    bordered
+                    noBottomColumns
+                    hover
+                    searching={false}
+                    displayEntries={false}
+                    entries={1}
+                    pagesAmount={1}
+                    paging={false}
+                    noRecordsFoundLabel={"No Ongoing Test"}
+                    data={dataPresent}
+                  />
+                </div>
+              </Col>
+            </Row>
+            <Row style={{ margin: "0 0 0 10%" }}>
+              <Col style={{ marginRight: "0%" }}>
+                {" "}
+                <div className="basicRec">
+                  <h4
+                    style={{
+                      paddingTop: "10px",
+                      color: "#293e6f",
+                      textAlign: "center",
+                    }}
+                  >
+                    Upcoming Test
+                  </h4>
+
+                  <MDBDataTable
+                    striped
+                    bordered
+                    noBottomColumns
+                    hover
+                    searching={false}
+                    displayEntries={false}
+                    entries={4}
+                    pagesAmount={1}
+                    paging={false}
+                    noRecordsFoundLabel={"No recent upcoming Test"}
+                    data={dataUpcoming}
+                  />
+                </div>
+              </Col>
+            </Row>
           </div>
         </Col>
       </Row>
-      </div>
-      </Col>
-      </Row>
-      </div>
+    </div>
   );
 }
 

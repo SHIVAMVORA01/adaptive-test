@@ -25,6 +25,7 @@ import Page_404 from "./screens/Page_404";
 import "./css/App.css";
 import ImageUpload from "./components/Admin/ImageUpload";
 import DetailScreen from "./screens/DetailScreen";
+import PrivateRoute from "./components/PrivateRoute";
 function App() {
   return (
     <div className="App" id="element">
@@ -110,52 +111,52 @@ function App() {
                 </Row>
               }
             />
-            <Route
-              path="/admin/home"
-              exact
-              element={
-                <Row style={{ margin: "20px 0 0 0" }}>
-                  <Col style={{ padding: "10px 90px" }}>
-                    <AdminHome />
-                  </Col>
-                </Row>
-              }
-            />
-            <Route
-              path="/admin/addQs"
-              exact
-              element={
-                <Row style={{ margin: "20px 0 0 0" }}>
-                  <Col style={{ padding: "10px 90px" }}>
-                    <AdminAddQs />
-                  </Col>
-                </Row>
-              }
-            />
-            <Route
-              path="/admin/newTest"
-              exact
-              element={
-                <Row style={{ margin: "20px 0 0 0" }}>
-                  <Col style={{ padding: "10px 90px" }}>
-                    <NewTest />
-                  </Col>
-                </Row>
-              }
-            />
-            <Route
-              path="/admin/setQs"
-              exact
-              element={
-                <Row style={{ margin: "20px 0 0 0" }}>
-                  <Col style={{ padding: "10px 90px" }}>
-                    <SetQuestion />
-                  </Col>
-                </Row>
-              }
-            />
+            <Route exact path="/" element={<PrivateRoute />}>
+              <Route
+                path="/admin/home"
+                exact
+                element={
+                  <Row style={{ margin: "20px 0 0 0" }}>
+                    <Col style={{ padding: "10px 90px" }}>
+                      <AdminHome />
+                    </Col>
+                  </Row>
+                }
+              />
+            </Route>
+
+            <Route exact path="/" element={<PrivateRoute />}>
+              <Route
+                path="/admin/newTest"
+                exact
+                element={
+                  <Row style={{ margin: "20px 0 0 0" }}>
+                    <Col style={{ padding: "10px 90px" }}>
+                      <NewTest />
+                    </Col>
+                  </Row>
+                }
+              />
+            </Route>
+
+            <Route exact path="/" element={<PrivateRoute />}>
+              <Route
+                path="/admin/setQs"
+                exact
+                element={
+                  <Row style={{ margin: "20px 0 0 0" }}>
+                    <Col style={{ padding: "10px 90px" }}>
+                      <SetQuestion />
+                    </Col>
+                  </Row>
+                }
+              />
+            </Route>
+
             <Route path="/home" exact element={<Home />} />
+
             <Route path="/" exact element={<Home />} />
+
             <Route
               path="/admin/personality"
               exact
@@ -200,28 +201,32 @@ function App() {
                 </Row>
               }
             />
-            <Route
-              path="/admin/scheduledTest"
-              exact
-              element={
-                <Row style={{ margin: "20px 0 0 0" }}>
-                  <Col style={{ padding: "10px 90px" }}>
-                    <ScheduledTest />
-                  </Col>
-                </Row>
-              }
-            />
-            <Route
-              path="/admin/viewScheduledTest"
-              exact
-              element={
-                <Row style={{ margin: "20px 0 0 0" }}>
-                  <Col style={{ padding: "10px 90px" }}>
-                    <ViewSchdlTest />
-                  </Col>
-                </Row>
-              }
-            />
+            <Route exact path="/" element={<PrivateRoute />}>
+              <Route
+                path="/admin/scheduledTest"
+                exact
+                element={
+                  <Row style={{ margin: "20px 0 0 0" }}>
+                    <Col style={{ padding: "10px 90px" }}>
+                      <ScheduledTest />
+                    </Col>
+                  </Row>
+                }
+              />
+            </Route>
+            <Route exact path="/" element={<PrivateRoute />}>
+              <Route
+                path="/admin/viewScheduledTest"
+                exact
+                element={
+                  <Row style={{ margin: "20px 0 0 0" }}>
+                    <Col style={{ padding: "10px 90px" }}>
+                      <ViewSchdlTest />
+                    </Col>
+                  </Row>
+                }
+              />
+            </Route>
             <Route
               path="/admin/compiler"
               exact
