@@ -2,12 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Button, Col, Row } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router";
-import Clock from "../../img/Clock.svg";
 import "../../css/AdminHomeScreen.css";
 import $ from "jquery";
 import sidFunc from "./sidFunc";
 import DateTimePicker from "react-datetime-picker";
-import TimeField from "react-simple-timefield";
 import axiosInstance from "../../axios";
 function NewTest() {
   //Current Sec Data
@@ -483,21 +481,20 @@ function NewTest() {
                                 padding: "11px 10px",
                               }}
                             >
-                              <TimeField
+                              <input
+                                type="time"
+                                title={"Minimum should be 20 seconds"}
                                 showSeconds
                                 className="timeFieldInput"
                                 id="timeFieldInput1"
                                 minTime="00:00:20"
+                                step={1}
                                 onChange={(e, value) => {
                                   console.log(e.target.value);
                                   var hms = e.target.value; // your input string
                                   var a = hms.split(":"); // split it at the colons
-
-                                  // minutes are worth 60 seconds. Hours are worth 60 minutes.
                                   var seconds =
-                                    +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
-
-                                  console.log(seconds);
+                                    a[0] * 60 * 60 + +a[1] * 60 + +a[2];
                                   if (seconds > 19) {
                                     if (sid - 1 === 1) {
                                       setCFDic({
@@ -535,58 +532,20 @@ function NewTest() {
                                       totalQs: CurrentDic.totalQs,
                                     });
                                   } else {
-                                    alert("Minimum time should be 20 secs");
-
-                                    if (sid - 1 === 1) {
-                                      setCFDic({
-                                        time: "00:59:59",
-                                        totalQs: CurrentDic.totalQs,
-                                      });
-                                    } else if (sid - 1 === 2) {
-                                      setDDic({
-                                        time: "00:59:59",
-                                        totalQs: CurrentDic.totalQs,
-                                      });
-                                    } else if (sid - 1 === 3) {
-                                      setPDic({
-                                        time: "00:59:59",
-                                        totalQs: 35, //$,
-                                      });
-                                    } else if (sid - 1 == 4) {
-                                      setCDic({
-                                        time: "00:59:59",
-                                        totalQs: 3,
-                                      });
-                                    } else if (sid - 1 == 5) {
-                                      setAWDic({
-                                        time: "00:59:59",
-                                        totalQs: 3,
-                                      });
-                                    } else if (sid - 1 === 0) {
-                                      setAptDic({
-                                        time: "00:59:59",
-                                        totalQs: CurrentDic.totalQs,
-                                      });
-                                    }
-                                    setCurrentDic({
-                                      time: "00:59:59",
-                                      totalQs: CurrentDic.totalQs,
-                                    });
+                                    alert(
+                                      "Minimum time should be greater than 20 seconds"
+                                    );
                                   }
                                 }}
-                                style={{ width: "80px", border: "none" }}
+                                style={{
+                                  paddingLeft: "3%",
+                                  textJustify: "auto",
+                                  width: "100%",
+                                  color: "#293e6f",
+                                  border: "none",
+                                }}
                                 value={CurrentDic.time}
                               />
-                              <img
-                                style={{ height: "25px", float: "right" }}
-                                alt="logo"
-                                src={Clock}
-                                onClick={(e) => {
-                                  document
-                                    .getElementById("timeFieldInput1")
-                                    .focus();
-                                }}
-                              ></img>{" "}
                             </div>
                           </Col>
                         </Row>
@@ -688,7 +647,7 @@ function NewTest() {
                 {parseInt(sid - 1) !== 5 && parseInt(sid) !== 4 && (
                   <Row style={{ margin: "44px 0" }}>
                     {" "}
-                    <Col>
+                    <Col md={6} style={{ padding: "0" }}>
                       <div
                         className="basicRec easyMedHard"
                         style={{
@@ -697,20 +656,19 @@ function NewTest() {
                           padding: "11px 10px",
                         }}
                       >
-                        <TimeField
+                        <input
+                          type="time"
+                          title={"Minimum should be 20 seconds"}
                           showSeconds
                           className="timeFieldInput"
                           id="timeFieldInput1"
                           minTime="00:00:20"
+                          step={1}
                           onChange={(e, value) => {
                             console.log(e.target.value);
                             var hms = e.target.value; // your input string
                             var a = hms.split(":"); // split it at the colons
-
-                            // minutes are worth 60 seconds. Hours are worth 60 minutes.
-                            var seconds = +a[0] * 60 * 60 + +a[1] * 60 + +a[2];
-
-                            console.log(seconds);
+                            var seconds = a[0] * 60 * 60 + +a[1] * 60 + +a[2];
                             if (seconds > 19) {
                               if (sid - 1 === 1) {
                                 setCFDic({
@@ -748,56 +706,20 @@ function NewTest() {
                                 totalQs: CurrentDic.totalQs,
                               });
                             } else {
-                              alert("Minimum time should be 20 secs");
-
-                              if (sid - 1 === 1) {
-                                setCFDic({
-                                  time: "00:59:59",
-                                  totalQs: CurrentDic.totalQs,
-                                });
-                              } else if (sid - 1 === 2) {
-                                setDDic({
-                                  time: "00:59:59",
-                                  totalQs: CurrentDic.totalQs,
-                                });
-                              } else if (sid - 1 === 3) {
-                                setPDic({
-                                  time: "00:59:59",
-                                  totalQs: 35, //$,
-                                });
-                              } else if (sid - 1 == 4) {
-                                setCDic({
-                                  time: "00:59:59",
-                                  totalQs: 3,
-                                });
-                              } else if (sid - 1 == 5) {
-                                setAWDic({
-                                  time: "00:59:59",
-                                  totalQs: 3,
-                                });
-                              } else if (sid - 1 === 0) {
-                                setAptDic({
-                                  time: "00:59:59",
-                                  totalQs: CurrentDic.totalQs,
-                                });
-                              }
-                              setCurrentDic({
-                                time: "00:59:59",
-                                totalQs: CurrentDic.totalQs,
-                              });
+                              alert(
+                                "Minimum time should be greater than 20 seconds"
+                              );
                             }
                           }}
-                          style={{ width: "80px", border: "none" }}
+                          style={{
+                            paddingLeft: "3%",
+                            textJustify: "auto",
+                            width: "100%",
+                            color: "#293e6f",
+                            border: "none",
+                          }}
                           value={CurrentDic.time}
                         />
-                        <img
-                          style={{ height: "25px", float: "right" }}
-                          alt="logo"
-                          src={Clock}
-                          onClick={(e) => {
-                            document.getElementById("timeFieldInput1").focus();
-                          }}
-                        ></img>{" "}
                       </div>
                     </Col>
                     <Col style={{ padding: "0px" }}>

@@ -111,7 +111,7 @@ function App() {
                 </Row>
               }
             />
-            <Route exact path="/" element={<PrivateRoute />}>
+            <Route exact path="/admin/home" element={<PrivateRoute />}>
               <Route
                 path="/admin/home"
                 exact
@@ -125,7 +125,7 @@ function App() {
               />
             </Route>
 
-            <Route exact path="/" element={<PrivateRoute />}>
+            <Route exact path="/admin/newTest" element={<PrivateRoute />}>
               <Route
                 path="/admin/newTest"
                 exact
@@ -139,7 +139,7 @@ function App() {
               />
             </Route>
 
-            <Route exact path="/" element={<PrivateRoute />}>
+            <Route exact path="/admin/setQs" element={<PrivateRoute />}>
               <Route
                 path="/admin/setQs"
                 exact
@@ -201,7 +201,7 @@ function App() {
                 </Row>
               }
             />
-            <Route exact path="/" element={<PrivateRoute />}>
+            <Route exact path="/admin/scheduledTest" element={<PrivateRoute />}>
               <Route
                 path="/admin/scheduledTest"
                 exact
@@ -214,7 +214,11 @@ function App() {
                 }
               />
             </Route>
-            <Route exact path="/" element={<PrivateRoute />}>
+            <Route
+              exact
+              path="/admin/viewScheduledTest"
+              element={<PrivateRoute />}
+            >
               <Route
                 path="/admin/viewScheduledTest"
                 exact

@@ -8,6 +8,7 @@ import { MDBDataTable } from "mdbreact";
 import CustomTimer from "./Admin/CustomTimer";
 import "../css/LoginScreen.css";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
+import AdminProtectUrl from "../components/Admin/AdminProtectUrl";
 
 function Login() {
   const navigate = useNavigate();
@@ -62,8 +63,15 @@ function Login() {
         navigate("/result");
       } else {
         setMd(true);
-        let pathTo = ProtectUrl.protect();
-        navigate(pathTo === "" ? "/details" : pathTo);
+        let typeUser = localStorage.getItem("admin");
+        let username = localStorage.getItem("username");
+        if (typeUser === "admin" && username !== null) {
+          let pathTo = ProtectUrl.protect();
+          navigate(pathTo === "" ? "/admin/home" : pathTo);
+        } else if (typeUser === "user" && username !== null) {
+          let pathTo = AdminProtectUrl.protect();
+          navigate(pathTo === "" ? "/details" : pathTo);
+        }
       }
     }
     const data = async () => {
@@ -329,7 +337,7 @@ function Login() {
                     entries={4}
                     pagesAmount={1}
                     paging={false}
-                    noRecordsFoundLabel={"No recent upcoming Test"}
+                    noRecordsFoundLabel={"No Upcoming Test"}
                     data={dataUpcoming}
                   />
                 </div>

@@ -624,40 +624,44 @@ def saveTest(request):
                     tst.apt = {
                         "qs":data['saveTest'][x]['totalQs'],
                         "time":data['saveTest'][x]['time'],
-                        "avg":avgMrk
+                        "avg":avgMrk,
+                        "maxQs":b.sub_qs
                     }
                 elif(b.sub_name=="Computer Fundamentals"):
                     tst.cf = {
                         "qs":data['saveTest'][x]['totalQs'],
                         "time":data['saveTest'][x]['time'],
-                        "avg":avgMrk
+                        "avg":avgMrk,
+                        "maxQs":b.sub_qs
                     }
                 elif(b.sub_name=="Domain"):
                     tst.dom = {
                         "qs":data['saveTest'][x]['totalQs'],
                         "time":data['saveTest'][x]['time'],
-                        "avg":avgMrk
+                        "avg":avgMrk,
+                        "maxQs":b.sub_qs
                     }
                 elif(b.sub_name=="Personality"):
                     tst.p = {
                         "qs":data['saveTest'][x]['totalQs'],
                         "time":data['saveTest'][x]['time'],
-                        "avg":avgMrk
+                        "avg":avgMrk,
+                        "maxQs":b.sub_qs
                     }
                 elif(b.sub_name=="Coding"):
                     tst.c = {
                         "qs":3,
                         "time":data['saveTest'][x]['time'],
-                        "avg":avgMrk
+                        "avg":avgMrk,
+                        "maxQs":3 #
                     }
                 else:
                     tst.aw = {
                         "qs":3,
                         "time":data['saveTest'][x]['time'],
-                        "avg":avgMrk
-                    }                   
-                print(b.sub_name)
-                print("*****************")
+                        "avg":avgMrk,
+                        "maxQs":3 #
+                    }
                 b.sub_qs=data['saveTest'][x]['totalQs']
                 b.sub_time=data['saveTest'][x]['time']
                 b.avg_score=avgMrk
@@ -687,6 +691,12 @@ def tests(request,idd=0):
                 else:
                     test=Test.objects.get(id=data['id'])
                     test.test_name=data['name']
+                    test.apt=data['apt']
+                    test.cf=data['cf']
+                    test.c=data['c']
+                    test.dom=data['domain']
+                    test.p=data['p']
+                    test.aw=data['aw']
                     test.test_start=data['start']
                     test.test_end=data['end']
                     test.save()

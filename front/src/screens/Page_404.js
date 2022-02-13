@@ -1,17 +1,29 @@
-import React,{useEffect} from "react";
+import React, { useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import Page_404_svg from "../img/Page_404.svg";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
+import { isExpired, decodeToken } from "react-jwt";
 import "../css/Page_404.css";
+import AdminProtectUrl from "../components/Admin/AdminProtectUrl";
 function Page_404() {
   const navigate = useNavigate();
-  useEffect(()=>{
-    let xx = ProtectUrl.protect()
-    if(!(xx === "/result")){
-      navigate(xx)
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+    const isMyTokenExpired = isExpired(token);
+    if (!isMyTokenExpired) {
+      let xx = ProtectUrl.protect();
+      let yy = AdminProtectUrl.protect();
+      let typeUser = localStorage.getItem("username");
+      if (xx !== "" || yy !== "") {
+        if (typeUser === "admin") {
+          navigate(yy);
+        } else {
+          navigate(xx);
+        }
+      }
     }
-  },[])
+  }, []);
   return (
     <div>
       <Row>
@@ -35,7 +47,7 @@ function Page_404() {
       </Row>
       <Row>
         <Col style={{ textAlign: "center" }}>
-          <button className="btn EPbut" onClick={() => navigate("/Home")}>
+          <button className="btn EPbut" onClick={() => navigate("/")}>
             Home
           </button>
         </Col>

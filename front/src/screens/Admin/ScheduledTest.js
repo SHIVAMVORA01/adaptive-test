@@ -118,6 +118,12 @@ function ScheduledTest() {
                 name: header,
                 start: valueStart,
                 end: valueEnd,
+                apt: apt,
+                aw: aw,
+                c: c,
+                cf: cf,
+                p: p,
+                domain: domain,
                 update: true,
                 delete: false,
                 id: testId,
@@ -208,184 +214,307 @@ function ScheduledTest() {
         .catch((e) => console.log(e));
     data();
   }
+  function onSubmitModal(e) {
+    console.log(e.nativeEvent.submitter.id);
+    e.preventDefault();
+    if (e.nativeEvent.submitter.id === "delete_test") {
+      delTest(e);
+    } else {
+      saveChanges(e);
+    }
+  }
 
   return (
     <div className="SchdlTest">
       <Modal show={show} onHide={handleClose}>
-        <Modal.Header closeButton>
-          <h3>Edit</h3>
-        </Modal.Header>
-        <Modal.Body>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>Test Name: </Col>
-            <Col md={9}>
-              <input
-                type="string"
-                defaultValue={header}
-                onChange={(e) => {
-                  setHeader(e.target.value);
-                }}
-              ></input>
-            </Col>
-          </Row>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>Start Time:</Col>
-            <Col md={9}>
-              <DateTimePicker onChange={onChangeStart} value={valueStart} />
-            </Col>
-          </Row>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>End Time:</Col>
-            <Col md={9}>
-              <DateTimePicker
-                onChange={(e) => {
-                  onChangeEnd(e);
-                }}
-                value={valueEnd}
-              />
-            </Col>
-          </Row>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>Apt Qs: </Col>
-            <Col md={3}>
-              <input
-                type="number"
-                defaultValue={apt.qs}
-                style={{ width: "100%" }}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-            <Col md={3}>Apt Time: </Col>
-            <Col md={3}>
-              <input
-                type="time"
-                style={{ width: "fit-content" }}
-                defaultValue={apt.time}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-          </Row>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>CF Qs: </Col>
-            <Col md={3}>
-              <input
-                type="number"
-                defaultValue={cf.qs}
-                style={{ width: "100%" }}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-            <Col md={3}>CF Time: </Col>
-            <Col md={3}>
-              <input
-                type="time"
-                style={{ width: "fit-content" }}
-                defaultValue={cf.time}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-          </Row>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>C Qs: </Col>
-            <Col md={3}>
-              <input
-                type="number"
-                defaultValue={c.qs}
-                disabled
-                style={{ width: "100%" }}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-            <Col md={3}>C Time: </Col>
-            <Col md={3}>
-              <input
-                type="time"
-                style={{ width: "fit-content" }}
-                defaultValue={c.time}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-          </Row>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>D Qs: </Col>
-            <Col md={3}>
-              <input
-                type="number"
-                defaultValue={domain.qs}
-                style={{ width: "100%" }}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-            <Col md={3}>D Time: </Col>
-            <Col md={3}>
-              <input
-                type="time"
-                style={{ width: "fit-content" }}
-                defaultValue={domain.time}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-          </Row>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>P Qs: </Col>
-            <Col md={3}>
-              <input
-                type="number"
-                defaultValue={p.qs}
-                style={{ width: "100%" }}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-            <Col md={3}>P Time: </Col>
-            <Col md={3}>
-              <input
-                type="time"
-                style={{ width: "fit-content" }}
-                defaultValue={p.time}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-          </Row>
-          <Row style={{ margin: "2% 0" }}>
-            <Col md={3}>AW Qs: </Col>
-            <Col md={3}>
-              <input
-                type="number"
-                defaultValue={aw.qs}
-                disabled
-                style={{ width: "100%" }}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-            <Col md={3}>AW Time: </Col>
-            <Col md={3}>
-              <input
-                type="time"
-                style={{ width: "fit-content" }}
-                defaultValue={aw.time}
-                onChange={(e) => {}}
-              ></input>
-            </Col>
-          </Row>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="danger"
-            onClick={(e) => {
-              delTest(e);
-            }}
-          >
-            Delete
-          </Button>
-          <Button
-            variant="primary"
-            onClick={(e) => {
-              saveChanges(e);
-            }}
-          >
-            Save Changes
-          </Button>
-        </Modal.Footer>
+        <form
+          onSubmit={(e) => {
+            onSubmitModal(e);
+            e.preventDefault();
+          }}
+        >
+          <Modal.Header closeButton>
+            <h3>Edit</h3>
+          </Modal.Header>
+          <Modal.Body>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>Test Name: </Col>
+              <Col md={9}>
+                <input
+                  type="string"
+                  defaultValue={header}
+                  onChange={(e) => {
+                    setHeader(e.target.value);
+                  }}
+                ></input>
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>Start Time:</Col>
+              <Col md={9}>
+                <DateTimePicker onChange={onChangeStart} value={valueStart} />
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>End Time:</Col>
+              <Col md={9}>
+                <DateTimePicker
+                  onChange={(e) => {
+                    onChangeEnd(e);
+                  }}
+                  value={valueEnd}
+                />
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>Apt Qs: </Col>
+              <Col md={2}>
+                <input
+                  type="number"
+                  defaultValue={apt.qs}
+                  max={apt.maxQs}
+                  min={0}
+                  title={
+                    apt.maxQs > 0
+                      ? `Can set values between 0 and ${apt.maxQs} only`
+                      : "Can set value 0 only"
+                  }
+                  style={{ width: "100%" }}
+                  onChange={(e) => {
+                    setApt({
+                      qs: parseInt(e.target.value),
+                      time: apt.time,
+                      avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                      maxQs: apt.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+              <Col md={3}>Apt Time: </Col>
+              <Col md={3}>
+                <input
+                  type="time"
+                  style={{ width: "fit-content" }}
+                  min={"00:00:20"}
+                  step={1}
+                  defaultValue={apt.time}
+                  onChange={(e) => {
+                    setApt({
+                      qs: apt.qs,
+                      time: e.target.value,
+                      avg: apt.avg,
+                      maxQs: apt.maxQs,
+                    });
+                  }}
+                  required
+                ></input>
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>CF Qs: </Col>
+              <Col md={2}>
+                <input
+                  type="number"
+                  defaultValue={cf.qs}
+                  style={{ width: "100%" }}
+                  max={cf.maxQs}
+                  min={0}
+                  title={
+                    cf.maxQs > 0
+                      ? `Can set values between 0 and ${cf.maxQs} only`
+                      : "Can set value 0 only"
+                  }
+                  onChange={(e) => {
+                    setCF({
+                      qs: parseInt(e.target.value),
+                      time: cf.time,
+                      avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                      maxQs: cf.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+              <Col md={3}>CF Time: </Col>
+              <Col md={3}>
+                <input
+                  type="time"
+                  style={{ width: "fit-content" }}
+                  defaultValue={cf.time}
+                  onChange={(e) => {
+                    setCF({
+                      qs: cf.qs,
+                      time: e.target.value,
+                      avg: cf.avg,
+                      maxQs: cf.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>C Qs: </Col>
+              <Col md={2}>
+                <input
+                  type="number"
+                  defaultValue={c.qs}
+                  title={`Can only set to ${c.qs}`}
+                  disabled
+                  style={{ width: "100%" }}
+                  onChange={(e) => {
+                    setC({
+                      qs: parseInt(e.target.value),
+                      time: c.time,
+                      avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                      maxQs: c.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+              <Col md={3}>C Time: </Col>
+              <Col md={3}>
+                <input
+                  type="time"
+                  style={{ width: "fit-content" }}
+                  defaultValue={c.time}
+                  onChange={(e) => {
+                    setC({
+                      qs: c.qs,
+                      time: e.target.value,
+                      avg: c.avg,
+                      maxQs: c.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>D Qs: </Col>
+              <Col md={2}>
+                <input
+                  type="number"
+                  defaultValue={domain.qs}
+                  max={domain.maxQs}
+                  min={0}
+                  title={
+                    domain.maxQs > 0
+                      ? `Can set values between 0 and ${domain.maxQs} only`
+                      : "Can set value 0 only"
+                  }
+                  style={{ width: "100%" }}
+                  onChange={(e) => {
+                    setDomain({
+                      qs: parseInt(e.target.value),
+                      time: domain.time,
+                      avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                      maxQs: domain.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+              <Col md={3}>D Time: </Col>
+              <Col md={3}>
+                <input
+                  type="time"
+                  style={{ width: "fit-content" }}
+                  defaultValue={domain.time}
+                  onChange={(e) => {
+                    setDomain({
+                      qs: domain.qs,
+                      time: e.target.value,
+                      avg: domain.avg,
+                      maxQs: domain.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>P Qs: </Col>
+              <Col md={2}>
+                <input
+                  type="number"
+                  defaultValue={p.qs}
+                  max={p.maxQs}
+                  min={0}
+                  title={
+                    p.maxQs > 0
+                      ? `Can set values between 0 and ${p.maxQs} only`
+                      : "Can set value 0 only"
+                  }
+                  style={{ width: "100%" }}
+                  onChange={(e) => {
+                    setP({
+                      qs: parseInt(e.target.value),
+                      time: p.time,
+                      avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                      maxQs: p.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+              <Col md={3}>P Time: </Col>
+              <Col md={3}>
+                <input
+                  type="time"
+                  style={{ width: "fit-content" }}
+                  defaultValue={p.time}
+                  onChange={(e) => {
+                    setP({
+                      qs: p.qs,
+                      time: e.target.value,
+                      avg: p.avg,
+                      maxQs: p.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>AW Qs: </Col>
+              <Col md={2}>
+                <input
+                  type="number"
+                  defaultValue={aw.qs}
+                  title={`Can set value ${aw.maxQs} only`}
+                  disabled
+                  onChange={(e) => {
+                    setAW({
+                      qs: parseInt(e.target.value),
+                      time: aw.time,
+                      avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                      maxQs: aw.maxQs,
+                    });
+                  }}
+                  style={{ width: "100%" }}
+                ></input>
+              </Col>
+              <Col md={3}>AW Time: </Col>
+              <Col md={3}>
+                <input
+                  type="time"
+                  style={{ width: "fit-content" }}
+                  defaultValue={aw.time}
+                  onChange={(e) => {
+                    setAW({
+                      qs: aw.qs,
+                      time: e.target.value,
+                      avg: aw.avg,
+                      maxQs: aw.maxQs,
+                    });
+                  }}
+                ></input>
+              </Col>
+            </Row>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="danger" type="submit" id="delete_test">
+              Delete
+            </Button>
+            <Button variant="primary" type="submit" id="save_changes">
+              Save Changes
+            </Button>
+          </Modal.Footer>
+        </form>
       </Modal>
       <button
         style={{

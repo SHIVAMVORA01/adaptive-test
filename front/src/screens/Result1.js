@@ -323,7 +323,7 @@ function Result() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Row>
+          <Row>
             <Col md="6">
               <Card>
                 <Card.Header
@@ -674,41 +674,42 @@ function Result() {
         SNP={personalityData[0].SNP} SNFP={personalityData[0].SNFP} Category={personalityData[0].Category} SN={personalityData[0].SN} />
      } </Row> */}
       {
-      localStorage.getItem("admin") === "admin" && (
-        <button
-          type="button"
-          className="btn"
-          onClick={(e) => {
-            localStorage.removeItem("testId");
-            localStorage.removeItem("result");
-            navigate("/admin/scheduledTest");
-          }}
-          style={{
-            marginTop: "20px",
-            backgroundColor: "red",
-            color: "white",
-            border: "none",
-          }}
-        >
-          Back
-        </button>
-      )}
+        localStorage.getItem("admin") === "admin" && (
+          <button
+            type="button"
+            className="btn"
+            onClick={(e) => {
+              localStorage.removeItem("testId");
+              localStorage.removeItem("result");
+              navigate("/admin/scheduledTest");
+            }}
+            style={{
+              marginTop: "20px",
+              backgroundColor: "red",
+              color: "white",
+              border: "none",
+            }}
+          >
+            Back
+          </button>
+        )
+      }
       {
-      localStorage.getItem("admin") === "user" && (
-        <button
-          type="button"
-          className="btn"
-          onClick={(e) => navigate("/logout")}
-          style={{
-            marginTop: "20px",
-            backgroundColor: "red",
-            color: "white",
-            border: "none",
-          }}
-        >
-          Logout
-        </button>
-      )
+        localStorage.getItem("admin") === "user" && (
+          <button
+            type="button"
+            className="btn"
+            onClick={(e) => navigate("/logout")}
+            style={{
+              marginTop: "20px",
+              backgroundColor: "red",
+              color: "white",
+              border: "none",
+            }}
+          >
+            Logout
+          </button>
+        )
       }
       <button
         type="button"

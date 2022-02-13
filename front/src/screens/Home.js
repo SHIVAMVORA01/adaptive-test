@@ -37,7 +37,7 @@ function Home() {
                   border: "none",
                 }}
                 onClick={() => {
-                  navigate("/logout");
+                  navigate("/login");
                 }}
               >
                 Login

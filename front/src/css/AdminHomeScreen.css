@@ -101,8 +101,9 @@
   overflow-x: hidden;
 }
 
-.timeFieldInput:focus {
-  outline: none;
+.timeFieldInput::-webkit-calendar-picker-indicator {
+  filter: invert(19%) sepia(76%) saturate(600%) hue-rotate(186deg)
+    brightness(95%) contrast(90%);
 }
 
 #style-4::-webkit-scrollbar-track {

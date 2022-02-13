@@ -30,7 +30,7 @@ function DetailScreen() {
       } else {
         if (username === "user" && path !== "") {
           navigate(ProtectUrl.protect());
-        } else if (username === "admin" || username === null) {
+        } else if (username === "admin") {
           navigate(-1);
         }
       }
