@@ -83,6 +83,13 @@ input:focus {
   margin-left: 15px;
 }
 
+.line_through {
+  border: 1px solid #c4c4c4;
+  transform: rotate(0.37deg);
+  margin-bottom: 45px;
+  margin-left: 25px;
+}
+
 .navbar-light .navbar-toggler {
   border: none !important;
   color: #fff !important;

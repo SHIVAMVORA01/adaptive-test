@@ -53,14 +53,16 @@ function ScheduledTest() {
       if (tId === tests[i].id) continue;
       let ss = new Date(tests[i].test_start).getTime();
       let ee = new Date(tests[i].test_end).getTime();
-
+      if (tests[i].test_name === header) {
+        return { bool: 1, msg: "Name cannot be same as other test" };
+      }
       if ((stx >= ss && stx <= ee) || (etx >= ss && etx <= ee)) {
-        return 1;
+        return { bool: 1, msg: "This test will clash with an existing test" };
       } else if ((ss >= stx && ss <= etx) || (ee > stx && ee <= etx)) {
-        return 1;
+        return { bool: 1, msg: "This test will clash with an existing test" };
       }
     }
-    return 0;
+    return { bool: 0 };
   }
   function upcomingTest(e, test) {
     let s = new Date(test.test_start);
@@ -111,7 +113,8 @@ function ScheduledTest() {
       console.log(valueEnd);
 
       if (valueStart !== valueStartCheck || valueEnd !== valueEndCheck) {
-        if (!clash(valueStart.getTime(), valueEnd.getTime(), testId)) {
+        let objClash = clash(valueStart.getTime(), valueEnd.getTime(), testId);
+        if (!objClash.bool) {
           axiosInstance
             .post("api/test/0", {
               data: {
@@ -137,10 +140,9 @@ function ScheduledTest() {
               console.log(e);
             });
         } else {
-          alert("This test will clash with an existing test");
+          alert(objClash.msg);
         }
       }
-      handleClose(e);
     } else {
       valueStart > cDate
         ? alert("ENDATE should be GREATER than start Date")
@@ -209,6 +211,9 @@ function ScheduledTest() {
           );
           axiosInstance.defaults.headers["Authorization"] =
             "JWT " + localStorage.getItem("access_token");
+          localStorage.setItem("name", usern);
+          localStorage.setItem("gender", "Male");
+          localStorage.setItem("age", 30);
           navigate("/testScreen");
         })
         .catch((e) => console.log(e));
@@ -338,6 +343,8 @@ function ScheduledTest() {
               <Col md={3}>
                 <input
                   type="time"
+                  min={"00:00:20"}
+                  step={1}
                   style={{ width: "fit-content" }}
                   defaultValue={cf.time}
                   onChange={(e) => {
@@ -374,6 +381,8 @@ function ScheduledTest() {
               <Col md={3}>
                 <input
                   type="time"
+                  min={"00:00:20"}
+                  step={1}
                   style={{ width: "fit-content" }}
                   defaultValue={c.time}
                   onChange={(e) => {
@@ -415,6 +424,8 @@ function ScheduledTest() {
               <Col md={3}>
                 <input
                   type="time"
+                  min={"00:00:20"}
+                  step={1}
                   style={{ width: "fit-content" }}
                   defaultValue={domain.time}
                   onChange={(e) => {
@@ -456,6 +467,8 @@ function ScheduledTest() {
               <Col md={3}>
                 <input
                   type="time"
+                  min={"00:00:20"}
+                  step={1}
                   style={{ width: "fit-content" }}
                   defaultValue={p.time}
                   onChange={(e) => {
@@ -492,6 +505,8 @@ function ScheduledTest() {
               <Col md={3}>
                 <input
                   type="time"
+                  min={"00:00:20"}
+                  step={1}
                   style={{ width: "fit-content" }}
                   defaultValue={aw.time}
                   onChange={(e) => {

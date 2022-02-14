@@ -70,6 +70,9 @@ function DetailScreen() {
         );
         axiosInstance.defaults.headers["Authorization"] =
           "JWT " + localStorage.getItem("access_token");
+        localStorage.setItem("name", formData.name);
+        localStorage.setItem("gender", formData.gender);
+        localStorage.setItem("age", formData.age);
         navigate("/testScreen");
       })
       .catch((e) => {

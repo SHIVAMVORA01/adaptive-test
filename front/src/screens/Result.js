@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { isExpired, decodeToken } from "react-jwt";
 import { useNavigate } from "react-router";
 import axiosInstance from "../axios";
-import { Col, Modal, Row, Card} from "react-bootstrap";
+import { Col, Modal, Row } from "react-bootstrap";
 import TestHeaderComp from "../components/TestScreeen/TestHeaderComp";
 import Chart from "react-apexcharts";
 import "../css/ResultScreen.css";
 import PersonalityResultComp from "../components/Result/personalityResultComp";
 import GenericPdfDownloader from "../components/Result/GenericPdfDownloader";
+import DetailedReportComp from "../components/Result/DetailedReportComp";
 
 function Result() {
   const navigate = useNavigate();
@@ -22,6 +23,9 @@ function Result() {
   const [opt1, setOpt1] = useState({});
   const [optRadar, setOptRadar] = useState({});
   const [show, setShow] = useState(false);
+  const [idx, setIdx] = useState();
+  const [userDetails, setUserDetails] = useState({});
+  const [startTime, setStartTime] = useState("");
 
   useEffect(() => {
     var t = localStorage.getItem("test");
@@ -129,6 +133,9 @@ function Result() {
           gotMarks: gotMarks,
           testId: localStorage.getItem("testId"),
           check_result: 1,
+          name: localStorage.getItem("name"),
+          age: localStorage.getItem("age"),
+          gender: localStorage.getItem("gender"),
         };
       } else {
         let ax = JSON.parse(current);
@@ -139,6 +146,9 @@ function Result() {
           marks: total,
           testId: localStorage.getItem("testId"),
           check_result: 1,
+          name: localStorage.getItem("name"),
+          age: localStorage.getItem("age"),
+          gender: localStorage.getItem("gender"),
         };
       }
       axiosInstance
@@ -181,6 +191,9 @@ function Result() {
             setTotalMarksScored(res.data.totalMarksScored);
             setTimeTaken(res.data.timeTaken);
             setPersonalityData(res.data.personalityData);
+            setIdx(res.data.res_id);
+            setUserDetails(res.data.user_detail);
+            setStartTime(res.data.startTime);
           })
           .catch((e) => console.log(e));
       }
@@ -323,82 +336,45 @@ function Result() {
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        <Row>
-            <Col md="6">
-              <Card>
-                <Card.Header
-                  style={{
-                    backgroundColor: "#081466",
-                    borderRadius: "14px 14px 0px 0px",
-                    color: "white",
-                    textAlign: "center",
-                    fontSize: "18px",
-                  }}
-                >Personal Details</Card.Header>
-                <Card.Body>
-                  <Card.Text>
-                    Chaitanya Kumbhar
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md="6">
-              <Card style={{margin:"20px"}}>
-                <Card.Header
-                  style={{
-                    backgroundColor: "#081466",
-                    borderRadius: "14px 14px 0px 0px",
-                    color: "white",
-                    textAlign: "center",
-                    fontSize: "18px",
-                  }}
-                >Total Marks Scored</Card.Header>
-                <Card.Body>
-                  <Card.Text>
-                  <Chart
-                      series={mrksScoredPercent}
-                      options={opt1}
-                      type="radialBar"
-                      height={`300px`}
-                    />
-                  <p
-                  style={{
-                    fontFamily: "Poppins",
-                    fontStyle: "normal",
-                    fontWeight: "normal",
-                    fontSize: "14px",
-                    lineHeight: "21px",
-                    textAlign: "center",
-                    color: "#000000",
-
-                  }}
-                  > This score is seen as an indicator of your overall  profile and performance across different skill aspects. </p>
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-          <Row>
-            <Col md="12">
-            <Card
-            >
-                <Card.Header
-                  style={{
-                    backgroundColor: "#081466",
-                    borderRadius: "14px 14px 0px 0px",
-                    color: "white",
-                    textAlign: "center",
-                    fontSize: "18px",
-                  }}
-                >Scores across various domains</Card.Header>
-                <Card.Body>
-                  <Card.Text>
-                    Chaitanya Kumbhar
-                  </Card.Text>
-                </Card.Body>
-              </Card>
-              </Col>
-          </Row>
+          {console.log("a " + personalityData[0])}
+          {console.log("b " + userDetails)}
+          {console.log("c " + timeTaken)}
+          {console.log("d " + totalMarksScored)}
+          {console.log("e " + startTime)}
+          {personalityData[0] !== undefined &&
+            userDetails !== undefined &&
+            timeTaken !== undefined &&
+            totalMarksScored !== undefined &&
+            startTime !== undefined && (
+              <DetailedReportComp
+                SEP={personalityData[0].SEP}
+                SEFP={personalityData[0].SEFP}
+                LO={personalityData[0].LO}
+                HI={personalityData[0].HI}
+                SE={personalityData[0].SE}
+                SAP={personalityData[0].SAP}
+                SAFP={personalityData[0].SAFP}
+                SA={personalityData[0].SA}
+                SC={personalityData[0].SC}
+                SCP={personalityData[0].SCP}
+                SCFP={personalityData[0].SCFP}
+                flev={personalityData[0].flev}
+                SOP={personalityData[0].SOP}
+                SOFP={personalityData[0].SOFP}
+                SO={personalityData[0].SO}
+                Nick={personalityData[0].Nick}
+                Country={personalityData[0].Country}
+                SNP={personalityData[0].SNP}
+                SNFP={personalityData[0].SNFP}
+                Category={personalityData[0].Category}
+                SN={personalityData[0].SN}
+                mrksScoredPercent={mrksScoredPercent}
+                user_detail={userDetails}
+                timeTaken={timeTaken}
+                totalMarksScored={totalMarksScored}
+                startTime={startTime}
+              />
+            )}{" "}
         </Modal.Body>
       </Modal>
       <Row>
@@ -673,15 +649,19 @@ function Result() {
       {personalityData[0]!==undefined&&  <PersonalityResultComp SEP={personalityData[0].SEP} SEFP={personalityData[0].SEFP} LO={personalityData[0].LO} HI={personalityData[0].HI} SE={personalityData[0].SE} SAP={personalityData[0].SAP} SAFP={personalityData[0].SAFP} SA={personalityData[0].SA} SC={personalityData[0].SC} SCP={personalityData[0].SCP} SCFP={personalityData[0].SCFP} flev={personalityData[0].flev} SOP={personalityData[0].SOP} SOFP={personalityData[0].SOFP} SO={personalityData[0].SO} Nick={personalityData[0].Nick} Country={personalityData[0].Country}
         SNP={personalityData[0].SNP} SNFP={personalityData[0].SNFP} Category={personalityData[0].Category} SN={personalityData[0].SN} />
      } </Row> */}
-      {
-      localStorage.getItem("admin") === "admin" && (
+      {localStorage.getItem("admin") === "admin" && idx !== undefined && (
         <button
           type="button"
           className="btn"
-          onClick={(e) => {
+          onClick={async (e) => {
             localStorage.removeItem("testId");
             localStorage.removeItem("result");
-            navigate("/admin/scheduledTest");
+            await axiosInstance
+              .delete(`api/delres/${idx}`)
+              .then((res) => {
+                navigate("/admin/scheduledTest");
+              })
+              .catch((e) => console.log(e));
           }}
           style={{
             marginTop: "20px",
@@ -693,8 +673,7 @@ function Result() {
           Back
         </button>
       )}
-      {
-      localStorage.getItem("admin") === "user" && (
+      {localStorage.getItem("admin") === "user" && (
         <button
           type="button"
           className="btn"
@@ -708,8 +687,7 @@ function Result() {
         >
           Logout
         </button>
-      )
-      }
+      )}
       <button
         type="button"
         className="btn"
@@ -724,7 +702,7 @@ function Result() {
       >
         View Detailed Report
       </button>
-    </div >
+    </div>
   );
 }
 

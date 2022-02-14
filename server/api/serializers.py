@@ -1,5 +1,6 @@
 from rest_framework import serializers
-from .models import CodingTest, Results, Subject,Questions,Test,Paraopt,Para
+from .models import CodingTest, MyUser, Results, Subject,Questions,Test,Paraopt,Para
+from django.contrib.auth.models import User
 
 class SubjectSerializer(serializers.ModelSerializer):
     class Meta:
@@ -31,4 +32,12 @@ class OptionSerializer(serializers.ModelSerializer):
 class ParaSerializer(serializers.ModelSerializer):
     class Meta:
         model = Para
+        fields='__all__'     
+class MyUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MyUser
+        fields='__all__'     
+class AllUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
         fields='__all__'     

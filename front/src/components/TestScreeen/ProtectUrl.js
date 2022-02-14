@@ -18,7 +18,7 @@ function protect() {
     return "/admin/domain";
   } else if (t6 !== null) {
     return "/admin/personality";
-  } else if (localStorage.getItem("result") === true) {
+  } else if (localStorage.getItem("result") === `true`) {
     return "/result";
   }
   return "";

@@ -31,6 +31,7 @@ class Subject(models.Model):
    sub_time = models.TimeField()
    sub_qs = models.IntegerField()
    avg_score=models.IntegerField(default=0,null=True,blank=True)
+   max_qs=models.IntegerField(default=0,null=True,blank=True)
    def __str__(self):
         return self.sub_name
 

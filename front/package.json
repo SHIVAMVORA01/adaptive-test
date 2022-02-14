@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@patternfly/react-charts": "^6.45.15",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
@@ -23,6 +24,7 @@
     "react-bootstrap": "^2.0.3",
     "react-countdown": "^2.3.2",
     "react-csv": "^2.2.2",
+    "react-d3-speedometer": "^1.0.2",
     "react-datetime-picker": "^3.4.3",
     "react-dom": "^17.0.2",
     "react-jwt": "^1.1.4",

@@ -11,7 +11,7 @@ function ViewSchdlTest() {
   const location = useLocation();
   const [rows, setRows] = useState([]);
   const [data, setTData] = useState({});
-
+  // let addBtn;
   const columns = [
     {
       label: "Student",
@@ -49,6 +49,10 @@ function ViewSchdlTest() {
       label: "Marks",
       field: "marks",
     },
+    {
+      label: "",
+      field: "addBtn",
+    },
   ];
   const headers = [
     { label: "Student", key: "name" },
@@ -60,8 +64,24 @@ function ViewSchdlTest() {
     { label: "Domain", key: "dom" },
     { label: "Analytical", key: "analy" },
     { label: "Marks", key: "marks" },
+    { label: "Delete", key: "addBtn" },
   ];
-
+  function deleteRow(id) {
+    if (window.confirm("Delete this test?")) {
+      axiosInstance
+        .delete(`api/delres/${id}`)
+        .then((res) => {
+          let arr = data.rows.filter((ex) => {
+            return ex.id !== id;
+          });
+          setTData({ columns: data.columns, rows: arr });
+          window.location.reload();
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+  }
   useEffect(() => {
     axiosInstance
       .get(`/api/admin/resultTest/${location.state.id}`)
@@ -69,7 +89,21 @@ function ViewSchdlTest() {
         console.log(res.data);
 
         setRows(res.data.studentNameArr);
-        setTData({ columns: columns, rows: res.data.studentNameArr });
+        setTData({
+          columns: columns,
+          rows: res.data.studentNameArr.map((v) => ({
+            ...v,
+            addBtn: (
+              <button
+                style={{ border: "none" }}
+                onClick={() => deleteRow(v.id)}
+              >
+                {" "}
+                <i class="fa fa-trash" style={{ color: "red" }}></i>
+              </button>
+            ),
+          })),
+        });
       });
   }, []);
   return (

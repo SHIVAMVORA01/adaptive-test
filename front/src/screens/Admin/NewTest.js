@@ -52,11 +52,9 @@ function NewTest() {
             setSid(ssid + 1);
           }
           var d = res.data.data;
-          console.log(d);
           setAxData(d);
           //For Aptitude
           var Wssid = sidFunc(ssid);
-          console.log(d[Wssid]);
           setSectionName(Wssid);
           setEasy(d[Wssid].easy);
           setHard(d[Wssid].hard);
@@ -91,23 +89,60 @@ function NewTest() {
     let sx = new Date(sDate);
     let ex = new Date(eDate);
     if (ex.getTime() > sx.getTime()) {
-      if (!clash(sx.getTime(), ex.getTime())) {
+      let objClash = clash(sx.getTime(), ex.getTime());
+      if (!objClash.bool) {
         let creaTest = { testName: tName, sTime: sDate, eTime: eDate };
-        console.log(creaTest);
         let a = [
-          { sub: "Aptitude", time: aptDic.time, totalQs: aptDic.totalQs },
+          {
+            sub: "Aptitude",
+            time: aptDic.time,
+            totalQs: aptDic.totalQs,
+            maxQs: check_MaxQS_Db({
+              isPersonality: false,
+              easy: axData["Aptitude"].easy.length,
+              medium: axData["Aptitude"].medium.length,
+              hard: axData["Aptitude"].hard.length,
+            }),
+          },
           {
             sub: "Computer Fundamentals",
             time: CFDic.time,
             totalQs: CFDic.totalQs,
+            maxQs: check_MaxQS_Db({
+              isPersonality: false,
+              easy: axData["Computer Fundamentals"].easy.length,
+              medium: axData["Computer Fundamentals"].medium.length,
+              hard: axData["Computer Fundamentals"].hard.length,
+            }),
           },
-          { sub: "Domain", time: DDic.time, totalQs: DDic.totalQs },
-          { sub: "Personality", time: PDic.time, totalQs: PDic.totalQs },
-          { sub: "Coding", time: CDic.time, totalQs: CDic.totalQs },
+          {
+            sub: "Domain",
+            time: DDic.time,
+            totalQs: DDic.totalQs,
+            maxQs: check_MaxQS_Db({
+              isPersonality: false,
+              easy: axData["Domain"].easy.length,
+              medium: axData["Domain"].medium.length,
+              hard: axData["Domain"].hard.length,
+            }),
+          },
+          {
+            sub: "Personality",
+            time: PDic.time,
+            totalQs: PDic.totalQs,
+            maxQs: check_MaxQS_Db({
+              isPersonality: true,
+              easy: axData["Personality"].easy.length,
+              medium: axData["Personality"].medium.length,
+              hard: axData["Personality"].hard.length,
+            }),
+          },
+          { sub: "Coding", time: CDic.time, totalQs: CDic.totalQs, maxQs: 3 },
           {
             sub: "Analytical Writing",
             time: AWDic.time,
             totalQs: AWDic.totalQs,
+            maxQs: 3,
           },
         ];
         axiosInstance
@@ -118,37 +153,38 @@ function NewTest() {
             navigate("/admin/home");
           });
       } else {
-        alert("This test will clash with an existing test");
+        alert(objClash.msg);
       }
     } else {
       alert("Start time should be less than End time");
     }
   }
+  function name_check(val) {}
   function clash(stx, etx) {
     for (let i = 0; i < tests.length; i++) {
       let ss = new Date(tests[i].test_start).getTime();
       let ee = new Date(tests[i].test_end).getTime();
+      if (tests[i].test_name === tName) {
+        return { bool: 1, msg: "Name cannot be same as other test" };
+      }
       if ((stx >= ss && stx <= ee) || (etx >= ss && etx <= ee)) {
-        return 1;
+        return { bool: 1, msg: "This test will clash with an existing test" };
       } else if ((ss >= stx && ss <= etx) || (ee > stx && ee <= etx)) {
-        return 1;
+        return { bool: 1, msg: "This test will clash with an existing test" };
       }
     }
-    return 0;
+    return { bool: 0 };
   }
 
   function secOnCLick(e, index) {
-    console.log(e.target.innerText);
     var d = axData;
     var Wssid = sidFunc(index);
     setSid(index + 1);
-    console.log(d[Wssid]);
     setSectionName(Wssid);
     setEasy(d[Wssid].easy);
     setHard(d[Wssid].hard);
     setMed(d[Wssid].medium);
     setQs(d[Wssid].qs);
-    console.log(AWDic);
 
     if (d[Wssid].medium.length > 0) {
       if (index === 1) {
@@ -192,7 +228,6 @@ function NewTest() {
   }
 
   $(document.getElementById("listSec")).ready(function () {
-    console.log("ready!");
     Array.from(document.querySelectorAll(".sectionClick")).forEach(function (
       el,
       index
@@ -202,6 +237,77 @@ function NewTest() {
       }
     });
   });
+  function check_MaxQS_Db(fromSub) {
+    let easy_len, med_len, hard_len, isPersonality;
+    if (fromSub !== undefined && fromSub !== {}) {
+      easy_len = fromSub.easy;
+      med_len = fromSub.medium;
+      hard_len = fromSub.hard;
+      isPersonality = fromSub.isPersonality;
+    } else {
+      easy_len = easy.length;
+      med_len = med.length;
+      hard_len = hard.length;
+      isPersonality = false;
+    }
+    let min_ = Math.min(easy_len, med_len, hard_len);
+    if (!isPersonality) {
+      if (min_ === 0) {
+        if (med_len > 0) {
+          return 1;
+        } else {
+          return 0;
+        }
+      } else {
+        return min_;
+      }
+    } else {
+      return med_len;
+    }
+  }
+  function checkMaxQs(e) {
+    e.preventDefault();
+    let compare_val = check_MaxQS_Db();
+    let curr_value = e.target.valueAsNumber;
+
+    if (0 <= curr_value && curr_value <= compare_val) {
+      if (sid - 1 === 1) {
+        setCFDic({
+          time: CurrentDic.time,
+          totalQs: curr_value,
+        });
+      } else if (sid - 1 === 2) {
+        setDDic({
+          time: CurrentDic.time,
+          totalQs: curr_value,
+        });
+      } else if (sid - 1 === 3) {
+        setPDic({
+          time: CurrentDic.time,
+          totalQs: 35, //$,
+        });
+      } else if (sid - 1 == 4) {
+        setCDic({
+          time: CurrentDic.time,
+          totalQs: 3,
+        });
+      } else if (sid - 1 == 5) {
+        setAWDic({
+          time: CurrentDic.time,
+          totalQs: 3,
+        });
+      } else if (sid - 1 === 0) {
+        setAptDic({
+          time: CurrentDic.time,
+          totalQs: curr_value,
+        });
+      }
+      setCurrentDic({
+        time: CurrentDic.time,
+        totalQs: curr_value,
+      });
+    }
+  }
 
   return (
     <>
@@ -490,7 +596,6 @@ function NewTest() {
                                 minTime="00:00:20"
                                 step={1}
                                 onChange={(e, value) => {
-                                  console.log(e.target.value);
                                   var hms = e.target.value; // your input string
                                   var a = hms.split(":"); // split it at the colons
                                   var seconds =
@@ -567,62 +672,7 @@ function NewTest() {
                                   background: "rgba(0,0,0,0)",
                                 }}
                                 onChange={(e) => {
-                                  console.log(e.target.valueAsNumber);
-                                  console.log(sid - 1);
-                                  console.log(
-                                    Math.min(
-                                      easy.length,
-                                      med.length,
-                                      hard.length
-                                    )
-                                  );
-                                  if (
-                                    0 <= e.target.valueAsNumber &&
-                                    e.target.valueAsNumber <=
-                                      (Math.min(
-                                        easy.length,
-                                        med.length,
-                                        hard.length
-                                      ) || med.length > 0
-                                        ? med.length
-                                        : 0)
-                                  ) {
-                                    if (sid - 1 === 1) {
-                                      setCFDic({
-                                        time: CurrentDic.time,
-                                        totalQs: e.target.valueAsNumber,
-                                      });
-                                    } else if (sid - 1 === 2) {
-                                      setDDic({
-                                        time: CurrentDic.time,
-                                        totalQs: e.target.valueAsNumber,
-                                      });
-                                    } else if (sid - 1 === 3) {
-                                      setPDic({
-                                        time: CurrentDic.time,
-                                        totalQs: 35, //$,
-                                      });
-                                    } else if (sid - 1 == 4) {
-                                      setCDic({
-                                        time: CurrentDic.time,
-                                        totalQs: 3,
-                                      });
-                                    } else if (sid - 1 == 5) {
-                                      setAWDic({
-                                        time: CurrentDic.time,
-                                        totalQs: 3,
-                                      });
-                                    } else if (sid - 1 === 0) {
-                                      setAptDic({
-                                        time: CurrentDic.time,
-                                        totalQs: e.target.valueAsNumber,
-                                      });
-                                    }
-                                    setCurrentDic({
-                                      time: CurrentDic.time,
-                                      totalQs: e.target.valueAsNumber,
-                                    });
-                                  }
+                                  checkMaxQs(e);
                                 }}
                                 value={
                                   sid === 6 || sid === 5 || sid === 4
@@ -665,7 +715,6 @@ function NewTest() {
                           minTime="00:00:20"
                           step={1}
                           onChange={(e, value) => {
-                            console.log(e.target.value);
                             var hms = e.target.value; // your input string
                             var a = hms.split(":"); // split it at the colons
                             var seconds = a[0] * 60 * 60 + +a[1] * 60 + +a[2];
@@ -735,58 +784,7 @@ function NewTest() {
                             background: "rgba(0,0,0,0)",
                           }}
                           onChange={(e) => {
-                            console.log(e.target.valueAsNumber);
-                            console.log(sid - 1);
-                            console.log(
-                              Math.min(easy.length, med.length, hard.length)
-                            );
-                            if (
-                              0 <= e.target.valueAsNumber &&
-                              e.target.valueAsNumber <=
-                                (Math.min(
-                                  easy.length,
-                                  med.length,
-                                  hard.length
-                                ) || med.length > 0
-                                  ? med.length
-                                  : 0)
-                            ) {
-                              if (sid - 1 === 1) {
-                                setCFDic({
-                                  time: CurrentDic.time,
-                                  totalQs: e.target.valueAsNumber,
-                                });
-                              } else if (sid - 1 === 2) {
-                                setDDic({
-                                  time: CurrentDic.time,
-                                  totalQs: e.target.valueAsNumber,
-                                });
-                              } else if (sid - 1 === 3) {
-                                setPDic({
-                                  time: CurrentDic.time,
-                                  totalQs: 35, //$,
-                                });
-                              } else if (sid - 1 == 4) {
-                                setCDic({
-                                  time: CurrentDic.time,
-                                  totalQs: 3,
-                                });
-                              } else if (sid - 1 == 5) {
-                                setAWDic({
-                                  time: CurrentDic.time,
-                                  totalQs: 3,
-                                });
-                              } else if (sid - 1 === 0) {
-                                setAptDic({
-                                  time: CurrentDic.time,
-                                  totalQs: e.target.valueAsNumber,
-                                });
-                              }
-                              setCurrentDic({
-                                time: CurrentDic.time,
-                                totalQs: e.target.valueAsNumber,
-                              });
-                            }
+                            checkMaxQs(e);
                           }}
                           value={
                             sid === 6 || sid === 5 || sid === 4

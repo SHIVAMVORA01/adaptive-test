@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 import datetime
 from rest_framework.parsers import JSONParser
 import random
-from .serializers import CodingTestSerializer, SubjectSerializer,QuestionSerializer, TestSerializer ,ResultSerializer,OptionSerializer
+from .serializers import CodingTestSerializer, MyUserSerializer, SubjectSerializer,QuestionSerializer, TestSerializer ,ResultSerializer,OptionSerializer,AllUserSerializer
 import math
 from django.db.models import Q
 from dateutil import tz
@@ -327,7 +327,7 @@ def chartData(user,testId=-1):
 
     # a=[aa['Aptitude'],aa['Computer Fundamentals'],aa['Domain'],aa['Coding'],aa['Analytical Writing']]
     try:
-        resl=Results.objects.get(student = user,test=Test.objects.get(id=testId))
+        resl=Results.objects.get(student = user,test=Test.objects.get(id=testId))     
         aa['Aptitude']=resl.marks['avg_ap']
         aa['Computer Fundamentals']=resl.marks['avg_cf']
         aa['Domain']=resl.marks['avg_d']
@@ -360,7 +360,11 @@ def chartData(user,testId=-1):
     except Results.DoesNotExist:
         print('No previous entry')
         resl=0
-    return {'startTime':resl.startTime,'endTime':resl.endTime,'personalityData':resl.marks['pGot'],'marks':resl.marks,'totalQs':totalQs,'avgMarksArr':a,'mrksScored':mrksScored,'mrksScoredPercent':mrksScoredPercent,'totalMarksScored':sum(mrksScored),'timeTaken':tdelta.seconds}
+    if(user.is_staff):
+        user_detail=AllUserSerializer(user).data
+    else:    
+        user_detail=MyUserSerializer(MyUser.objects.get(user=user)).data
+    return {'startTime':resl.startTime,'endTime':resl.endTime,'personalityData':resl.marks['pGot'],'marks':resl.marks,'totalQs':totalQs,'avgMarksArr':a,'mrksScored':mrksScored,'mrksScoredPercent':mrksScoredPercent,'totalMarksScored':sum(mrksScored),'timeTaken':tdelta.seconds,'res_id':resl.id,'user_detail':user_detail}
 
 @csrf_exempt
 def resultTest(request,id):
@@ -372,6 +376,7 @@ def resultTest(request,id):
         cc=[]
         for x in a.data:
             c={}
+            c['id']=x['id']
             c['name']=User.objects.get(id=x['student']).username
             c['sdate']="{0} {1}".format(x['startTime'].split('T')[0],x['startTime'].split('T')[1].split('.')[0])
             c['sdate'] = converttoist(c['sdate'])
@@ -421,7 +426,7 @@ def marks(request,sid=0):
                         result.marks['dGot'] = data['gotMarks']
                     elif sid == 5:
                         result.marks['p'] = data['marks']
-                        result.marks['pGot']=[evaluate(request,{'Nick':data['username'],'Sex':'Male','Age':21,'Q':data['marks'],'Country':'India'})]
+                        result.marks['pGot']=[evaluate(request,{'Nick':data['name'],'Sex':data['gender'],'Age':data['age'],'Q':data['marks'],'Country':'India'})]
                     elif sid == 6:
                         result.marks['a'] = data['marks'] 
                         result.marks['aMax'] = data['maxMarks']
@@ -625,28 +630,28 @@ def saveTest(request):
                         "qs":data['saveTest'][x]['totalQs'],
                         "time":data['saveTest'][x]['time'],
                         "avg":avgMrk,
-                        "maxQs":b.sub_qs
+                        "maxQs":data['saveTest'][x]['maxQs']
                     }
                 elif(b.sub_name=="Computer Fundamentals"):
                     tst.cf = {
                         "qs":data['saveTest'][x]['totalQs'],
                         "time":data['saveTest'][x]['time'],
                         "avg":avgMrk,
-                        "maxQs":b.sub_qs
+                        "maxQs":data['saveTest'][x]['maxQs']
                     }
                 elif(b.sub_name=="Domain"):
                     tst.dom = {
                         "qs":data['saveTest'][x]['totalQs'],
                         "time":data['saveTest'][x]['time'],
                         "avg":avgMrk,
-                        "maxQs":b.sub_qs
+                        "maxQs":data['saveTest'][x]['maxQs']
                     }
                 elif(b.sub_name=="Personality"):
                     tst.p = {
                         "qs":data['saveTest'][x]['totalQs'],
                         "time":data['saveTest'][x]['time'],
                         "avg":avgMrk,
-                        "maxQs":b.sub_qs
+                        "maxQs":data['saveTest'][x]['maxQs']
                     }
                 elif(b.sub_name=="Coding"):
                     tst.c = {
@@ -663,6 +668,7 @@ def saveTest(request):
                         "maxQs":3 #
                     }
                 b.sub_qs=data['saveTest'][x]['totalQs']
+                b.max_qs=data['saveTest'][x]['maxQs']
                 b.sub_time=data['saveTest'][x]['time']
                 b.avg_score=avgMrk
                 b.save()
@@ -822,6 +828,15 @@ def comprehension(request,tid=0):
             return JsonResponse({'data':f,'time':test.aw['time']},safe=False)   
     else:
         return HttpResponseBadRequest()
+
+@csrf_exempt
+def deleteres(request,id):
+    if request.method=="DELETE":
+        try:
+            Results.objects.get(id=id).delete()
+        except:
+            print("Error in Deleting the result object")    
+        return JsonResponse("done",safe=False) 
 
 @csrf_exempt
 def personalityR(request):

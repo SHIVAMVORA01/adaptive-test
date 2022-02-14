@@ -62,6 +62,9 @@ function CompScreen() {
                 marks: ar,
                 testId: localStorage.getItem("testId"),
                 check_result: 0,
+                name: localStorage.getItem("name"),
+                age: localStorage.getItem("age"),
+                gender: localStorage.getItem("gender"),
               },
             })
             .then((res) => {
