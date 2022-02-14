@@ -37,7 +37,7 @@ const GenericPdfDownloader = ({ rootElementId, downloadFileName }) => {
         border: "0",
       }}
     >
-      <i class="fa fa-download" aria-hidden="true"></i>
+      <i className="fa fa-download" aria-hidden="true"></i>
     </button>
   );
 };

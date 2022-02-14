@@ -36,7 +36,7 @@ function AdminAddQs() {
         ...oldArray,
         <Row style={{ marginTop: "25px" }}>
           <Col xs={12}>
-            <div class="form-check">
+            <div className="form-check">
               <input
                 className="correctOpt"
                 type="radio"
@@ -67,7 +67,7 @@ function AdminAddQs() {
       <form onSubmit={(e) => handleSubmit(e)}>
         Type:
         <select
-          class="form-select"
+          className="form-select"
           name="type"
           aria-label="Default select example"
         >
@@ -88,7 +88,7 @@ function AdminAddQs() {
         </Row>
         <Row style={{ marginTop: "25px" }}>
           <Col xs={12}>
-            <div class="form-check">
+            <div className="form-check">
               <input
                 name="correctOpt"
                 type="radio"
@@ -111,7 +111,7 @@ function AdminAddQs() {
         </Row>
         <Row style={{ marginTop: "25px" }}>
           <Col xs={12}>
-            <div class="form-check">
+            <div className="form-check">
               <input
                 name="correctOpt"
                 type="radio"

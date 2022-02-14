@@ -170,6 +170,7 @@ function Result() {
           setTotalMarksScored(res.data.totalMarksScored);
           setTimeTaken(res.data.timeTaken);
           setPersonalityData(res.data.personalityData);
+          setIdx(res.data.res_id);
           // localStorage.setItem('result',total)
         })
         .catch((e) => console.log(e));

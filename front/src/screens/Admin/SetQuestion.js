@@ -264,7 +264,7 @@ function SetQuestion() {
         return [
           ...oldArray,
           <p style={{ padding: "5px 0", margin: "10px 0px" }}>
-            <div class="form-check">
+            <div className="form-check">
               <input
                 type="radio"
                 name="correctOpt"
@@ -295,7 +295,7 @@ function SetQuestion() {
       } else {
         return [
           <p style={{ padding: "5px 0", margin: "10px 0px" }}>
-            <div class="form-check">
+            <div className="form-check">
               <input
                 type="radio"
                 name="correctOpt"
@@ -481,12 +481,12 @@ function SetQuestion() {
                     style={{ marginBottom: "20px" }}
                     hidden={isAnalytical ? true : false}
                   >
-                    <div class="form-group">
+                    <div className="form-group">
                       <label for="selectSetQs">
                         <b style={{ color: "red" }}>*</b>Type :
                       </label>
                       <select
-                        class="form-select"
+                        className="form-select"
                         name="type"
                         aria-label="Default select example"
                         hidden={isAnalytical ? true : false}
@@ -504,12 +504,12 @@ function SetQuestion() {
                   <>
                     {isNew && currentQsNo === navArray.length && (
                       <>
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="paragraphTitle">
                             <b style={{ color: "red" }}>*</b>Paragraph Title :{" "}
                           </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={""}
                             form="sbForm"
@@ -521,12 +521,12 @@ function SetQuestion() {
                             required
                           ></textarea>
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="paragraph">
                             <b style={{ color: "red" }}>*</b>Paragraph :{" "}
                           </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={""}
                             form="sbForm"
@@ -553,12 +553,12 @@ function SetQuestion() {
                     )}
                     {!isNew && (
                       <>
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="paragraphTitle">
                             <b style={{ color: "red" }}>*</b>Paragraph Title :{" "}
                           </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={para_title}
                             form="sbForm"
@@ -570,12 +570,12 @@ function SetQuestion() {
                             required
                           ></textarea>
                         </div>
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="paragraph">
                             <b style={{ color: "red" }}>*</b>Paragraph :{" "}
                           </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={para}
                             form="sbForm"
@@ -604,12 +604,12 @@ function SetQuestion() {
                 )}
                 <Row>
                   {!isNew && !isAnalytical && (
-                    <div class="form-group">
+                    <div className="form-group">
                       <label for="qsSetQs">
                         <b style={{ color: "red" }}>*</b>Question :{" "}
                       </label>
                       <textarea
-                        class="form-control form-field style-4"
+                        className="form-control form-field style-4"
                         disabled={!isUpdate}
                         defaultValue={currentQs}
                         form="sbForm"
@@ -623,12 +623,12 @@ function SetQuestion() {
                     </div>
                   )}
                   {isNew && !isAnalytical && currentQsNo === navArray.length && (
-                    <div class="form-group">
+                    <div className="form-group">
                       <label for="qsSetQs">
                         <b style={{ color: "red" }}>*</b>Question :{" "}
                       </label>
                       <textarea
-                        class="form-control form-field style-4"
+                        className="form-control form-field style-4"
                         disabled={!isUpdate}
                         defaultValue={""}
                         form="sbForm"
@@ -649,7 +649,7 @@ function SetQuestion() {
                   currentQsNo === navArray.length && (
                     <Row>
                       <div style={{ margin: "10px 0" }}>
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="selectSetQs">Image :</label>
                           <input
                             id="fileInput"
@@ -683,7 +683,7 @@ function SetQuestion() {
                 {!isCoding && !isPersonality && !isAnalytical && !isNew && (
                   <Row>
                     <div style={{ margin: "10px 0" }}>
-                      <div class="form-group">
+                      <div className="form-group">
                         <label for="selectSetQs">Image :</label>
                         <input
                           id="fileInput"
@@ -719,7 +719,7 @@ function SetQuestion() {
                   <Row>
                     {imgDB !== null && (
                       <div style={{ margin: "10px 0" }}>
-                        <div id="zoomImg" class="form-group">
+                        <div id="zoomImg" className="form-group">
                           <Zoom>
                             <Image
                               cloudName="chaitanya1911"
@@ -736,7 +736,7 @@ function SetQuestion() {
 
                 {!isCoding && (
                   <div
-                    class="scrollbar"
+                    className="scrollbar"
                     style={{
                       maxHeight: "225px",
                       margin: "5px",
@@ -751,7 +751,7 @@ function SetQuestion() {
                           <>
                             <p style={{ padding: "5px 0", margin: "10px 0px" }}>
                               <div
-                                class="form-check"
+                                className="form-check"
                                 style={{ paddingLeft: "0" }}
                               >
                                 <input
@@ -775,7 +775,7 @@ function SetQuestion() {
                                 >
                                   <input
                                     type="text"
-                                    class="form-control"
+                                    className="form-control"
                                     disabled={!isUpdate}
                                     defaultValue={x.opt}
                                     name={`Option${index + 1}`}
@@ -795,12 +795,12 @@ function SetQuestion() {
                   <div>
                     <Row>
                       {isNew && currentQsNo === navArray.length && (
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="qsSetInputFormat">
                             <b style={{ color: "red" }}>*</b>Input Format :{" "}
                           </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={""}
                             form="sbForm"
@@ -814,12 +814,12 @@ function SetQuestion() {
                         </div>
                       )}
                       {!isNew && (
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="qsSetInputFormat">
                             <b style={{ color: "red" }}>*</b>Input Format :{" "}
                           </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={inputF}
                             form="sbForm"
@@ -836,12 +836,12 @@ function SetQuestion() {
 
                     <Row>
                       {isNew && currentQsNo === navArray.length && (
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="qsSetOutputFormat">
                             <b style={{ color: "red" }}>*</b>Output Format :{" "}
                           </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={""}
                             form="sbForm"
@@ -855,12 +855,12 @@ function SetQuestion() {
                         </div>
                       )}
                       {!isNew && (
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="qsSetOutputFormat">
                             <b style={{ color: "red" }}>*</b>Output Format :{" "}
                           </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={outputF}
                             form="sbForm"
@@ -877,12 +877,12 @@ function SetQuestion() {
                     <Row>
                       <Col md={6}>
                         {!isNew && (
-                          <div class="form-group">
+                          <div className="form-group">
                             <label for="qsSetConstraints">
                               <b style={{ color: "red" }}>*</b>Constraints :{" "}
                             </label>
                             <textarea
-                              class="form-control form-field style-4"
+                              className="form-control form-field style-4"
                               disabled={!isUpdate}
                               defaultValue={
                                 isNew && currentQsNo == navArray.length
@@ -900,12 +900,12 @@ function SetQuestion() {
                           </div>
                         )}
                         {isNew && currentQsNo === navArray.length && (
-                          <div class="form-group">
+                          <div className="form-group">
                             <label for="qsSetConstraints">
                               <b style={{ color: "red" }}>*</b>Constraints :{" "}
                             </label>
                             <textarea
-                              class="form-control form-field style-4"
+                              className="form-control form-field style-4"
                               disabled={!isUpdate}
                               defaultValue={""}
                               form="sbForm"
@@ -922,11 +922,11 @@ function SetQuestion() {
                       <Col md={6}>
                         {isCoding && (
                           <div style={{ marginBottom: "20px" }}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <b style={{ color: "red" }}>*</b>
                               <label for="selectSetQs">Type :</label>
                               <select
-                                class="form-select"
+                                className="form-select"
                                 name="type"
                                 aria-label="Default select example"
                                 disabled={!isUpdate}
@@ -944,12 +944,12 @@ function SetQuestion() {
                       {isNew && currentQsNo === navArray.length && (
                         <>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetSampleInput">
                                 <b style={{ color: "red" }}>*</b>Sample Input :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={""}
                                 form="sbForm"
@@ -963,13 +963,13 @@ function SetQuestion() {
                             </div>
                           </Col>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetSampleOutput">
                                 <b style={{ color: "red" }}>*</b> Sample Output
                                 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={""}
                                 form="sbForm"
@@ -987,12 +987,12 @@ function SetQuestion() {
                       {!isNew && (
                         <>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetSampleInput">
                                 <b style={{ color: "red" }}>*</b>Sample Input :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={sampleInput}
                                 form="sbForm"
@@ -1006,12 +1006,12 @@ function SetQuestion() {
                             </div>
                           </Col>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetSampleOutput">
                                 <b style={{ color: "red" }}>*</b>Sample Output :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={sampleOutput}
                                 form="sbForm"
@@ -1029,10 +1029,10 @@ function SetQuestion() {
                     </Row>
                     <Row>
                       {isNew && currentQsNo === navArray.length && (
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="qsSetExplanation">Explanation : </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={""}
                             form="sbForm"
@@ -1045,10 +1045,10 @@ function SetQuestion() {
                         </div>
                       )}
                       {!isNew && (
-                        <div class="form-group">
+                        <div className="form-group">
                           <label for="qsSetExplanation">Explanation : </label>
                           <textarea
-                            class="form-control form-field style-4"
+                            className="form-control form-field style-4"
                             disabled={!isUpdate}
                             defaultValue={explanation}
                             form="sbForm"
@@ -1065,13 +1065,13 @@ function SetQuestion() {
                       {!isNew && (
                         <>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase1Input">
                                 <b style={{ color: "red" }}>*</b>TestCase Input
                                 1 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={testCaseInput1}
                                 form="sbForm"
@@ -1085,13 +1085,13 @@ function SetQuestion() {
                             </div>
                           </Col>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase1Output">
                                 <b style={{ color: "red" }}>*</b>TestCase Output
                                 1 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={testCaseOutput1}
                                 form="sbForm"
@@ -1110,13 +1110,13 @@ function SetQuestion() {
                         <>
                           {" "}
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase1Input">
                                 <b style={{ color: "red" }}>*</b>TestCase Input
                                 1 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={""}
                                 form="sbForm"
@@ -1130,13 +1130,13 @@ function SetQuestion() {
                             </div>
                           </Col>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase1Output">
                                 <b style={{ color: "red" }}>*</b>TestCase Output
                                 1 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={""}
                                 form="sbForm"
@@ -1157,13 +1157,13 @@ function SetQuestion() {
                         <>
                           {" "}
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase2Input">
                                 <b style={{ color: "red" }}>*</b>TestCase Input
                                 2 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={testCaseInput2}
                                 form="sbForm"
@@ -1177,13 +1177,13 @@ function SetQuestion() {
                             </div>
                           </Col>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase2Output">
                                 <b style={{ color: "red" }}>*</b>TestCase Output
                                 2 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={testCaseOutput2}
                                 form="sbForm"
@@ -1203,13 +1203,13 @@ function SetQuestion() {
                         <>
                           {" "}
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase2Input">
                                 <b style={{ color: "red" }}>*</b>TestCase Input
                                 2 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={""}
                                 form="sbForm"
@@ -1223,13 +1223,13 @@ function SetQuestion() {
                             </div>
                           </Col>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase2Output">
                                 <b style={{ color: "red" }}>*</b>TestCase Output
                                 2 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={""}
                                 form="sbForm"
@@ -1250,13 +1250,13 @@ function SetQuestion() {
                         <>
                           {" "}
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase3Input">
                                 <b style={{ color: "red" }}>*</b>TestCase Input
                                 3 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={testCaseInput3}
                                 form="sbForm"
@@ -1270,13 +1270,13 @@ function SetQuestion() {
                             </div>
                           </Col>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase3Output">
                                 <b style={{ color: "red" }}>*</b>TestCase Output
                                 3 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={testCaseOutput3}
                                 form="sbForm"
@@ -1295,13 +1295,13 @@ function SetQuestion() {
                         <>
                           {" "}
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase3Input">
                                 <b style={{ color: "red" }}>*</b>TestCase Input
                                 3 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={""}
                                 form="sbForm"
@@ -1315,13 +1315,13 @@ function SetQuestion() {
                             </div>
                           </Col>
                           <Col md={6}>
-                            <div class="form-group">
+                            <div className="form-group">
                               <label for="qsSetTestCase3Output">
                                 <b style={{ color: "red" }}>*</b>TestCase Output
                                 3 :{" "}
                               </label>
                               <textarea
-                                class="form-control form-field style-4"
+                                className="form-control form-field style-4"
                                 disabled={!isUpdate}
                                 defaultValue={""}
                                 form="sbForm"
@@ -1343,7 +1343,7 @@ function SetQuestion() {
               {isUpdate && !isCoding && !isPersonality && (
                 <>
                   <button
-                    class="btn"
+                    className="btn"
                     type="button"
                     onClick={(e) => (isAnalytical ? addParaQs(e) : addOpt(e))}
                     style={{
@@ -1353,10 +1353,10 @@ function SetQuestion() {
                       marginBottom: "10px",
                     }}
                   >
-                    <i class="fa fa-add" style={{ color: "white" }}></i>
+                    <i className="fa fa-add" style={{ color: "white" }}></i>
                   </button>
                   <button
-                    class="btn"
+                    className="btn"
                     type="button"
                     onClick={(e) => (isAnalytical ? delParaQs(e) : delOpt(e))}
                     style={{
@@ -1366,13 +1366,13 @@ function SetQuestion() {
                       marginBottom: "10px",
                     }}
                   >
-                    <i class="fa fa-trash" style={{ color: "white" }}></i>
+                    <i className="fa fa-trash" style={{ color: "white" }}></i>
                   </button>
                 </>
               )}
               {isUpdate ? (
                 <button
-                  class="btn"
+                  className="btn"
                   type="button"
                   onClick={(e) => {
                     if (
@@ -1403,11 +1403,11 @@ function SetQuestion() {
                     marginTop: "5px",
                   }}
                 >
-                  <i class="fa fa-edit" style={{ color: "white" }}></i>
+                  <i className="fa fa-edit" style={{ color: "white" }}></i>
                 </button>
               ) : (
                 <button
-                  class="btn"
+                  className="btn"
                   type="button"
                   onClick={(e) => {
                     setIsUpdate(!isUpdate);
@@ -1420,7 +1420,7 @@ function SetQuestion() {
                     marginTop: "5px",
                   }}
                 >
-                  <i class="fa fa-edit" style={{ color: "white" }}></i>
+                  <i className="fa fa-edit" style={{ color: "white" }}></i>
                 </button>
               )}
             </div>
@@ -1439,16 +1439,16 @@ function SetQuestion() {
                     {" "}
                     Question Navigator
                     <button
-                      class="btn"
+                      className="btn"
                       type="button"
                       style={{ padding: "0" }}
                       onClick={(e) => {}}
                     >
-                      <i class="fa fa-trash" style={{ color: "grey" }}></i>
+                      <i className="fa fa-trash" style={{ color: "grey" }}></i>
                     </button>
                   </div>
                   <div
-                    class="scrollbar"
+                    className="scrollbar"
                     style={{
                       height: window.screen.height - 500,
                       padding: "5px",
@@ -1476,7 +1476,7 @@ function SetQuestion() {
                               <Row>
                                 <Col md={1}>
                                   <input
-                                    class="styled-checkbox"
+                                    className="styled-checkbox"
                                     style={{ display: "none" }}
                                     disabled
                                     id={`styled-checkbox-${index}`}
@@ -1537,16 +1537,16 @@ function SetQuestion() {
                   >
                     Question Navigator
                     <button
-                      class="btn"
+                      className="btn"
                       type="button"
                       style={{ padding: "0" }}
                       onClick={(e) => delQuestion(e)}
                     >
-                      <i class="fa fa-trash" style={{ color: "red" }}></i>
+                      <i className="fa fa-trash" style={{ color: "red" }}></i>
                     </button>
                   </div>
                   <div
-                    class="scrollbar"
+                    className="scrollbar"
                     style={{
                       height: window.screen.height - 500,
                       padding: "5px",

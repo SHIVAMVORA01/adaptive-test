@@ -16,14 +16,14 @@ function AnalyticalOptComp({
 
   return (
     <div
-      class="form-group basicRec"
+      className="form-group basicRec"
       style={{ padding: "10px 20px", marginTop: "10px" }}
     >
       <label for={`para${currentQsID}Qs${index + 1}`}>
         Question {index + 1} :{" "}
       </label>
       <textarea
-        class="form-control form-field style-4"
+        className="form-control form-field style-4"
         disabled={!isUpdate}
         defaultValue={ques.question}
         form="sbForm"
@@ -40,7 +40,7 @@ function AnalyticalOptComp({
             return (
               <>
                 <p style={{ padding: "5px 0", margin: "10px 0px" }}>
-                  <div class="form-check" style={{ paddingLeft: "0" }}>
+                  <div className="form-check" style={{ paddingLeft: "0" }}>
                     <input
                       type="radio"
                       className="setQsRadio"
@@ -52,7 +52,7 @@ function AnalyticalOptComp({
                       required
                     />
                     <label
-                      class="form-check-label"
+                      className="form-check-label"
                       style={{
                         marginLeft: "15px",
                         fontWeight: "400",
@@ -62,7 +62,7 @@ function AnalyticalOptComp({
                     >
                       <input
                         type="text"
-                        class="form-control"
+                        className="form-control"
                         disabled={!isUpdate}
                         defaultValue={opt.title}
                         name={`para${currentQsID}Qs${index + 1}Option${
@@ -89,7 +89,7 @@ function AnalyticalOptComp({
           borderRadius: "100px",
         }}
       >
-        <i class="fa fa-add" style={{ color: "white" }}></i>
+        <i className="fa fa-add" style={{ color: "white" }}></i>
       </button>
       <button
         hidden={isUpdate ? false : true}
@@ -102,7 +102,7 @@ function AnalyticalOptComp({
           marginLeft: "2%",
         }}
       >
-        <i class="fa fa-trash" style={{ color: "white" }}></i>
+        <i className="fa fa-trash" style={{ color: "white" }}></i>
       </button>
     </div>
   );

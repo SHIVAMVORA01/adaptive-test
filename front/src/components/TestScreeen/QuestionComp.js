@@ -93,7 +93,7 @@ function QuestionComp({
                     type="radio"
                     id={"qsRadio1"}
                     name={question}
-                    class="qsRadio"
+                    className="qsRadio"
                     value={1}
                     style={{ height: "13px" }}
                   />
@@ -117,7 +117,7 @@ function QuestionComp({
                     type="radio"
                     id={"qsRadio2"}
                     name={question}
-                    class="qsRadio"
+                    className="qsRadio"
                     value={2}
                     style={{ height: "13px" }}
                   />
@@ -141,7 +141,7 @@ function QuestionComp({
                     type="radio"
                     id={"qsRadio3"}
                     name={question}
-                    class="qsRadio"
+                    className="qsRadio"
                     value={3}
                     style={{ height: "13px" }}
                   />
@@ -165,7 +165,7 @@ function QuestionComp({
                     type="radio"
                     id={"qsRadio4"}
                     name={question}
-                    class="qsRadio"
+                    className="qsRadio"
                     value={4}
                     style={{ height: "13px" }}
                   />
@@ -189,7 +189,7 @@ function QuestionComp({
                     type="radio"
                     id={"qsRadio5"}
                     name={question}
-                    class="qsRadio"
+                    className="qsRadio"
                     value={5}
                     style={{ height: "13px" }}
                   />

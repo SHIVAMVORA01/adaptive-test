@@ -9,12 +9,14 @@ import CustomTimer from "./Admin/CustomTimer";
 import "../css/LoginScreen.css";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
 import AdminProtectUrl from "../components/Admin/AdminProtectUrl";
+import Loader from "../components/Loader";
 
 function Login() {
   const navigate = useNavigate();
   const [md, setMd] = useState(false);
   const [dataUpcoming, setTDataUpcoming] = useState({});
   const [dataPresent, setTDataPresent] = useState({});
+  const [isLoading, setIsloading] = useState(true);
   const columnsP = [
     {
       label: "NAME",
@@ -111,6 +113,7 @@ function Login() {
         });
     };
     data();
+    setIsloading(false);
   }, []);
   function showHide(e) {
     $(e.target).toggleClass("fa-eye fa-eye-slash");
@@ -136,6 +139,7 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsloading(true);
     axiosInstance
       .post("/api/log", {
         data: {
@@ -172,6 +176,7 @@ function Login() {
                       data: { testId: xx },
                     })
                     .then((res) => {
+                      setIsloading(false);
                       if (res.data.resultExists) {
                         if (res.data.end) {
                           setMd(true);
@@ -216,137 +221,140 @@ function Login() {
     return parseInt(aa);
   }
   return (
-    <div style={{ color: "#788094" }}>
-      <Row>
-        <Col>
-          <div style={{ margin: "60px 60px" }}>
-            <Row>
-              <Col>
-                <div id="title">Placement Aptitude Portal</div>
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <div id="subTitle">
-                  Dwarkadas J. Sanghvi College of Engineering
-                </div>
-              </Col>
-            </Row>
-            <form onSubmit={(e) => handleSubmit(e)}>
-              <Row style={{ marginTop: "70px" }}>
+    <>
+      {isLoading && <Loader></Loader>}
+      <div style={{ color: "#788094" }}>
+        <Row>
+          <Col>
+            <div style={{ margin: "60px 60px" }}>
+              <Row>
                 <Col>
-                  <input
-                    className="loginInpRec"
-                    onChange={handleChange}
-                    name="username"
-                    type="text"
-                    placeholder="Username"
-                    style={{ width: "100%" }}
-                  ></input>
+                  <div id="title">Placement Aptitude Portal</div>
                 </Col>
               </Row>
-              <Row style={{ marginTop: "25px" }}>
+              <Row>
                 <Col>
-                  <input
-                    className="loginInpRec"
-                    onChange={handleChange}
-                    id="password-field"
-                    name="password"
-                    type="password"
-                    placeholder="Password"
-                    style={{ width: "100%" }}
-                  ></input>
-                  <span
-                    toggle="#password-field"
-                    className="fa fa-fw fa-eye field-icon toggle-password"
-                    onClick={(e) => showHide(e)}
-                  ></span>
+                  <div id="subTitle">
+                    Dwarkadas J. Sanghvi College of Engineering
+                  </div>
                 </Col>
               </Row>
-              <Row style={{ marginTop: "35px", paddingLeft: "200px" }}>
-                <Col>
-                  <button
-                    style={{
-                      backgroundColor: "#10B65C",
-                      width: "150px",
-                      border: "none",
-                    }}
-                    type="submit"
-                    className="btn btn-primary"
-                  >
-                    Start Test
-                  </button>
-                </Col>
-              </Row>
-            </form>
-          </div>
-        </Col>
-        <Col style={{ padding: "0", marginTop: "40px" }}>
-          <div>
-            <Row style={{ margin: "0 0 20px 10%" }}>
-              <Col style={{ marginRight: "0%" }}>
-                {" "}
-                <div className="basicRec">
-                  <h4
-                    style={{
-                      paddingTop: "10px",
-                      color: "#293e6f",
-                      textAlign: "center",
-                    }}
-                  >
-                    Ongoing Test
-                  </h4>
+              <form onSubmit={(e) => handleSubmit(e)}>
+                <Row style={{ marginTop: "70px" }}>
+                  <Col>
+                    <input
+                      className="loginInpRec"
+                      onChange={handleChange}
+                      name="username"
+                      type="text"
+                      placeholder="Username"
+                      style={{ width: "100%" }}
+                    ></input>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: "25px" }}>
+                  <Col>
+                    <input
+                      className="loginInpRec"
+                      onChange={handleChange}
+                      id="password-field"
+                      name="password"
+                      type="password"
+                      placeholder="Password"
+                      style={{ width: "100%" }}
+                    ></input>
+                    <span
+                      toggle="#password-field"
+                      className="fa fa-fw fa-eye field-icon toggle-password"
+                      onClick={(e) => showHide(e)}
+                    ></span>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: "35px", paddingLeft: "200px" }}>
+                  <Col>
+                    <button
+                      style={{
+                        backgroundColor: "#10B65C",
+                        width: "150px",
+                        border: "none",
+                      }}
+                      type="submit"
+                      className="btn btn-primary"
+                    >
+                      Start Test
+                    </button>
+                  </Col>
+                </Row>
+              </form>
+            </div>
+          </Col>
+          <Col style={{ padding: "0", marginTop: "40px" }}>
+            <div>
+              <Row style={{ margin: "0 0 20px 10%" }}>
+                <Col style={{ marginRight: "0%" }}>
+                  {" "}
+                  <div className="basicRec">
+                    <h4
+                      style={{
+                        paddingTop: "10px",
+                        color: "#293e6f",
+                        textAlign: "center",
+                      }}
+                    >
+                      Ongoing Test
+                    </h4>
 
-                  <MDBDataTable
-                    striped
-                    bordered
-                    noBottomColumns
-                    hover
-                    searching={false}
-                    displayEntries={false}
-                    entries={1}
-                    pagesAmount={1}
-                    paging={false}
-                    noRecordsFoundLabel={"No Ongoing Test"}
-                    data={dataPresent}
-                  />
-                </div>
-              </Col>
-            </Row>
-            <Row style={{ margin: "0 0 0 10%" }}>
-              <Col style={{ marginRight: "0%" }}>
-                {" "}
-                <div className="basicRec">
-                  <h4
-                    style={{
-                      paddingTop: "10px",
-                      color: "#293e6f",
-                      textAlign: "center",
-                    }}
-                  >
-                    Upcoming Test
-                  </h4>
+                    <MDBDataTable
+                      striped
+                      bordered
+                      noBottomColumns
+                      hover
+                      searching={false}
+                      displayEntries={false}
+                      entries={1}
+                      pagesAmount={1}
+                      paging={false}
+                      noRecordsFoundLabel={"No Ongoing Test"}
+                      data={dataPresent}
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <Row style={{ margin: "0 0 0 10%" }}>
+                <Col style={{ marginRight: "0%" }}>
+                  {" "}
+                  <div className="basicRec">
+                    <h4
+                      style={{
+                        paddingTop: "10px",
+                        color: "#293e6f",
+                        textAlign: "center",
+                      }}
+                    >
+                      Upcoming Test
+                    </h4>
 
-                  <MDBDataTable
-                    striped
-                    bordered
-                    noBottomColumns
-                    hover
-                    searching={false}
-                    displayEntries={false}
-                    entries={4}
-                    pagesAmount={1}
-                    paging={false}
-                    noRecordsFoundLabel={"No Upcoming Test"}
-                    data={dataUpcoming}
-                  />
-                </div>
-              </Col>
-            </Row>
-          </div>
-        </Col>
-      </Row>
-    </div>
+                    <MDBDataTable
+                      striped
+                      bordered
+                      noBottomColumns
+                      hover
+                      searching={false}
+                      displayEntries={false}
+                      entries={4}
+                      pagesAmount={1}
+                      paging={false}
+                      noRecordsFoundLabel={"No Upcoming Test"}
+                      data={dataUpcoming}
+                    />
+                  </div>
+                </Col>
+              </Row>
+            </div>
+          </Col>
+        </Row>
+      </div>
+    </>
   );
 }
 

@@ -298,8 +298,8 @@ export default function PersonalityResultComp({
   }
   return (
     <div style={{ display: "hidden" }}>
-      <div class="container">
-        <div class="starter-template" id="generatePdf">
+      <div className="container">
+        <div className="starter-template" id="generatePdf">
           <p>
             This report compares {Nick} from the country {Country} to other
             {Category}. (The name used in this report is either a nickname

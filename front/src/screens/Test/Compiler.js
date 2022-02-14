@@ -1260,29 +1260,31 @@ export default function Compiler() {
     "use strict";
 
     if (submitCode_qs1) {
-      if(
-        q1_testCase_1_output_error!==undefined &&
-        q1_testCase_2_output_error!==undefined &&
-        q1_testCase_3_output_error!==undefined 
-        ){
       if (
-        !q1_testCase_1_output_error &&
-        !q1_testCase_2_output_error &&
-        !q1_testCase_3_output_error
+        q1_testCase_1_output_error !== undefined &&
+        q1_testCase_2_output_error !== undefined &&
+        q1_testCase_3_output_error !== undefined
       ) {
-        document.getElementById(
-          "uncontrolled-tab-example-tab-Q1"
-        ).style.backgroundColor = "#10b65c"; //green
-        document.getElementById("uncontrolled-tab-example-tab-Q1").style.color =
-          "white";
+        if (
+          !q1_testCase_1_output_error &&
+          !q1_testCase_2_output_error &&
+          !q1_testCase_3_output_error
+        ) {
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q1"
+          ).style.backgroundColor = "#10b65c"; //green
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q1"
+          ).style.color = "white";
+        } else {
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q1"
+          ).style.backgroundColor = "#dc3545"; //red
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q1"
+          ).style.color = "white";
+        }
       } else {
-        document.getElementById(
-          "uncontrolled-tab-example-tab-Q1"
-        ).style.backgroundColor = "#dc3545"; //red
-        document.getElementById("uncontrolled-tab-example-tab-Q1").style.color =
-          "white";
-      }
-      }else{
         document.getElementById(
           "uncontrolled-tab-example-tab-Q1"
         ).style.backgroundColor = "#6c757d"; //grey
@@ -1291,66 +1293,70 @@ export default function Compiler() {
       }
     }
     if (submitCode_qs2) {
-      if(
-        q2_testCase_1_output_error!==undefined &&
-        q2_testCase_2_output_error!==undefined &&
-        q2_testCase_3_output_error!==undefined 
-        ){
       if (
-        !q2_testCase_1_output_error &&
-        !q2_testCase_2_output_error &&
-        !q2_testCase_3_output_error
+        q2_testCase_1_output_error !== undefined &&
+        q2_testCase_2_output_error !== undefined &&
+        q2_testCase_3_output_error !== undefined
       ) {
-        document.getElementById(
-          "uncontrolled-tab-example-tab-Q2"
-        ).style.backgroundColor = "#10b65c";
-        document.getElementById("uncontrolled-tab-example-tab-Q2").style.color =
-          "white";
+        if (
+          !q2_testCase_1_output_error &&
+          !q2_testCase_2_output_error &&
+          !q2_testCase_3_output_error
+        ) {
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q2"
+          ).style.backgroundColor = "#10b65c";
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q2"
+          ).style.color = "white";
+        } else {
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q2"
+          ).style.backgroundColor = "#dc3545";
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q2"
+          ).style.color = "white";
+        }
       } else {
         document.getElementById(
           "uncontrolled-tab-example-tab-Q2"
-        ).style.backgroundColor = "#dc3545";
+        ).style.backgroundColor = "#6c757d"; //grey
         document.getElementById("uncontrolled-tab-example-tab-Q2").style.color =
           "white";
       }
-    }else{
-      document.getElementById(
-        "uncontrolled-tab-example-tab-Q2"
-      ).style.backgroundColor = "#6c757d"; //grey
-      document.getElementById("uncontrolled-tab-example-tab-Q2").style.color =
-        "white";
-    }
     }
     if (submitCode_qs3) {
-      if(
-        q3_testCase_1_output_error!==undefined &&
-        q3_testCase_2_output_error!==undefined &&
-        q3_testCase_3_output_error!==undefined 
-        ){
       if (
-        !q3_testCase_1_output_error &&
-        !q3_testCase_2_output_error &&
-        !q3_testCase_3_output_error
+        q3_testCase_1_output_error !== undefined &&
+        q3_testCase_2_output_error !== undefined &&
+        q3_testCase_3_output_error !== undefined
       ) {
-        document.getElementById(
-          "uncontrolled-tab-example-tab-Q3"
-        ).style.backgroundColor = "#10b65c";
-        document.getElementById("uncontrolled-tab-example-tab-Q3").style.color =
-          "white";
+        if (
+          !q3_testCase_1_output_error &&
+          !q3_testCase_2_output_error &&
+          !q3_testCase_3_output_error
+        ) {
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q3"
+          ).style.backgroundColor = "#10b65c";
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q3"
+          ).style.color = "white";
+        } else {
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q3"
+          ).style.backgroundColor = "#dc3545";
+          document.getElementById(
+            "uncontrolled-tab-example-tab-Q3"
+          ).style.color = "white";
+        }
       } else {
         document.getElementById(
           "uncontrolled-tab-example-tab-Q3"
-        ).style.backgroundColor = "#dc3545";
+        ).style.backgroundColor = "#6c757d"; //grey
         document.getElementById("uncontrolled-tab-example-tab-Q3").style.color =
           "white";
       }
-    }else{
-      document.getElementById(
-        "uncontrolled-tab-example-tab-Q3"
-      ).style.backgroundColor = "#6c757d"; //grey
-      document.getElementById("uncontrolled-tab-example-tab-Q3").style.color =
-        "white";
-    }
     }
     let sum = 0;
     let sum1 = 0;
@@ -1773,7 +1779,7 @@ export default function Compiler() {
               </Col>
               <Col lg={3}>
                 <div
-                  class="custom-control custom-checkbox"
+                  className="custom-control custom-checkbox"
                   style={{ paddingTop: "8px" }}
                 >
                   <input
@@ -1786,7 +1792,10 @@ export default function Compiler() {
                     }}
                     id="defaultUnchecked"
                   />
-                  <label class="custom-control-label" for="defaultUnchecked">
+                  <label
+                    className="custom-control-label"
+                    for="defaultUnchecked"
+                  >
                     Custom Input
                   </label>
                 </div>

@@ -10,7 +10,7 @@ function ViewSchdlTest() {
   const navigate = useNavigate();
   const location = useLocation();
   const [rows, setRows] = useState([]);
-  const [data, setTData] = useState({});
+  const [data, setTData] = useState({ columns: [], rows: [] });
   // let addBtn;
   const columns = [
     {
@@ -75,7 +75,6 @@ function ViewSchdlTest() {
             return ex.id !== id;
           });
           setTData({ columns: data.columns, rows: arr });
-          window.location.reload();
         })
         .catch((e) => {
           console.log(e);
@@ -99,7 +98,7 @@ function ViewSchdlTest() {
                 onClick={() => deleteRow(v.id)}
               >
                 {" "}
-                <i class="fa fa-trash" style={{ color: "red" }}></i>
+                <i className="fa fa-trash" style={{ color: "red" }}></i>
               </button>
             ),
           })),

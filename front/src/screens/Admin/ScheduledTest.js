@@ -599,7 +599,7 @@ function ScheduledTest() {
                     <Col md={1}>
                       <i
                         onClick={() => delSTest(t.id)}
-                        class="fa fa-trash"
+                        className="fa fa-trash"
                         style={{
                           backgroundColor: "white",
                           color: "red",
@@ -667,7 +667,7 @@ function ScheduledTest() {
                         onClick={() => {
                           startTest(t.id);
                         }}
-                        class="fa fa-eye"
+                        className="fa fa-eye"
                         style={{
                           backgroundColor: "white",
                           color: "green",
