@@ -222,138 +222,141 @@ function Login() {
   }
   return (
     <>
-      {isLoading && <Loader></Loader>}
-      <div style={{ color: "#788094" }}>
-        <Row>
-          <Col>
-            <div style={{ margin: "60px 60px" }}>
-              <Row>
-                <Col>
-                  <div id="title">Placement Aptitude Portal</div>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <div id="subTitle">
-                    Dwarkadas J. Sanghvi College of Engineering
-                  </div>
-                </Col>
-              </Row>
-              <form onSubmit={(e) => handleSubmit(e)}>
-                <Row style={{ marginTop: "70px" }}>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div style={{ color: "#788094" }}>
+          <Row>
+            <Col>
+              <div style={{ margin: "60px 60px" }}>
+                <Row>
                   <Col>
-                    <input
-                      className="loginInpRec"
-                      onChange={handleChange}
-                      name="username"
-                      type="text"
-                      placeholder="Username"
-                      style={{ width: "100%" }}
-                    ></input>
+                    <div id="title">Placement Aptitude Portal</div>
                   </Col>
                 </Row>
-                <Row style={{ marginTop: "25px" }}>
+                <Row>
                   <Col>
-                    <input
-                      className="loginInpRec"
-                      onChange={handleChange}
-                      id="password-field"
-                      name="password"
-                      type="password"
-                      placeholder="Password"
-                      style={{ width: "100%" }}
-                    ></input>
-                    <span
-                      toggle="#password-field"
-                      className="fa fa-fw fa-eye field-icon toggle-password"
-                      onClick={(e) => showHide(e)}
-                    ></span>
+                    <div id="subTitle">
+                      Dwarkadas J. Sanghvi College of Engineering
+                    </div>
                   </Col>
                 </Row>
-                <Row style={{ marginTop: "35px", paddingLeft: "200px" }}>
-                  <Col>
-                    <button
-                      style={{
-                        backgroundColor: "#10B65C",
-                        width: "150px",
-                        border: "none",
-                      }}
-                      type="submit"
-                      className="btn btn-primary"
-                    >
-                      Start Test
-                    </button>
-                  </Col>
-                </Row>
-              </form>
-            </div>
-          </Col>
-          <Col style={{ padding: "0", marginTop: "40px" }}>
-            <div>
-              <Row style={{ margin: "0 0 20px 10%" }}>
-                <Col style={{ marginRight: "0%" }}>
-                  {" "}
-                  <div className="basicRec">
-                    <h4
-                      style={{
-                        paddingTop: "10px",
-                        color: "#293e6f",
-                        textAlign: "center",
-                      }}
-                    >
-                      Ongoing Test
-                    </h4>
+                <form onSubmit={(e) => handleSubmit(e)}>
+                  <Row style={{ marginTop: "70px" }}>
+                    <Col>
+                      <input
+                        className="loginInpRec"
+                        onChange={handleChange}
+                        name="username"
+                        type="text"
+                        placeholder="Username"
+                        style={{ width: "100%" }}
+                      ></input>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: "25px" }}>
+                    <Col>
+                      <input
+                        className="loginInpRec"
+                        onChange={handleChange}
+                        id="password-field"
+                        name="password"
+                        type="password"
+                        placeholder="Password"
+                        style={{ width: "100%" }}
+                      ></input>
+                      <span
+                        toggle="#password-field"
+                        className="fa fa-fw fa-eye field-icon toggle-password"
+                        onClick={(e) => showHide(e)}
+                      ></span>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginTop: "35px", paddingLeft: "200px" }}>
+                    <Col>
+                      <button
+                        style={{
+                          backgroundColor: "#10B65C",
+                          width: "150px",
+                          border: "none",
+                        }}
+                        type="submit"
+                        className="btn btn-primary"
+                      >
+                        Start Test
+                      </button>
+                    </Col>
+                  </Row>
+                </form>
+              </div>
+            </Col>
+            <Col style={{ padding: "0", marginTop: "40px" }}>
+              <div>
+                <Row style={{ margin: "0 0 20px 10%" }}>
+                  <Col style={{ marginRight: "0%" }}>
+                    {" "}
+                    <div className="basicRec">
+                      <h4
+                        style={{
+                          paddingTop: "10px",
+                          color: "#293e6f",
+                          textAlign: "center",
+                        }}
+                      >
+                        Ongoing Test
+                      </h4>
 
-                    <MDBDataTable
-                      striped
-                      bordered
-                      noBottomColumns
-                      hover
-                      searching={false}
-                      displayEntries={false}
-                      entries={1}
-                      pagesAmount={1}
-                      paging={false}
-                      noRecordsFoundLabel={"No Ongoing Test"}
-                      data={dataPresent}
-                    />
-                  </div>
-                </Col>
-              </Row>
-              <Row style={{ margin: "0 0 0 10%" }}>
-                <Col style={{ marginRight: "0%" }}>
-                  {" "}
-                  <div className="basicRec">
-                    <h4
-                      style={{
-                        paddingTop: "10px",
-                        color: "#293e6f",
-                        textAlign: "center",
-                      }}
-                    >
-                      Upcoming Test
-                    </h4>
+                      <MDBDataTable
+                        striped
+                        bordered
+                        noBottomColumns
+                        hover
+                        searching={false}
+                        displayEntries={false}
+                        entries={1}
+                        pagesAmount={1}
+                        paging={false}
+                        noRecordsFoundLabel={"No Ongoing Test"}
+                        data={dataPresent}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+                <Row style={{ margin: "0 0 0 10%" }}>
+                  <Col style={{ marginRight: "0%" }}>
+                    {" "}
+                    <div className="basicRec">
+                      <h4
+                        style={{
+                          paddingTop: "10px",
+                          color: "#293e6f",
+                          textAlign: "center",
+                        }}
+                      >
+                        Upcoming Test
+                      </h4>
 
-                    <MDBDataTable
-                      striped
-                      bordered
-                      noBottomColumns
-                      hover
-                      searching={false}
-                      displayEntries={false}
-                      entries={4}
-                      pagesAmount={1}
-                      paging={false}
-                      noRecordsFoundLabel={"No Upcoming Test"}
-                      data={dataUpcoming}
-                    />
-                  </div>
-                </Col>
-              </Row>
-            </div>
-          </Col>
-        </Row>
-      </div>
+                      <MDBDataTable
+                        striped
+                        bordered
+                        noBottomColumns
+                        hover
+                        searching={false}
+                        displayEntries={false}
+                        entries={4}
+                        pagesAmount={1}
+                        paging={false}
+                        noRecordsFoundLabel={"No Upcoming Test"}
+                        data={dataUpcoming}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </Col>
+          </Row>
+        </div>
+      )}
     </>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { isExpired, decodeToken } from "react-jwt";
 import { useNavigate } from "react-router";
 import axiosInstance from "../axios";
@@ -6,6 +6,7 @@ import { Col, Modal, Row } from "react-bootstrap";
 import TestHeaderComp from "../components/TestScreeen/TestHeaderComp";
 import Chart from "react-apexcharts";
 import "../css/ResultScreen.css";
+import { useReactToPrint } from "react-to-print";
 import PersonalityResultComp from "../components/Result/personalityResultComp";
 import GenericPdfDownloader from "../components/Result/GenericPdfDownloader";
 import DetailedReportComp from "../components/Result/DetailedReportComp";
@@ -26,6 +27,11 @@ function Result() {
   const [idx, setIdx] = useState();
   const [userDetails, setUserDetails] = useState({});
   const [startTime, setStartTime] = useState("");
+  const componentRef = useRef(null);
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: "detailed_report",
+  });
 
   useEffect(() => {
     var t = localStorage.getItem("test");
@@ -321,6 +327,11 @@ function Result() {
 
   return (
     <div>
+      <style type="text/css" media="print">
+        {"\
+  @page { size: A4; margin : 40px 20px 20px 20px !important; }\
+"}
+      </style>
       <Modal
         id="result_page"
         show={show}
@@ -330,10 +341,21 @@ function Result() {
         <Modal.Header closeButton>
           <Modal.Title id="example-custom-modal-styling-title">
             Detailed Report
-            <GenericPdfDownloader
+            {/* <GenericPdfDownloader
               rootElementId={"generatePdf"}
               downloadFileName="detailed_report"
-            ></GenericPdfDownloader>
+            ></GenericPdfDownloader> */}
+            <button
+              onClick={handlePrint}
+              style={{
+                backgroundColor: "white",
+                marginLeft: "10px",
+                outline: "none",
+                border: "0",
+              }}
+            >
+              <i className="fa fa-download" aria-hidden="true"></i>
+            </button>
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -348,6 +370,7 @@ function Result() {
             totalMarksScored !== undefined &&
             startTime !== undefined && (
               <DetailedReportComp
+                componentRef={componentRef}
                 SEP={personalityData[0].SEP}
                 SEFP={personalityData[0].SEFP}
                 LO={personalityData[0].LO}

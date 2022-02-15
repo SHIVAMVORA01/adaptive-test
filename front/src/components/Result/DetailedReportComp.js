@@ -35,9 +35,10 @@ function DetailedReportComp({
   timeTaken,
   totalMarksScored,
   startTime,
+  componentRef,
 }) {
   return (
-    <div id="generatePdf">
+    <div id="generatePdf" ref={componentRef} className="print-container">
       <Navbar
         style={{
           backgroundColor: "#fff",
@@ -95,7 +96,7 @@ function DetailedReportComp({
         <div className="line_through" style={{ width: "95%" }}></div>
       </Row>
       <Row>
-        <Col md="6">
+        <Col xs="6" md="6">
           <Card>
             <Card.Header
               style={{
@@ -111,11 +112,11 @@ function DetailedReportComp({
             <Card.Body>
               <Card.Text>
                 <p>
-                  <b>Name :</b> {user_detail.name || "Chaitanya Kmbhar"}
+                  <b>Name :</b> {user_detail?.name || "Chaitanya Kmbhar"}
                 </p>
                 <p style={{ marginTop: "35px" }}>
                   <b>Email :</b>{" "}
-                  {user_detail.email || "kchaitanya1911@gmail.com"}
+                  {user_detail?.email || "kchaitanya1911@gmail.com"}
                 </p>
                 <p style={{ marginTop: "35px" }}>
                   <b>Test Time :</b> 45 mins{" "}
@@ -125,7 +126,7 @@ function DetailedReportComp({
                   <CustomTimer start={false} time={timeTaken || "00:00:20"} />
                 </p>
                 <p style={{ marginTop: "35px" }}>
-                  <b>Test Date :</b> {startTime.split("T")[0] || 0}
+                  <b>Test Date :</b> {startTime?.split("T")[0] || 0}
                 </p>
                 <p style={{ marginTop: "35px" }}>
                   <b>Marks Scored :</b> {totalMarksScored || 45}
@@ -134,7 +135,7 @@ function DetailedReportComp({
             </Card.Body>
           </Card>
         </Col>
-        <Col md="6">
+        <Col xs="6" md="6">
           <Card>
             <Card.Header
               style={{
@@ -150,7 +151,7 @@ function DetailedReportComp({
             <Card.Body>
               <Card.Text>
                 <ReactSpeedometer
-                  width={400}
+                  width={350}
                   needleHeightRatio={0.7}
                   value={totalMarksScored * 2} //$
                   customSegmentStops={[0, 200, 400, 600, 800, 1000]}
@@ -203,9 +204,10 @@ function DetailedReportComp({
           </Card>
         </Col>
       </Row>
-      <Row>
-        <Col md="12">
-          <Card style={{ marginTop: "20px" }}>
+      <div className="page-break" />
+      <Row style={{ marginTop: "20px" }}>
+        <Col xs="12" md="12">
+          <Card>
             <Card.Header
               style={{
                 backgroundColor: "#081466",
@@ -220,62 +222,66 @@ function DetailedReportComp({
             <Card.Body>
               <Card.Text>
                 <Row>
-                  <Row>
-                    <Col md={4}>
+                  <Row className="print-container">
+                    <Col xs="4" md={4}>
                       <Chart_score
-                        percent={mrksScoredPercent[0]}
+                        percent={mrksScoredPercent?.[0]}
                         label="Aptitude"
                       />
                     </Col>
-                    <Col md={4}>
+                    <Col xs="4" md={4}>
                       <Chart_score
-                        percent={mrksScoredPercent[1]}
+                        percent={mrksScoredPercent?.[1]}
                         label="Computer Fundamentals"
                       />
                     </Col>
-                    <Col md={4}>
+                    <Col xs="4" md={4}>
                       <Chart_score
-                        percent={mrksScoredPercent[2]}
+                        percent={mrksScoredPercent?.[2]}
                         label="Domain"
                       />
                     </Col>
-
-                    <Col>
+                    <Col xs="6" md={6}>
                       <Chart_score
-                        percent={mrksScoredPercent[3]}
+                        percent={mrksScoredPercent?.[3]}
                         label="Coding"
                       />
                     </Col>
-                    <Col>
+                    <Col xs="6" md={6}>
                       <Chart_score
-                        percent={mrksScoredPercent[4]}
+                        percent={mrksScoredPercent?.[4]}
                         label="Analytical Writing"
                       />
                     </Col>
                   </Row>
-                  <p
-                    style={{
-                      fontFamily: "Poppins",
-                      fontStyle: "normal",
-                      fontWeight: "normal",
-                      fontSize: "14px",
-                      lineHeight: "21px",
-                      textAlign: "center",
-                      color: "#000000",
-                    }}
-                  >
-                    {" "}
-                    These radial charts are seen as an indicator of your
-                    performance across the various domains{" "}
-                  </p>
+                  <Row>
+                    <Col>
+                      <p
+                        style={{
+                          fontFamily: "Poppins",
+                          fontStyle: "normal",
+                          fontWeight: "normal",
+                          fontSize: "14px",
+                          lineHeight: "21px",
+                          textAlign: "center",
+                          color: "#000000",
+                        }}
+                      >
+                        {" "}
+                        These radial charts are seen as an indicator of your
+                        performance across the various domains{" "}
+                      </p>
+                    </Col>
+                  </Row>
                 </Row>
               </Card.Text>
             </Card.Body>
           </Card>
         </Col>
       </Row>
-      <Row>
-        <Col md="12" style={{ marginTop: "25px" }}>
+      <div className="page-break" />
+      <Row style={{ marginTop: "20px" }}>
+        <Col xs="12" md="12">
           <Card style={{ marginTop: "20px" }}>
             <Card.Header
               style={{
@@ -423,7 +429,7 @@ function DetailedReportComp({
                       </p>
                     )}
                   </h5>
-
+                  <div className="page-break" />
                   <h4 className="factor_5_modal">
                     Neuroticism
                     <small style={{ fontSize: "15px" }}>

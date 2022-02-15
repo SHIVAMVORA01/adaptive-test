@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import { isExpired, decodeToken } from "react-jwt";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
 import "../css/LoginScreen.css";
+import Loader from "../components/Loader";
 
 function DetailScreen() {
+  const [isLoading, setIsloading] = useState(true);
   const initialFormData = Object.freeze({
     username: localStorage.getItem("username"),
     name: "",
@@ -37,6 +39,7 @@ function DetailScreen() {
     } else if (isMyTokenExpired) {
       navigate("/logout");
     }
+    setIsloading(false);
   }, []);
   const handleChange = (e) => {
     updateFormData({
@@ -81,6 +84,7 @@ function DetailScreen() {
   };
 
   return (
+    <>
     <div style={{ color: "#788094" }}>
       <Row>
         <Col>
@@ -277,6 +281,8 @@ function DetailScreen() {
         </Col>
       </Row>
     </div>
+    </>
+    
   );
 }
 
