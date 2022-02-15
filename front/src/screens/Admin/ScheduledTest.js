@@ -5,8 +5,10 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
+import Loader from "../../components/Loader";
 
 function ScheduledTest() {
+  const [isLoading, setIsloading] = useState(true);
   const [stests, setSTests] = useState([]);
   const [utests, setUTests] = useState([]);
   const [show, setShow] = useState(false);
@@ -32,6 +34,7 @@ function ScheduledTest() {
 
   useEffect(() => {
     const data = async () => {
+      setIsloading(true);
       await axiosInstance
         .get("http://127.0.0.1:8000/api/admin/tests")
         .then((res) => {
@@ -47,6 +50,7 @@ function ScheduledTest() {
     };
 
     data();
+    setIsloading(false);
   }, []);
   function clash(stx, etx, tId) {
     for (let i = 0; i < tests.length; i++) {
@@ -106,6 +110,7 @@ function ScheduledTest() {
     setShow(true);
   }
   function saveChanges(e) {
+    
     e.preventDefault();
     var cDate = new Date();
     if (valueStart <= valueEnd && valueStart > cDate) {
@@ -115,6 +120,7 @@ function ScheduledTest() {
       if (valueStart !== valueStartCheck || valueEnd !== valueEndCheck) {
         let objClash = clash(valueStart.getTime(), valueEnd.getTime(), testId);
         if (!objClash.bool) {
+          setIsloading(true);
           axiosInstance
             .post("api/test/0", {
               data: {
@@ -133,6 +139,7 @@ function ScheduledTest() {
               },
             })
             .then((res) => {
+              setIsloading(false);
               console.log(res);
               window.location.reload();
             })
@@ -150,6 +157,7 @@ function ScheduledTest() {
     }
   }
   function delTest(e) {
+    setIsloading(true);
     axiosInstance
       .delete(`api/test/${testId}`, {
         data: {
@@ -161,6 +169,7 @@ function ScheduledTest() {
         },
       })
       .then((res) => {
+        setIsloading(false);
         console.log(res);
         window.location.reload();
       })
@@ -170,9 +179,11 @@ function ScheduledTest() {
   }
   function delSTest(idd) {
     if (window.confirm("Delete this test?")) {
+      setIsloading(true);
       axiosInstance
         .delete(`api/test/${idd}`)
         .then((res) => {
+          setIsloading(false);
           let arr = stests.filter((test) => {
             return test.id !== idd;
           });
@@ -192,11 +203,13 @@ function ScheduledTest() {
     var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
     var usern = localStorage.getItem("username");
     const data = async () =>
+    setIsloading(true);
       axiosInstance
         .post(`api/results/${usern}`, {
           data: { testId: tid },
         })
         .then((res) => {
+          setIsloading(false);
           localStorage.setItem(
             "test",
             JSON.stringify({
@@ -230,6 +243,10 @@ function ScheduledTest() {
   }
 
   return (
+    <>
+     {isLoading ? (
+        <Loader />
+      ) : (
     <div className="SchdlTest">
       <Modal show={show} onHide={handleClose}>
         <form
@@ -685,6 +702,8 @@ function ScheduledTest() {
         </Col>
       </Row>
     </div>
+      )}
+    </>
   );
 }
 

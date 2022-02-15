@@ -18,17 +18,17 @@ function Home() {
   return (
     <div>
          <Modal
-            id="result_page"
+            id="preview_video"
             show={show}
             onHide={() => setShow(false)}
             aria-labelledby="example-custom-modal-styling-title"
-            
+           style ={{"marginLeft":"-5%"}}
             
           >
             <Modal.Header closeButton>
             </Modal.Header>
             <Modal.Body style={{padding: "0", margin:"0"}}>
-            <ReactPlayer height='532px' width='100%' controls={false} pip={true} muted={false} playbackRate= {2} loop={true}  url='https://youtu.be/OgtDzJHB5Po' />
+            <ReactPlayer height='532px' width='700px' controls={false} pip={true} muted={false} playbackRate= {2} loop={true}  url='https://youtu.be/OgtDzJHB5Po' />
             </Modal.Body>
           </Modal>
       <div className="welcomeDiv">

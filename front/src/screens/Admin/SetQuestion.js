@@ -10,8 +10,10 @@ import "react-medium-image-zoom/dist/styles.css";
 import AnalyticalQsComp from "../../components/Admin/AnalyticalQsComp";
 import Alert from "../../components/Admin/Alert";
 import { Image } from "cloudinary-react";
+import Loader from "../../components/Loader";
 
 function SetQuestion() {
+  const [isLoading, setIsloading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const [navArray, setNavArray] = useState([]);
@@ -51,6 +53,7 @@ function SetQuestion() {
   const [imgDB, setImgDb] = useState("");
 
   useEffect(() => {
+    setIsloading(true);
     document.getElementById(location.state.type).selected = "selected";
     var divHeight = document.querySelector("#SETQS").clientHeight;
     setWindowHeight(divHeight);
@@ -103,8 +106,10 @@ function SetQuestion() {
     } else {
       setIsUpdate(true);
     }
+    setIsloading(false);
   }, []);
   function handleSubmit(e) {
+    setIsloading(true);
     e.preventDefault();
     var dictionary = {};
     if (parseInt(location.state.sid) === 6) {
@@ -217,18 +222,26 @@ function SetQuestion() {
     } else {
       uploadImage("", dictionary);
     }
+  
+  
+  
+  
+    setIsloading(false);
   }
   const uploadImage = async (base64EncodedImagee, dictionary) => {
     try {
       dictionary["image"] = base64EncodedImagee;
+      setIsloading(true);
       axiosInstance
         .post("api/admin/addQs", { data: dictionary })
         .then((res) => {
+          setIsloading(false);
           navigate("/admin/newTest", {
             state: { sid: location.state.sid - 1 },
           });
         })
         .catch((e) => {
+          setIsloading(false);
           console.log(e);
           setErrMsg("something went wrong!,Try Again");
         });
@@ -354,11 +367,13 @@ function SetQuestion() {
             val = val.split("CheckBox")[1];
             a.push(parseInt(val));
           });
+          setIsloading(true);
           axiosInstance
             .post("api/admin/delQs", {
               data: { delQs: a, sid: location.state.sid },
             })
             .then((res) => {
+              setIsloading(false);
               navigate("/admin/newTest", {
                 state: { sid: location.state.sid - 1 },
               });
@@ -452,6 +467,10 @@ function SetQuestion() {
   };
 
   return (
+    <>
+    {isLoading ? (
+        <Loader />
+      ) : (
     <div>
       <Alert msg={errMsg} type="danger" />
       <form onSubmit={(e) => handleSubmit(e)} id="sbForm">
@@ -1677,6 +1696,9 @@ function SetQuestion() {
         </Row>
       </form>
     </div>
+      )}
+    </>
+    
   );
 }
 

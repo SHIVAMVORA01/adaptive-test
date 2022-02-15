@@ -192,11 +192,17 @@
    
 }
 
-.modal-content {
+#preview_video .modal-content {
     background-color: transparent !important;
     border: 0px !important;
   }
   
-  .modal-header {
+#preview_video .modal-header {
     border: 0px !important;
+  }
+
+  #preview_video .modal-header .btn-close {
+    padding: 0px !important;
+    margin: 0px !important;
+
   }

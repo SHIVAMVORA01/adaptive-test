@@ -7,6 +7,8 @@ import $ from "jquery";
 import sidFunc from "./sidFunc";
 import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
+import Loader from "../../components/Loader";
+
 function NewTest() {
   //Current Sec Data
   const [easy, setEasy] = useState([]);
@@ -36,12 +38,15 @@ function NewTest() {
   //
   const location = useLocation();
   const navigate = useNavigate();
+  const [isLoading, setIsloading] = useState(true);
 
   useEffect(() => {
+    setIsloading(true);
     const data = async () =>
       await axiosInstance
         .get(`http://127.0.0.1:8000/api/subs`)
         .then((res) => {
+          setIsloading(false);
           var ssid;
           if (localStorage.getItem("isNewTestReload") !== null) {
             ssid = 0;
@@ -82,6 +87,7 @@ function NewTest() {
     };
     getTest();
     data();
+    setIsloading(false);
   }, []);
 
   function saveTest(e) {
@@ -145,11 +151,13 @@ function NewTest() {
             maxQs: 3,
           },
         ];
+        setIsloading(true);
         axiosInstance
           .post("api/admin/saveTest", {
             data: { saveTest: a, createTest: creaTest },
           })
           .then((res) => {
+            setIsloading(false);
             navigate("/admin/home");
           });
       } else {
@@ -311,6 +319,9 @@ function NewTest() {
 
   return (
     <>
+      {isLoading ? (
+        <Loader />
+      ) : (
       <form onSubmit={saveTest}>
         <div
           className="basicRec"
@@ -823,6 +834,7 @@ function NewTest() {
           </Col>
         </Row>
       </form>
+      )}
     </>
   );
 }

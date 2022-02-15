@@ -75,7 +75,7 @@ function AdminHome() {
             <ListGroup.Item action href="/admin/scheduledTest" style={{ padding: "25px", color: "#293E6F" }}>
               Scheduled Test
             </ListGroup.Item>
-            <ListGroup.Item action href="/admin/newTest" style={{ padding: "25px", color: "#293E6F" }}>
+            <ListGroup.Item action onClick={(e)=> {navigate("/admin/newTest", { state: { sid: 0 } })}} style={{ padding: "25px", color: "#293E6F" }}>
               New test
             </ListGroup.Item>
             <ListGroup.Item action href="#link3" style={{ padding: "25px", color: "#293E6F" }}>

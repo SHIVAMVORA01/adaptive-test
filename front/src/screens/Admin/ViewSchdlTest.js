@@ -5,8 +5,10 @@ import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
 import { MDBDataTable } from "mdbreact";
 import { CSVLink, CSVDownload } from "react-csv";
+import Loader from "../../components/Loader";
 
 function ViewSchdlTest() {
+  const [isLoading, setIsloading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
   const [rows, setRows] = useState([]);
@@ -82,6 +84,7 @@ function ViewSchdlTest() {
     }
   }
   useEffect(() => {
+    setIsloading(true);
     axiosInstance
       .get(`/api/admin/resultTest/${location.state.id}`)
       .then((res) => {
@@ -104,8 +107,13 @@ function ViewSchdlTest() {
           })),
         });
       });
+      setIsloading(false);
   }, []);
   return (
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
     <div>
       <button
         style={{
@@ -157,6 +165,9 @@ function ViewSchdlTest() {
         </CSVLink>
       </div>
     </div>
+      )}
+    </>
+    
   );
 }
 
