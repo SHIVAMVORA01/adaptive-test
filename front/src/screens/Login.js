@@ -200,10 +200,12 @@ function Login() {
                   data();
                 }
               } else {
+                setIsloading(false);
                 alert("test not available");
               }
             });
         } else {
+          setIsloading(false);
           alert("User Doesn't exists");
         }
       });
@@ -296,7 +298,7 @@ function Login() {
                   <Col style={{ marginRight: "0%" }}>
                     {" "}
                     <div className="basicRec">
-                      <h4
+                      <h5
                         style={{
                           paddingTop: "10px",
                           color: "#293e6f",
@@ -304,8 +306,7 @@ function Login() {
                         }}
                       >
                         Ongoing Test
-                      </h4>
-
+                      </h5>
                       <MDBDataTable
                         striped
                         bordered
@@ -326,7 +327,7 @@ function Login() {
                   <Col style={{ marginRight: "0%" }}>
                     {" "}
                     <div className="basicRec">
-                      <h4
+                      <h5
                         style={{
                           paddingTop: "10px",
                           color: "#293e6f",
@@ -334,8 +335,7 @@ function Login() {
                         }}
                       >
                         Upcoming Test
-                      </h4>
-
+                      </h5>
                       <MDBDataTable
                         striped
                         bordered

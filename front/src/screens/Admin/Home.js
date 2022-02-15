@@ -36,6 +36,19 @@ function AdminHome() {
           >
             Scheduled Test
           </button>
+          <button
+            type="button"
+            className="btn scTest"
+            onClick={(e) => navigate("/logout")}
+            style={{
+              width: "100px",
+              backgroundColor: "red",
+              color: "white",
+              border: "none",
+            }}
+          >
+            Logout
+          </button>
         </div>
       </div>
       <Row>

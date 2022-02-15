@@ -11,6 +11,7 @@ import $ from "jquery";
 import CustomTimer from "./Admin/CustomTimer";
 import crypt from "../components/TestScreeen/crypt";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
+import Loader from "../components/Loader";
 
 function TestScreen() {
   const [hard, setHard] = useState([]);
@@ -31,6 +32,7 @@ function TestScreen() {
   const [time, setTime] = useState();
   const [newScreen, setNewScreen] = useState(false);
   const [timeFF, setTimeFF] = useState();
+  const [isLoading, setIsloading] = useState(true);
 
   useEffect(() => {
     if (!localStorage.getItem("test")) {
@@ -190,6 +192,7 @@ function TestScreen() {
         }
       }
     }
+    setIsloading(false);
   }, []);
   function GoInFullscreen(element) {
     if (document.fullscreenElement === null) {
@@ -317,156 +320,162 @@ function TestScreen() {
     e.preventDefault();
   }
   return (
-    <div>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header>
-          <Modal.Title>Enter FullScreeen</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {reload ? (
-            <CustomTimer
-              msg={`Please Enter Full Screen or Test will get auto submitted in`}
-              onlyS={true}
-              reset={testFinshBool}
-              time={10}
-              start={show}
-              nextpage={"result"}
-            ></CustomTimer>
-          ) : (
-            "Please enter Full Screen mode"
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="primary"
-            onClick={(e) => {
-              handleClose(e);
-              GoInFullscreen(document.querySelector("#element"));
-            }}
-          >
-            Enter Full Screeen
-          </Button>
-        </Modal.Footer>
-      </Modal>
-      {
+    <>
+      {isLoading ? (
+        <Loader />
+      ) : (
         <div>
-          <div>
-            <Row>
-              <Col md="9">
-                <div className="TestHeaderComp">
-                  {timeFF !== undefined && (
-                    <TestHeaderComp
-                      timer={timeFF}
-                      start={!testFinshBool}
-                      reset={testFinshBool}
-                      timeKey="Time"
-                      totalKey="Total"
-                      totalValue={ans.length}
-                      header="Aptitude"
-                      nextpage={"admin/computer"}
-                    ></TestHeaderComp>
-                  )}
-                </div>
-              </Col>
-              <Col md="3">
-                <button
-                  onClick={(e) => {
-                    setTestFinishBool(true);
-                    setShow(false);
-                    navigate("/result");
-                    if (document.exitFullscreen) {
-                      document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                      document.webkitExitFullscreen();
-                    } else if (document.mozCancelFullScreen) {
-                      document.mozCancelFullScreen();
-                    } else if (document.msExitFullscreen) {
-                      document.msExitFullscreen();
-                    }
-                  }}
-                  style={{
-                    backgroundColor: "#081466",
-                    fontWeight: "500",
-                    textAlign: "center",
-                    width: "100%",
-                    height: "60px",
-                    borderRadius: "14px",
-                    color: "white",
-                    boxShadow:
-                      "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                  }}
-                >
-                  FINISH TEST
-                </button>
-              </Col>
-            </Row>
-            <Row style={{ marginTop: "15px" }}>
-              <Col md="9">
-                <div
-                  className="QuestionComp"
-                  style={{ minHeight: "50px", backgroundColor: "black" }}
-                >
-                  <form onSubmit={click}>
-                    {qs !== undefined &&
-                      qsno !== undefined &&
-                      qs[qsno] !== undefined &&
-                      !countWindowAwayModal && (
-                        <QuestionComp
-                          checkBoxToggle={checkBoxToggle}
-                          ans={ans}
-                          qsno={qsno}
-                          level={current}
-                          question={qs[qsno].ques}
-                          options={qs[qsno].options}
-                          qsimg={qs[qsno].img}
-                        ></QuestionComp>
+          <Modal
+            show={show}
+            onHide={handleClose}
+            backdrop="static"
+            keyboard={false}
+          >
+            <Modal.Header>
+              <Modal.Title>Enter FullScreeen</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {reload ? (
+                <CustomTimer
+                  msg={`Please Enter Full Screen or Test will get auto submitted in`}
+                  onlyS={true}
+                  reset={testFinshBool}
+                  time={10}
+                  start={show}
+                  nextpage={"result"}
+                ></CustomTimer>
+              ) : (
+                "Please enter Full Screen mode"
+              )}
+            </Modal.Body>
+            <Modal.Footer>
+              <Button
+                variant="primary"
+                onClick={(e) => {
+                  handleClose(e);
+                  GoInFullscreen(document.querySelector("#element"));
+                }}
+              >
+                Enter Full Screeen
+              </Button>
+            </Modal.Footer>
+          </Modal>
+          {
+            <div>
+              <div>
+                <Row>
+                  <Col md="9">
+                    <div className="TestHeaderComp">
+                      {timeFF !== undefined && (
+                        <TestHeaderComp
+                          timer={timeFF}
+                          start={!testFinshBool}
+                          reset={testFinshBool}
+                          timeKey="Time"
+                          totalKey="Total"
+                          totalValue={ans.length}
+                          header="Aptitude"
+                          nextpage={"admin/computer"}
+                        ></TestHeaderComp>
                       )}
-                    {countWindowAwayModal && (
-                      <>
-                        <h4 style={{ color: "red" }}>
-                          Screen Change Detected !!{" "}
-                          {countWindowAway === 1 ? "1st" : "LAST"} WARNING
-                        </h4>
-                        <h6>
-                          Screen changed detected.Test will get auto submitted
-                          if you try to change screen again !!
-                        </h6>
-                        <button
-                          className="btn"
-                          onClick={(e) => handleCloseSChange(e)}
-                          style={{
-                            backgroundColor: "#10B65C",
-                            margin: "0px 0px 10px 3px",
-                            color: "white",
-                          }}
-                        >
-                          Okay
-                        </button>
-                      </>
-                    )}
-                  </form>
-                </div>
-              </Col>
-              <Col md="3">
-                <div
-                  className="QuestionNavigatorComp"
-                  style={{ minHeight: "550px", backgroundColor: "black" }}
-                >
-                  <QuestionNavigatorComp
-                    attempted={ans}
-                  ></QuestionNavigatorComp>
-                </div>
-              </Col>
-            </Row>
-          </div>
+                    </div>
+                  </Col>
+                  <Col md="3">
+                    <button
+                      onClick={(e) => {
+                        setTestFinishBool(true);
+                        setShow(false);
+                        navigate("/result");
+                        if (document.exitFullscreen) {
+                          document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) {
+                          document.webkitExitFullscreen();
+                        } else if (document.mozCancelFullScreen) {
+                          document.mozCancelFullScreen();
+                        } else if (document.msExitFullscreen) {
+                          document.msExitFullscreen();
+                        }
+                      }}
+                      style={{
+                        backgroundColor: "#081466",
+                        fontWeight: "500",
+                        textAlign: "center",
+                        width: "100%",
+                        height: "60px",
+                        borderRadius: "14px",
+                        color: "white",
+                        boxShadow:
+                          "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                      }}
+                    >
+                      FINISH TEST
+                    </button>
+                  </Col>
+                </Row>
+                <Row style={{ marginTop: "15px" }}>
+                  <Col md="9">
+                    <div
+                      className="QuestionComp"
+                      style={{ minHeight: "50px", backgroundColor: "black" }}
+                    >
+                      <form onSubmit={click}>
+                        {qs !== undefined &&
+                          qsno !== undefined &&
+                          qs[qsno] !== undefined &&
+                          !countWindowAwayModal && (
+                            <QuestionComp
+                              checkBoxToggle={checkBoxToggle}
+                              ans={ans}
+                              qsno={qsno}
+                              level={current}
+                              question={qs[qsno].ques}
+                              options={qs[qsno].options}
+                              qsimg={qs[qsno].img}
+                            ></QuestionComp>
+                          )}
+                        {countWindowAwayModal && (
+                          <>
+                            <h4 style={{ color: "red" }}>
+                              Screen Change Detected !!{" "}
+                              {countWindowAway === 1 ? "1st" : "LAST"} WARNING
+                            </h4>
+                            <h6>
+                              Screen changed detected.Test will get auto
+                              submitted if you try to change screen again !!
+                            </h6>
+                            <button
+                              className="btn"
+                              onClick={(e) => handleCloseSChange(e)}
+                              style={{
+                                backgroundColor: "#10B65C",
+                                margin: "0px 0px 10px 3px",
+                                color: "white",
+                              }}
+                            >
+                              Okay
+                            </button>
+                          </>
+                        )}
+                      </form>
+                    </div>
+                  </Col>
+                  <Col md="3">
+                    <div
+                      className="QuestionNavigatorComp"
+                      style={{ minHeight: "550px", backgroundColor: "black" }}
+                    >
+                      <QuestionNavigatorComp
+                        attempted={ans}
+                      ></QuestionNavigatorComp>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </div>
+          }
         </div>
-      }
-    </div>
+      )}
+    </>
   );
 }
 
