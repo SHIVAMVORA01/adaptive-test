@@ -196,3 +196,10 @@
 .onHoverDiv:hover {
   cursor: pointer;
 }
+
+.list-group-item.active  {
+  background-color: #293e6f !important;
+  color: #ffffff !important;
+  border: none;
+  outline: none;
+}

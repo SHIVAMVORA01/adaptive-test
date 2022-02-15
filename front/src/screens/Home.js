@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Row, Col, Button, Footer } from "react-bootstrap";
+import { Container, Row, Col, Button, Footer, Modal } from "react-bootstrap";
 import "../css/Home.css";
 import { useNavigate } from "react-router";
 import illustration1 from "../img/illustration1.svg";
@@ -8,12 +8,29 @@ import illustration3 from "../img/illustration3.svg";
 import Chaitanya from "../img/Chaitanya.jpeg";
 import alan from "../img/alan.jpg";
 import Shivam from "../img/Shivam.jpeg";
-import Group_10 from "../img/Group 10.png";
+import {useState} from 'react'
+import '../../node_modules/react-modal-video/scss/modal-video.scss'
+import ReactPlayer from 'react-player/lazy'
 
 function Home() {
+  const [show, setShow] = useState(false);
   const navigate = useNavigate();
   return (
     <div>
+         <Modal
+            id="result_page"
+            show={show}
+            onHide={() => setShow(false)}
+            aria-labelledby="example-custom-modal-styling-title"
+            
+            
+          >
+            <Modal.Header closeButton>
+            </Modal.Header>
+            <Modal.Body style={{padding: "0", margin:"0"}}>
+            <ReactPlayer height='532px' width='100%' controls={false} pip={true} muted={false} playbackRate= {2} loop={true}  url='https://youtu.be/OgtDzJHB5Po' />
+            </Modal.Body>
+          </Modal>
       <div className="welcomeDiv">
         <div>
           <div className="titleDiv" style={{ height: "400px" }}>
@@ -44,6 +61,7 @@ function Home() {
               </Button>
               <Button
                 className="buttonDiv"
+                onClick={()=> setShow(true)}
                 style={{
                   background: "#10B65C",
                   color: "#FFF",
@@ -51,9 +69,6 @@ function Home() {
                   fontSize: "20px",
                   marginTop: "2%",
                   border: "none",
-                }}
-                onClick={() => {
-                  navigate("/logout");
                 }}
               >
                 Preview

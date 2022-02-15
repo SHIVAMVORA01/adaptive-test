@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, ListGroup, Card, Button } from "react-bootstrap";
 import "../../css/AdminHomeScreen.css";
 import Coding from "../../img/carbon_code.svg";
 import Setting from "../../img/Brain.svg";
@@ -8,106 +8,152 @@ import Personality from "../../img/Domain.svg";
 import AnalyticalWr from "../../img/Personality.svg";
 import CompFund from "../../img/CompFund.svg";
 import { useNavigate } from "react-router";
+import Shivam from "../../img/Shivam.jpeg";
 
 function AdminHome() {
+  const [key, setKey] = useState('home')
   useEffect(() => {
     if (localStorage.getItem("isNewTestReload") !== undefined) {
       localStorage.removeItem("isNewTestReload");
     }
   }, []);
+
   const navigate = useNavigate();
-  function navigateTo(e, sectionName, sid) {}
+  function navigateTo(e, sectionName, sid) { }
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div className="mainHeading">Our Test Modules</div>
-        <div>
-          <button
-            style={{ color: "white" }}
-            className="btn scTest"
-            onClick={(e) => navigate("/admin/newTest", { state: { sid: 0 } })}
-          >
-            New Tests
-          </button>
-          <button
-            style={{ color: "white" }}
-            className="btn scTest"
-            onClick={(e) => navigate("/admin/scheduledTest")}
-          >
-            Scheduled Test
-          </button>
-          <button
-            type="button"
-            className="btn scTest"
-            onClick={(e) => navigate("/logout")}
-            style={{
-              width: "100px",
-              backgroundColor: "red",
-              color: "white",
-              border: "none",
-            }}
-          >
-            Logout
-          </button>
-        </div>
-      </div>
       <Row>
-        <Col>
-          <div
-            className="rectangle"
-            onClick={(e) => navigateTo(e, "Aptitude", 1)}
+        <Col md="4">
+          <div className="displayCard"
+          style={{
+            display: 'flex',
+            justifyContent: 'flex-Start',
+          }}
           >
-            <img className="carbonImage" alt="logo" src={Brain}></img>
-          </div>
-          <h5 className="secName">Aptitude</h5>
-        </Col>
-        <Col>
-          <div
-            className="rectangle"
-            onClick={(e) => navigateTo(e, "Computer Fundamentals", 2)}
-          >
-            <img className="carbonImage" alt="logo" src={CompFund}></img>
-          </div>
-          <h5 className="secNameBig">Computer Fundamentals</h5>
-        </Col>
-        <Col>
-          <div
-            className="rectangle"
-            onClick={(e) => navigateTo(e, "Coding", 6)}
-          >
-            <img className="carbonImage" alt="logo" src={Coding}></img>
-          </div>
-          <h5 className="secName">Coding</h5>
-        </Col>
-      </Row>
+            <div>
+              <img height="100px" width="100px" style={{ borderRadius: "50%"}} src={Shivam} alt="profilePic" />
+            </div>
+            <div className="displayCardColumn"
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+            }}>
+              <p style={{
+                 fontFamily: "Poppins",
+                 fontStyle: "normal",
+                 fontWeight: "600",
+                 fontSize: "20px",
+                 lineHeight:" 18px",
+                 color: "#293E6F",
+                 marginLeft: "30px",
+                 marginTop: "20px",
 
-      <Row style={{ marginTop: "10px" }}>
-        <Col>
-          <div
-            className="rectangle"
-            onClick={(e) => navigateTo(e, "Domain", 3)}
-          >
-            <img className="carbonImage" alt="logo" src={Setting}></img>
+              }} >Shivam Vora</p>
+              <p style={{
+                fontFamily: "Poppins",
+                fontStyle: "normal",
+                fontWeight: "normal",
+                fontSize: "18px",
+                lineHeight:" 14px",
+                color: "#293E6F",
+                marginLeft: "30px",
+                marginTop: "10px",
+              }}>Admin</p>
+            </div>
           </div>
-          <h5 className="secName">Domain</h5>
+          <p style={{
+            fontFamily: "Poppins",
+            fontStyle: "normal",
+            fontSize: "20px",
+            lineHeight: "30px",
+            color: "#293E6F",
+            marginTop: "40px"
+          }}>
+            <b>Admin Panel</b>
+          </p>
+          <ListGroup defaultActiveKey="#link1">
+            <ListGroup.Item action href="/admin/scheduledTest" style={{ padding: "25px", color: "#293E6F" }}>
+              Scheduled Test
+            </ListGroup.Item>
+            <ListGroup.Item action href="/admin/newTest" style={{ padding: "25px", color: "#293E6F" }}>
+              New test
+            </ListGroup.Item>
+            <ListGroup.Item action href="#link3" style={{ padding: "25px", color: "#293E6F" }}>
+              View profile
+            </ListGroup.Item>
+            <ListGroup.Item action href="/logout" style={{ padding: "25px", color: "#293E6F" }}>
+              Logout
+            </ListGroup.Item>
+            <ListGroup.Item action href="#link4" style={{ padding: "25px", color: "#293E6F" }}>
+              Feedback
+            </ListGroup.Item>
+          </ListGroup>
         </Col>
-        <Col>
-          <div
-            className="rectangle"
-            onClick={(e) => navigateTo(e, "Personality", 4)}
-          >
-            <img className="carbonImage" alt="logo" src={Personality}></img>
-          </div>
-          <h5 className="secName">Personality</h5>
+        <Col md="8" style={{ marginTop: '20px' }}>
+          <Row>
+            <p style={{
+              fontFamily: "Poppins",
+              fontStyle: "normal",
+              fontWeight: "600",
+              fontSize: "25px",
+              lineHeight: "52px",
+              color: "#293E6F",
+              textAlign: "center"
+
+            }}
+            >Our Test Modules</p>
+            <Col md="4" >
+              <Card style={{ marginLeft: "50px", marginTop: "40px", width: "200px" }}  >
+                <Card.Img variant="top" src={Brain} style={{ width: "70px", marginLeft: "60px", marginTop: "20px" }} />
+                <Card.Body>
+                  <Card.Title style={{ textAlign: 'center', fontSize: '18px' }} >Aptitude</Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md="4">
+              <Card style={{ marginLeft: "50px", marginTop: "40px", width: "200px" }}  >
+                <Card.Img variant="top" src={CompFund} style={{ width: "70px", marginLeft: "60px", marginTop: "20px" }} />
+                <Card.Body>
+                  <Card.Title style={{ textAlign: 'center', fontSize: '18px' }} >Fundamentals</Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md="4">
+              <Card style={{ marginLeft: "50px", marginTop: "40px", width: "200px" }}  >
+                <Card.Img variant="top" src={Coding} style={{ width: "70px", marginLeft: "60px", marginTop: "20px" }} />
+                <Card.Body>
+                  <Card.Title style={{ textAlign: 'center', fontSize: '18px' }} >Coding</Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md="4">
+              <Card style={{ marginLeft: "50px", marginTop: "40px", width: "200px" }}  >
+                <Card.Img variant="top" src={Setting} style={{ width: "70px", marginLeft: "60px", marginTop: "20px" }} />
+                <Card.Body>
+                  <Card.Title style={{ textAlign: 'center', fontSize: '18px' }} >Domain</Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md="4">
+              <Card style={{ marginLeft: "50px", marginTop: "40px", width: "200px" }}>
+                <Card.Img variant="top" src={Personality} style={{ width: "70px", marginLeft: "60px", marginTop: "20px" }} />
+                <Card.Body>
+                  <Card.Title style={{ textAlign: 'center', fontSize: '18px' }} >Personality</Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+            <Col md="4">
+              <Card style={{ marginLeft: "50px", marginTop: "40px", width: "200px" }}>
+                <Card.Img variant="top" src={AnalyticalWr} style={{ width: "70px", marginLeft: "60px", marginTop: "20px" }} />
+                <Card.Body>
+                  <Card.Title style={{ textAlign: 'center', fontSize: '18px' }} >Analytical Writing</Card.Title>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
         </Col>
-        <Col>
-          <div className="rectangle">
-            <img className="carbonImage" alt="logo" src={AnalyticalWr}></img>
-          </div>
-          <h5 className="secName1">Analytical Writing</h5>
-        </Col>
-      </Row>
-    </div>
+      </Row >
+    </div >
   );
 }
 
