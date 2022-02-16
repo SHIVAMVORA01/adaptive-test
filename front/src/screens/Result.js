@@ -8,6 +8,7 @@ import Chart from "react-apexcharts";
 import "../css/ResultScreen.css";
 import { useReactToPrint } from "react-to-print";
 import DetailedReportComp from "../components/Result/DetailedReportComp";
+import Feedbackstar from "react-feedback-star-component";
 import Loader from "../components/Loader";
 
 function Result() {
@@ -346,18 +347,16 @@ function Result() {
             <Modal.Header closeButton>
             </Modal.Header>
             <Modal.Body>
-              <p style={{fontSize: "20px", textAlign: "center", color: "#081466"}}> <b>Feedback Form</b></p>
               <Form>
-                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                  <Form.Label><b>Email address</b></Form.Label>
-                  <Form.Control type="email" placeholder="name@example.com" />
-                </Form.Group>
+                <p style={{textAlign: "center", fontSize: "16px", textAlign: "center", color: "#081466"}}><b>How do you feel about this portal? </b></p>
+                <Feedbackstar fontSizeStar= '3vw' colorStar='#081466'></Feedbackstar> 
+                <p  style={{textAlign: "center", fontSize: "16px", textAlign: "center", color: "#788094"}} >Let us know if you have ideas for new features <br></br>or improvements below!</p>
                 <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                  <Form.Label><b>Feedback</b></Form.Label>
-                  <Form.Control as="textarea" rows={3} />
+                  <Form.Label style={{fontSize: "14px", textAlign: "center", color: "#081466"}}> <b>Feedback</b></Form.Label>
+                  <Form.Control as="textarea" rows={5} />
                 </Form.Group>
               </Form>
-              <button className="btn" type="submit" style={{textAlign: "center", backgroundColor: "#10b65c", color: "white"}}> Submit </button>
+              <button onClick={() => navigate("/logout")} className="btn" type="submit" style={{ fontSize: "14px", textAlign: "center", backgroundColor: "#10b65c", color: "white", marginLeft: "190px"}}> Submit </button>
             </Modal.Body>
           </Modal>
           <Modal
