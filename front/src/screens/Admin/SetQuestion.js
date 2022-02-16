@@ -44,19 +44,23 @@ function SetQuestion() {
   const [para, set_para] = useState();
   const [para_qs, set_para_qs] = useState([]);
   const [isPersonality, set_isPersonality] = useState(false);
-
-  const [fileInputState, setFileInputState] = useState("");
+  const [fileInputState, setFileInputState] = useState();
   const [previewSource, setPreviewSource] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [successMsg, setSuccessMsg] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [imgDB, setImgDb] = useState("");
+  const [delImage, setDelImage] = useState(false);
 
   useEffect(() => {
-    setIsloading(true);
-    document.getElementById(location.state.type).selected = "selected";
-    var divHeight = document.querySelector("#SETQS").clientHeight;
-    setWindowHeight(divHeight);
+    console.log(document.getElementById(location.state.type));
+    if (document.getElementById(location.state.type) !== null) {
+      document.getElementById(location.state.type).selected = "selected";
+    }
+    if (document.querySelector("#SETQS") !== null) {
+      var divHeight = document.querySelector("#SETQS").clientHeight;
+      setWindowHeight(divHeight);
+    }
     localStorage.removeItem("isNewTestReload");
     var temp = location.state.navArr;
     setNavArray(temp);
@@ -106,7 +110,7 @@ function SetQuestion() {
     } else {
       setIsUpdate(true);
     }
-    setIsloading(false);
+     setIsloading(false);
   }, []);
   function handleSubmit(e) {
     setIsloading(true);
@@ -115,8 +119,6 @@ function SetQuestion() {
     if (parseInt(location.state.sid) === 6) {
       dictionary["paraId"] = currentQsID;
       let txtAreaEle = $("textarea");
-      console.log(txtAreaEle);
-      console.log("................");
       dictionary["rightOptArrAnalytical"] = {};
       dictionary["qsDict"] = {};
       for (let y = 0; y < txtAreaEle.length; y++) {
@@ -135,7 +137,6 @@ function SetQuestion() {
 
       for (let x = 0; x < rightOptArr.length; x++) {
         if (rightOptArr[x] !== null) {
-          console.log(rightOptArr[x].value.split("Opt")[0]);
           dictionary["rightOptArrAnalytical"][
             rightOptArr[x].value.split("Option")[0]
           ] = rightOptArr[x].value;
@@ -186,7 +187,6 @@ function SetQuestion() {
       ) {
         if (e.target[x].name.toString() !== "type") {
           if (isAnalytical) {
-            console.log(e.target[x].name.split("Option")[0]);
             var key = e.target[x].name.split("Option")[0].toString();
             if (key in dictionary["qsDict"]) {
               dictionary["qsDict"][key].options.push(e.target[x].name);
@@ -207,8 +207,7 @@ function SetQuestion() {
     if (parseInt(location.state.sid) === 4) {
       dictionary["type"] = 2;
     }
-    console.log(dictionary);
-    dictionary["image"] = "";
+    dictionary["image"] = null;
     if (selectedFile) {
       const reader = new FileReader();
       reader.readAsDataURL(selectedFile);
@@ -219,19 +218,19 @@ function SetQuestion() {
         console.error("AHHHHHHHH!!");
         setErrMsg("something went wrong!");
       };
-    } else {
+    } else if (delImage) {
       uploadImage("", dictionary);
+    } else {
+      uploadImage(null, dictionary);
     }
-  
-  
-  
-  
     setIsloading(false);
   }
   const uploadImage = async (base64EncodedImagee, dictionary) => {
     try {
-      dictionary["image"] = base64EncodedImagee;
-      setIsloading(true);
+      if (base64EncodedImagee !== null) {
+        dictionary["image"] = base64EncodedImagee;
+      }
+
       axiosInstance
         .post("api/admin/addQs", { data: dictionary })
         .then((res) => {
@@ -245,7 +244,7 @@ function SetQuestion() {
           console.log(e);
           setErrMsg("something went wrong!,Try Again");
         });
-    } catch (e) {}
+    } catch (e) { }
   };
   function delOptInSubQs(e, pId, qsId, questionIndex) {
     para_qs[questionIndex].options.pop();
@@ -378,6 +377,7 @@ function SetQuestion() {
                 state: { sid: location.state.sid - 1 },
               });
             });
+            setIsloading(false);
         }
       }
     } else {
@@ -454,9 +454,15 @@ function SetQuestion() {
   }
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
-    previewFile(file);
-    setSelectedFile(file);
-    setFileInputState(e.target.value);
+    if (file !== undefined) {
+      previewFile(file);
+      setSelectedFile(file);
+      setFileInputState(e.target.value);
+    } else {
+      setPreviewSource("");
+      setSelectedFile();
+      setFileInputState();
+    }
   };
   const previewFile = (file) => {
     const reader = new FileReader();
@@ -465,1240 +471,1276 @@ function SetQuestion() {
       setPreviewSource(reader.result);
     };
   };
-
+  function del_Image() {
+    if (window.confirm("Remove this Image?")) {
+      setDelImage(true);
+    }
+  }
   return (
     <>
-    {isLoading ? (
+      {isLoading ? (
         <Loader />
       ) : (
-    <div>
-      <Alert msg={errMsg} type="danger" />
-      <form onSubmit={(e) => handleSubmit(e)} id="sbForm">
-        <input name="sectionName" value={location.state.sectionName} hidden />
-        <input
-          name="action"
-          value={
-            (isNew && currentQsNo == navArray.length) || navArray.length === 0
-              ? "Save"
-              : "Update"
-          }
-          hidden
-        />
-        <Row>
-          <Col md={9}>
-            <div
-              id="SETQS"
-              className="basicRec SetQuestion"
-              style={{
-                margin: "0px 50px",
-                minHeight: window.screen.height - 500,
-              }}
-            >
-              <div style={{ padding: "20px 36px 0 36px" }}>
-                {!isCoding && !isPersonality && (
-                  <div
-                    style={{ marginBottom: "20px" }}
-                    hidden={isAnalytical ? true : false}
-                  >
-                    <div className="form-group">
-                      <label for="selectSetQs">
-                        <b style={{ color: "red" }}>*</b>Type :
-                      </label>
-                      <select
-                        className="form-select"
-                        name="type"
-                        aria-label="Default select example"
+        <div>
+          <Alert msg={errMsg} type="danger" />
+          <form onSubmit={(e) => handleSubmit(e)} id="sbForm">
+            <input name="sectionName" value={location.state.sectionName} hidden />
+            <input
+              name="action"
+              value={
+                (isNew && currentQsNo == navArray.length) || navArray.length === 0
+                  ? "Save"
+                  : "Update"
+              }
+              hidden
+            />
+            <Row>
+              <Col md={9}>
+                <div
+                  id="SETQS"
+                  className="basicRec SetQuestion"
+                  style={{
+                    margin: "0px 50px",
+                    minHeight: window.screen.height - 500,
+                  }}
+                >
+                  <div style={{ padding: "20px 36px 0 36px" }}>
+                    {!isCoding && !isPersonality && (
+                      <div
+                        style={{ marginBottom: "20px" }}
                         hidden={isAnalytical ? true : false}
-                        disabled={!isUpdate}
-                        required
                       >
-                        <option id="Easy">Easy</option>
-                        <option id="Medium">Medium</option>
-                        <option id="Hard">Hard</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-                {isAnalytical && (
-                  <>
-                    {isNew && currentQsNo === navArray.length && (
+                        <div className="form-group">
+                          <label for="selectSetQs">
+                            <b style={{ color: "red" }}>*</b>Type :
+                          </label>
+                          <select
+                            className="form-select"
+                            name="type"
+                            aria-label="Default select example"
+                            hidden={isAnalytical ? true : false}
+                            disabled={!isUpdate}
+                            required
+                          >
+                            <option id="Easy">Easy</option>
+                            <option id="Medium">Medium</option>
+                            <option id="Hard">Hard</option>
+                          </select>
+                        </div>
+                      </div>
+                    )}
+                    {isAnalytical && (
                       <>
-                        <div className="form-group">
-                          <label for="paragraphTitle">
-                            <b style={{ color: "red" }}>*</b>Paragraph Title :{" "}
-                          </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={""}
-                            form="sbForm"
-                            name={`paragraphTitle`}
-                            id="paragraphTitle"
-                            placeholder="Enter Paragraph Title"
-                            rows="1"
-                            style={{ maxWidth: "100%", resize: "none" }}
-                            required
-                          ></textarea>
-                        </div>
-                        <div className="form-group">
-                          <label for="paragraph">
-                            <b style={{ color: "red" }}>*</b>Paragraph :{" "}
-                          </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={""}
-                            form="sbForm"
-                            name={`paragraph`}
-                            id="paragraph"
-                            placeholder="Enter Paragraph"
-                            rows="4"
-                            style={{ maxWidth: "100%" }}
-                            required
-                          ></textarea>
-                        </div>
-                        <div className="qsArr">
-                          <AnalyticalQsComp
-                            para_qs={para_qs}
-                            currentQsID={currentQsID}
-                            isUpdate={isUpdate}
-                            addOptInSubQs={addOptInSubQs}
-                            delOptInSubQs={delOptInSubQs}
-                            set_rerenderState={set_rerenderState}
-                            rerenderState={rerenderState}
-                          ></AnalyticalQsComp>
-                        </div>
+                        {isNew && currentQsNo === navArray.length && (
+                          <>
+                            <div className="form-group">
+                              <label for="paragraphTitle">
+                                <b style={{ color: "red" }}>*</b>Paragraph Title :{" "}
+                              </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={""}
+                                form="sbForm"
+                                name={`paragraphTitle`}
+                                id="paragraphTitle"
+                                placeholder="Enter Paragraph Title"
+                                rows="1"
+                                style={{ maxWidth: "100%", resize: "none" }}
+                                required
+                              ></textarea>
+                            </div>
+                            <div className="form-group">
+                              <label for="paragraph">
+                                <b style={{ color: "red" }}>*</b>Paragraph :{" "}
+                              </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={""}
+                                form="sbForm"
+                                name={`paragraph`}
+                                id="paragraph"
+                                placeholder="Enter Paragraph"
+                                rows="4"
+                                style={{ maxWidth: "100%" }}
+                                required
+                              ></textarea>
+                            </div>
+                            <div className="qsArr">
+                              <AnalyticalQsComp
+                                para_qs={para_qs}
+                                currentQsID={currentQsID}
+                                isUpdate={isUpdate}
+                                addOptInSubQs={addOptInSubQs}
+                                delOptInSubQs={delOptInSubQs}
+                                set_rerenderState={set_rerenderState}
+                                rerenderState={rerenderState}
+                              ></AnalyticalQsComp>
+                            </div>
+                          </>
+                        )}
+                        {!isNew && (
+                          <>
+                            <div className="form-group">
+                              <label for="paragraphTitle">
+                                <b style={{ color: "red" }}>*</b>Paragraph Title :{" "}
+                              </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={para_title}
+                                form="sbForm"
+                                name={`paragraphTitle`}
+                                id="paragraphTitle"
+                                placeholder="Enter Paragraph Title"
+                                rows="1"
+                                style={{ maxWidth: "100%", resize: "none" }}
+                                required
+                              ></textarea>
+                            </div>
+                            <div className="form-group">
+                              <label for="paragraph">
+                                <b style={{ color: "red" }}>*</b>Paragraph :{" "}
+                              </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={para}
+                                form="sbForm"
+                                name={`paragraph`}
+                                id="paragraph"
+                                placeholder="Enter Paragraph"
+                                rows="4"
+                                style={{ maxWidth: "100%" }}
+                                required
+                              ></textarea>
+                            </div>
+                            <div className="qsArr">
+                              <AnalyticalQsComp
+                                para_qs={para_qs}
+                                currentQsID={currentQsID}
+                                isUpdate={isUpdate}
+                                addOptInSubQs={addOptInSubQs}
+                                delOptInSubQs={delOptInSubQs}
+                                set_rerenderState={set_rerenderState}
+                                rerenderState={rerenderState}
+                              ></AnalyticalQsComp>
+                            </div>
+                          </>
+                        )}
                       </>
                     )}
-                    {!isNew && (
-                      <>
-                        <div className="form-group">
-                          <label for="paragraphTitle">
-                            <b style={{ color: "red" }}>*</b>Paragraph Title :{" "}
-                          </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={para_title}
-                            form="sbForm"
-                            name={`paragraphTitle`}
-                            id="paragraphTitle"
-                            placeholder="Enter Paragraph Title"
-                            rows="1"
-                            style={{ maxWidth: "100%", resize: "none" }}
-                            required
-                          ></textarea>
-                        </div>
-                        <div className="form-group">
-                          <label for="paragraph">
-                            <b style={{ color: "red" }}>*</b>Paragraph :{" "}
-                          </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={para}
-                            form="sbForm"
-                            name={`paragraph`}
-                            id="paragraph"
-                            placeholder="Enter Paragraph"
-                            rows="4"
-                            style={{ maxWidth: "100%" }}
-                            required
-                          ></textarea>
-                        </div>
-                        <div className="qsArr">
-                          <AnalyticalQsComp
-                            para_qs={para_qs}
-                            currentQsID={currentQsID}
-                            isUpdate={isUpdate}
-                            addOptInSubQs={addOptInSubQs}
-                            delOptInSubQs={delOptInSubQs}
-                            set_rerenderState={set_rerenderState}
-                            rerenderState={rerenderState}
-                          ></AnalyticalQsComp>
-                        </div>
-                      </>
-                    )}
-                  </>
-                )}
-                <Row>
-                  {!isNew && !isAnalytical && (
-                    <div className="form-group">
-                      <label for="qsSetQs">
-                        <b style={{ color: "red" }}>*</b>Question :{" "}
-                      </label>
-                      <textarea
-                        className="form-control form-field style-4"
-                        disabled={!isUpdate}
-                        defaultValue={currentQs}
-                        form="sbForm"
-                        name={`question${currentQsID}`}
-                        id="qsSetQs"
-                        placeholder="Enter Question"
-                        rows="3"
-                        style={{ maxWidth: "100%" }}
-                        required
-                      ></textarea>
-                    </div>
-                  )}
-                  {isNew && !isAnalytical && currentQsNo === navArray.length && (
-                    <div className="form-group">
-                      <label for="qsSetQs">
-                        <b style={{ color: "red" }}>*</b>Question :{" "}
-                      </label>
-                      <textarea
-                        className="form-control form-field style-4"
-                        disabled={!isUpdate}
-                        defaultValue={""}
-                        form="sbForm"
-                        name={`question${currentQsID}`}
-                        id="qsSetQs"
-                        placeholder="Enter Question"
-                        rows="3"
-                        style={{ maxWidth: "100%" }}
-                        required
-                      ></textarea>
-                    </div>
-                  )}
-                </Row>
-                {!isCoding &&
-                  !isPersonality &&
-                  !isAnalytical &&
-                  isNew &&
-                  currentQsNo === navArray.length && (
                     <Row>
-                      <div style={{ margin: "10px 0" }}>
+                      {!isNew && !isAnalytical && (
                         <div className="form-group">
-                          <label for="selectSetQs">Image :</label>
-                          <input
-                            id="fileInput"
-                            type="file"
-                            name="image"
-                            style={{ marginLeft: "20px" }}
-                            onChange={handleFileInputChange}
-                            value=""
-                            className="form-input"
-                          />
-                          {previewSource && (
-                            <div id="zoomImg">
-                              <Zoom>
-                                <img
-                                  src={previewSource}
-                                  alt="chosen"
-                                  style={{
-                                    height: "200px",
-                                    padding: "30px",
-                                    outline: "none",
-                                    border: "0",
-                                  }}
-                                />
-                              </Zoom>{" "}
+                          <label for="qsSetQs">
+                            <b style={{ color: "red" }}>*</b>Question :{" "}
+                          </label>
+                          <textarea
+                            className="form-control form-field style-4"
+                            disabled={!isUpdate}
+                            defaultValue={currentQs}
+                            form="sbForm"
+                            name={`question${currentQsID}`}
+                            id="qsSetQs"
+                            placeholder="Enter Question"
+                            rows="3"
+                            style={{ maxWidth: "100%" }}
+                            required
+                          ></textarea>
+                        </div>
+                      )}
+                      {isNew && !isAnalytical && currentQsNo === navArray.length && (
+                        <div className="form-group">
+                          <label for="qsSetQs">
+                            <b style={{ color: "red" }}>*</b>Question :{" "}
+                          </label>
+                          <textarea
+                            className="form-control form-field style-4"
+                            disabled={!isUpdate}
+                            defaultValue={""}
+                            form="sbForm"
+                            name={`question${currentQsID}`}
+                            id="qsSetQs"
+                            placeholder="Enter Question"
+                            rows="3"
+                            style={{ maxWidth: "100%" }}
+                            required
+                          ></textarea>
+                        </div>
+                      )}
+                    </Row>
+                    {!isCoding &&
+                      !isPersonality &&
+                      !isAnalytical &&
+                      isNew &&
+                      currentQsNo === navArray.length && (
+                        <Row>
+                          <div style={{ margin: "10px 0" }}>
+                            <div className="form-group">
+                              <label for="selectSetQs">Image :</label>
+                              <input
+                                id="fileInput"
+                                type="file"
+                                name="image"
+                                style={{ marginLeft: "20px" }}
+                                onChange={handleFileInputChange}
+                                value=""
+                                className="form-input"
+                                accept="image/png, image/jpeg"
+                              />
+                              {previewSource && (
+                                <div id="zoomImg">
+                                  <Zoom>
+                                    <img
+                                      src={previewSource}
+                                      alt="chosen"
+                                      style={{
+                                        height: "200px",
+                                        padding: "30px",
+                                        outline: "none",
+                                        border: "0",
+                                      }}
+                                    />
+                                  </Zoom>{" "}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </Row>
+                      )}
+                    {!isCoding && !isPersonality && !isAnalytical && !isNew && (
+                      <Row>
+                        <div style={{ margin: "10px 0" }}>
+                          <div className="form-group">
+                            <label for="selectSetQs">Image :</label>
+                            <input
+                              id="fileInput"
+                              type="file"
+                              name="image"
+                              style={{ marginLeft: "20px" }}
+                              onChange={handleFileInputChange}
+                              value={fileInputState}
+                              disabled={!isUpdate}
+                              className="form-input"
+                              accept="image/png, image/jpeg"
+                            />
+                            {previewSource && (
+                              <div id="zoomImg">
+                                <Zoom>
+                                  <img
+                                    src={previewSource}
+                                    alt="chosen"
+                                    style={{
+                                      height: "200px",
+                                      padding: "30px",
+                                      outline: "none",
+                                      border: "0",
+                                    }}
+                                  />
+                                </Zoom>{" "}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </Row>
+                    )}
+                    {!isCoding &&
+                      !isPersonality &&
+                      !isAnalytical &&
+                      !isNew &&
+                      !delImage && (
+                        <Row>
+                          {isUpdate && imgDB !== null && (
+                            <Col md={2}>
+                              <button
+                                type="button"
+                                className="btn"
+                                onClick={(e) => {
+                                  del_Image();
+                                }}
+                                style={{
+                                  backgroundColor: "red",
+                                  borderRadius: "100px",
+                                  height: "30px",
+                                  width: "30px",
+
+                                  padding: "0",
+                                }}
+                              >
+                                <i
+                                  className="fa fa-x"
+                                  title="Remove this image"
+                                  style={{ color: "white" }}
+                                ></i>
+                              </button>
+                            </Col>
+                          )}
+                          <Col>
+                            {imgDB !== null && (
+                              <div style={{ margin: "10px 0" }}>
+                                <div id="zoomImg" className="form-group">
+                                  <Zoom>
+                                    <Image
+                                      cloudName="chaitanya1911"
+                                      public_id={imgDB}
+                                      width="300"
+                                      crop="scale"
+                                      alt="img"
+                                    ></Image>
+                                  </Zoom>
+                                </div>
+                              </div>
+                            )}
+                          </Col>
+                        </Row>
+                      )}
+
+                    {!isCoding && (
+                      <div
+                        className="scrollbar"
+                        style={{
+                          maxHeight: "225px",
+                          margin: "5px",
+                          maxWidth: "100%",
+                          backgroundColor: "white",
+                        }}
+                        id="style-4"
+                      >
+                        {opt !== undefined &&
+                          opt.map((x, index) => {
+                            return (
+                              <>
+                                <p style={{ padding: "5px 0", margin: "10px 0px" }}>
+                                  <div
+                                    className="form-check"
+                                    style={{ paddingLeft: "0" }}
+                                  >
+                                    <input
+                                      type="radio"
+                                      className="form-check-radio setQsRadio"
+                                      name="correctOpt"
+                                      disabled={!isUpdate}
+                                      checked={x.mrks !== 0 ? true : null}
+                                      value={`Option${index + 1}`}
+                                      id={`flexCheckDefault${index + 1}`}
+                                      required
+                                    />
+                                    <label
+                                      className="form-check-label"
+                                      style={{
+                                        marginLeft: "15px",
+                                        fontWeight: "400",
+                                        width: "90%",
+                                      }}
+                                      for={`flexCheckDefault${index + 1}`}
+                                    >
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        disabled={!isUpdate}
+                                        defaultValue={x.opt}
+                                        name={`Option${index + 1}`}
+                                        placeholder={`Enter Option ${index + 1}`}
+                                        id={`Option${index + 1}`}
+                                        required
+                                      />
+                                    </label>
+                                  </div>
+                                </p>
+                              </>
+                            );
+                          })}
+                      </div>
+                    )}
+                    {isCoding && (
+                      <div>
+                        <Row>
+                          {isNew && currentQsNo === navArray.length && (
+                            <div className="form-group">
+                              <label for="qsSetInputFormat">
+                                <b style={{ color: "red" }}>*</b>Input Format :{" "}
+                              </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={""}
+                                form="sbForm"
+                                name={`inputFormat`}
+                                id="qsSetInputFormat"
+                                placeholder="Enter Input Format"
+                                rows="2"
+                                style={{ maxWidth: "100%", resize: "none" }}
+                                required
+                              ></textarea>
                             </div>
                           )}
-                        </div>
-                      </div>
-                    </Row>
-                  )}
-                {!isCoding && !isPersonality && !isAnalytical && !isNew && (
-                  <Row>
-                    <div style={{ margin: "10px 0" }}>
-                      <div className="form-group">
-                        <label for="selectSetQs">Image :</label>
-                        <input
-                          id="fileInput"
-                          type="file"
-                          name="image"
-                          style={{ marginLeft: "20px" }}
-                          onChange={handleFileInputChange}
-                          value={fileInputState}
-                          disabled={!isUpdate}
-                          className="form-input"
-                        />
-                        {previewSource && (
-                          <div id="zoomImg">
-                            <Zoom>
-                              <img
-                                src={previewSource}
-                                alt="chosen"
-                                style={{
-                                  height: "200px",
-                                  padding: "30px",
-                                  outline: "none",
-                                  border: "0",
-                                }}
-                              />
-                            </Zoom>{" "}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Row>
-                )}
-                {!isCoding && !isPersonality && !isAnalytical && !isNew && (
-                  <Row>
-                    {imgDB !== null && (
-                      <div style={{ margin: "10px 0" }}>
-                        <div id="zoomImg" className="form-group">
-                          <Zoom>
-                            <Image
-                              cloudName="chaitanya1911"
-                              public_id={imgDB}
-                              width="500"
-                              crop="scale"
-                            ></Image>
-                          </Zoom>
-                        </div>
-                      </div>
-                    )}
-                  </Row>
-                )}
+                          {!isNew && (
+                            <div className="form-group">
+                              <label for="qsSetInputFormat">
+                                <b style={{ color: "red" }}>*</b>Input Format :{" "}
+                              </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={inputF}
+                                form="sbForm"
+                                name={`inputFormat`}
+                                id="qsSetInputFormat"
+                                placeholder="Enter Input Format"
+                                rows="2"
+                                style={{ maxWidth: "100%", resize: "none" }}
+                                required
+                              ></textarea>
+                            </div>
+                          )}
+                        </Row>
 
-                {!isCoding && (
-                  <div
-                    className="scrollbar"
-                    style={{
-                      maxHeight: "225px",
-                      margin: "5px",
-                      maxWidth: "100%",
-                      backgroundColor: "white",
-                    }}
-                    id="style-4"
-                  >
-                    {opt !== undefined &&
-                      opt.map((x, index) => {
-                        return (
-                          <>
-                            <p style={{ padding: "5px 0", margin: "10px 0px" }}>
-                              <div
-                                className="form-check"
-                                style={{ paddingLeft: "0" }}
-                              >
-                                <input
-                                  type="radio"
-                                  className="form-check-radio setQsRadio"
-                                  name="correctOpt"
-                                  disabled={!isUpdate}
-                                  checked={x.mrks !== 0 ? true : null}
-                                  value={`Option${index + 1}`}
-                                  id={`flexCheckDefault${index + 1}`}
-                                  required
-                                />
-                                <label
-                                  className="form-check-label"
-                                  style={{
-                                    marginLeft: "15px",
-                                    fontWeight: "400",
-                                    width: "90%",
-                                  }}
-                                  for={`flexCheckDefault${index + 1}`}
-                                >
-                                  <input
-                                    type="text"
-                                    className="form-control"
-                                    disabled={!isUpdate}
-                                    defaultValue={x.opt}
-                                    name={`Option${index + 1}`}
-                                    placeholder={`Enter Option ${index + 1}`}
-                                    id={`Option${index + 1}`}
-                                    required
-                                  />
+                        <Row>
+                          {isNew && currentQsNo === navArray.length && (
+                            <div className="form-group">
+                              <label for="qsSetOutputFormat">
+                                <b style={{ color: "red" }}>*</b>Output Format :{" "}
+                              </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={""}
+                                form="sbForm"
+                                name={`outputFormat`}
+                                id="qsSetOutputFormat"
+                                placeholder="Enter Output Format"
+                                rows="2"
+                                style={{ maxWidth: "100%", resize: "none" }}
+                                required
+                              ></textarea>
+                            </div>
+                          )}
+                          {!isNew && (
+                            <div className="form-group">
+                              <label for="qsSetOutputFormat">
+                                <b style={{ color: "red" }}>*</b>Output Format :{" "}
+                              </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={outputF}
+                                form="sbForm"
+                                name={`outputFormat`}
+                                id="qsSetOutputFormat"
+                                placeholder="Enter Output Format"
+                                rows="2"
+                                style={{ maxWidth: "100%", resize: "none" }}
+                                required
+                              ></textarea>
+                            </div>
+                          )}
+                        </Row>
+                        <Row>
+                          <Col md={6}>
+                            {!isNew && (
+                              <div className="form-group">
+                                <label for="qsSetConstraints">
+                                  <b style={{ color: "red" }}>*</b>Constraints :{" "}
                                 </label>
+                                <textarea
+                                  className="form-control form-field style-4"
+                                  disabled={!isUpdate}
+                                  defaultValue={
+                                    isNew && currentQsNo == navArray.length
+                                      ? ""
+                                      : constraints
+                                  }
+                                  form="sbForm"
+                                  name={`constraints`}
+                                  id="qsSetConstraints"
+                                  placeholder="Enter Constraints"
+                                  rows="2"
+                                  style={{ maxWidth: "100%", resize: "none" }}
+                                  required
+                                ></textarea>
                               </div>
-                            </p>
-                          </>
-                        );
-                      })}
-                  </div>
-                )}
-                {isCoding && (
-                  <div>
-                    <Row>
-                      {isNew && currentQsNo === navArray.length && (
-                        <div className="form-group">
-                          <label for="qsSetInputFormat">
-                            <b style={{ color: "red" }}>*</b>Input Format :{" "}
-                          </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={""}
-                            form="sbForm"
-                            name={`inputFormat`}
-                            id="qsSetInputFormat"
-                            placeholder="Enter Input Format"
-                            rows="2"
-                            style={{ maxWidth: "100%", resize: "none" }}
-                            required
-                          ></textarea>
-                        </div>
-                      )}
-                      {!isNew && (
-                        <div className="form-group">
-                          <label for="qsSetInputFormat">
-                            <b style={{ color: "red" }}>*</b>Input Format :{" "}
-                          </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={inputF}
-                            form="sbForm"
-                            name={`inputFormat`}
-                            id="qsSetInputFormat"
-                            placeholder="Enter Input Format"
-                            rows="2"
-                            style={{ maxWidth: "100%", resize: "none" }}
-                            required
-                          ></textarea>
-                        </div>
-                      )}
-                    </Row>
-
-                    <Row>
-                      {isNew && currentQsNo === navArray.length && (
-                        <div className="form-group">
-                          <label for="qsSetOutputFormat">
-                            <b style={{ color: "red" }}>*</b>Output Format :{" "}
-                          </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={""}
-                            form="sbForm"
-                            name={`outputFormat`}
-                            id="qsSetOutputFormat"
-                            placeholder="Enter Output Format"
-                            rows="2"
-                            style={{ maxWidth: "100%", resize: "none" }}
-                            required
-                          ></textarea>
-                        </div>
-                      )}
-                      {!isNew && (
-                        <div className="form-group">
-                          <label for="qsSetOutputFormat">
-                            <b style={{ color: "red" }}>*</b>Output Format :{" "}
-                          </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={outputF}
-                            form="sbForm"
-                            name={`outputFormat`}
-                            id="qsSetOutputFormat"
-                            placeholder="Enter Output Format"
-                            rows="2"
-                            style={{ maxWidth: "100%", resize: "none" }}
-                            required
-                          ></textarea>
-                        </div>
-                      )}
-                    </Row>
-                    <Row>
-                      <Col md={6}>
-                        {!isNew && (
-                          <div className="form-group">
-                            <label for="qsSetConstraints">
-                              <b style={{ color: "red" }}>*</b>Constraints :{" "}
-                            </label>
-                            <textarea
-                              className="form-control form-field style-4"
-                              disabled={!isUpdate}
-                              defaultValue={
-                                isNew && currentQsNo == navArray.length
-                                  ? ""
-                                  : constraints
-                              }
-                              form="sbForm"
-                              name={`constraints`}
-                              id="qsSetConstraints"
-                              placeholder="Enter Constraints"
-                              rows="2"
-                              style={{ maxWidth: "100%", resize: "none" }}
-                              required
-                            ></textarea>
-                          </div>
-                        )}
-                        {isNew && currentQsNo === navArray.length && (
-                          <div className="form-group">
-                            <label for="qsSetConstraints">
-                              <b style={{ color: "red" }}>*</b>Constraints :{" "}
-                            </label>
-                            <textarea
-                              className="form-control form-field style-4"
-                              disabled={!isUpdate}
-                              defaultValue={""}
-                              form="sbForm"
-                              name={`constraints`}
-                              id="qsSetConstraints"
-                              placeholder="Enter Constraints"
-                              rows="2"
-                              style={{ maxWidth: "100%", resize: "none" }}
-                              required
-                            ></textarea>
-                          </div>
-                        )}
-                      </Col>
-                      <Col md={6}>
-                        {isCoding && (
-                          <div style={{ marginBottom: "20px" }}>
-                            <div className="form-group">
-                              <b style={{ color: "red" }}>*</b>
-                              <label for="selectSetQs">Type :</label>
-                              <select
-                                className="form-select"
-                                name="type"
-                                aria-label="Default select example"
-                                disabled={!isUpdate}
-                              >
-                                <option id="Easy">Easy</option>
-                                <option id="Medium">Medium</option>
-                                <option id="Hard">Hard</option>
-                              </select>
-                            </div>
-                          </div>
-                        )}
-                      </Col>
-                    </Row>
-                    <Row>
-                      {isNew && currentQsNo === navArray.length && (
-                        <>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetSampleInput">
-                                <b style={{ color: "red" }}>*</b>Sample Input :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={""}
-                                form="sbForm"
-                                name={`sampleInput`}
-                                id="qsSetSampleInput"
-                                placeholder="Enter Sample Input"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
+                            )}
+                            {isNew && currentQsNo === navArray.length && (
+                              <div className="form-group">
+                                <label for="qsSetConstraints">
+                                  <b style={{ color: "red" }}>*</b>Constraints :{" "}
+                                </label>
+                                <textarea
+                                  className="form-control form-field style-4"
+                                  disabled={!isUpdate}
+                                  defaultValue={""}
+                                  form="sbForm"
+                                  name={`constraints`}
+                                  id="qsSetConstraints"
+                                  placeholder="Enter Constraints"
+                                  rows="2"
+                                  style={{ maxWidth: "100%", resize: "none" }}
+                                  required
+                                ></textarea>
+                              </div>
+                            )}
                           </Col>
                           <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetSampleOutput">
-                                <b style={{ color: "red" }}>*</b> Sample Output
-                                :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={""}
-                                form="sbForm"
-                                name={`sampleOutput`}
-                                id="qsSetSampleOutput"
-                                placeholder="Enter Sample Output"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                        </>
-                      )}
-                      {!isNew && (
-                        <>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetSampleInput">
-                                <b style={{ color: "red" }}>*</b>Sample Input :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={sampleInput}
-                                form="sbForm"
-                                name={`sampleInput`}
-                                id="qsSetSampleInput"
-                                placeholder="Enter Sample Input"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetSampleOutput">
-                                <b style={{ color: "red" }}>*</b>Sample Output :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={sampleOutput}
-                                form="sbForm"
-                                name={`sampleOutput`}
-                                id="qsSetSampleOutput"
-                                placeholder="Enter Sample Output"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                        </>
-                      )}
-                    </Row>
-                    <Row>
-                      {isNew && currentQsNo === navArray.length && (
-                        <div className="form-group">
-                          <label for="qsSetExplanation">Explanation : </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={""}
-                            form="sbForm"
-                            name={`explanation`}
-                            id="qsSetExplanation"
-                            placeholder="Enter Explanation"
-                            rows="3"
-                            style={{ maxWidth: "100%" }}
-                          ></textarea>
-                        </div>
-                      )}
-                      {!isNew && (
-                        <div className="form-group">
-                          <label for="qsSetExplanation">Explanation : </label>
-                          <textarea
-                            className="form-control form-field style-4"
-                            disabled={!isUpdate}
-                            defaultValue={explanation}
-                            form="sbForm"
-                            name={`explanation`}
-                            id="qsSetExplanation"
-                            placeholder="Enter Explanation"
-                            rows="3"
-                            style={{ maxWidth: "100%" }}
-                          ></textarea>
-                        </div>
-                      )}
-                    </Row>
-                    <Row>
-                      {!isNew && (
-                        <>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase1Input">
-                                <b style={{ color: "red" }}>*</b>TestCase Input
-                                1 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={testCaseInput1}
-                                form="sbForm"
-                                name={`testCase1Input`}
-                                id="qsSetTestCase1Input"
-                                placeholder="Enter TestCase Input 1"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase1Output">
-                                <b style={{ color: "red" }}>*</b>TestCase Output
-                                1 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={testCaseOutput1}
-                                form="sbForm"
-                                name={`testCase1Output`}
-                                id="qsSetTestCase1Output"
-                                placeholder="Enter TestCase Output 1"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                        </>
-                      )}
-                      {isNew && currentQsNo === navArray.length && (
-                        <>
-                          {" "}
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase1Input">
-                                <b style={{ color: "red" }}>*</b>TestCase Input
-                                1 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={""}
-                                form="sbForm"
-                                name={`testCase1Input`}
-                                id="qsSetTestCase1Input"
-                                placeholder="Enter TestCase Input 1"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase1Output">
-                                <b style={{ color: "red" }}>*</b>TestCase Output
-                                1 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={""}
-                                form="sbForm"
-                                name={`testCase1Output`}
-                                id="qsSetTestCase1Output"
-                                placeholder="Enter TestCase Output 1"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                        </>
-                      )}
-                    </Row>
-                    <Row>
-                      {!isNew && (
-                        <>
-                          {" "}
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase2Input">
-                                <b style={{ color: "red" }}>*</b>TestCase Input
-                                2 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={testCaseInput2}
-                                form="sbForm"
-                                name={`testCase2Input`}
-                                id="qsSetTestCase2Input"
-                                placeholder="Enter TestCase Input 2"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase2Output">
-                                <b style={{ color: "red" }}>*</b>TestCase Output
-                                2 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={testCaseOutput2}
-                                form="sbForm"
-                                name={`testCase2Output`}
-                                id="qsSetTestCase2Output"
-                                placeholder="Enter TestCase Output 2"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                        </>
-                      )}
-
-                      {isNew && currentQsNo === navArray.length && (
-                        <>
-                          {" "}
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase2Input">
-                                <b style={{ color: "red" }}>*</b>TestCase Input
-                                2 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={""}
-                                form="sbForm"
-                                name={`testCase2Input`}
-                                id="qsSetTestCase2Input"
-                                placeholder="Enter TestCase Input 2"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase2Output">
-                                <b style={{ color: "red" }}>*</b>TestCase Output
-                                2 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={""}
-                                form="sbForm"
-                                name={`testCase2Output`}
-                                id="qsSetTestCase2Output"
-                                placeholder="Enter TestCase Output 2"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                        </>
-                      )}
-                    </Row>
-                    <Row>
-                      {!isNew && (
-                        <>
-                          {" "}
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase3Input">
-                                <b style={{ color: "red" }}>*</b>TestCase Input
-                                3 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={testCaseInput3}
-                                form="sbForm"
-                                name={`testCase3Input`}
-                                id="qsSetTestCase3Input"
-                                placeholder="Enter TestCase Input 3"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase3Output">
-                                <b style={{ color: "red" }}>*</b>TestCase Output
-                                3 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={testCaseOutput3}
-                                form="sbForm"
-                                name={`testCase3Output`}
-                                id="qsSetTestCase3Output"
-                                placeholder="Enter TestCase Output 3"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                        </>
-                      )}
-                      {isNew && currentQsNo === navArray.length && (
-                        <>
-                          {" "}
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase3Input">
-                                <b style={{ color: "red" }}>*</b>TestCase Input
-                                3 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={""}
-                                form="sbForm"
-                                name={`testCase3Input`}
-                                id="qsSetTestCase3Input"
-                                placeholder="Enter TestCase Input 3"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                          <Col md={6}>
-                            <div className="form-group">
-                              <label for="qsSetTestCase3Output">
-                                <b style={{ color: "red" }}>*</b>TestCase Output
-                                3 :{" "}
-                              </label>
-                              <textarea
-                                className="form-control form-field style-4"
-                                disabled={!isUpdate}
-                                defaultValue={""}
-                                form="sbForm"
-                                name={`testCase3Output`}
-                                id="qsSetTestCase3Output"
-                                placeholder="Enter TestCase Output 3"
-                                rows="2"
-                                style={{ maxWidth: "100%", resize: "none" }}
-                                required
-                              ></textarea>
-                            </div>
-                          </Col>
-                        </>
-                      )}
-                    </Row>
-                  </div>
-                )}
-              </div>
-              {isUpdate && !isCoding && !isPersonality && (
-                <>
-                  <button
-                    className="btn"
-                    type="button"
-                    onClick={(e) => (isAnalytical ? addParaQs(e) : addOpt(e))}
-                    style={{
-                      backgroundColor: "#10B65C",
-                      borderRadius: "100px",
-                      marginLeft: "5%",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <i className="fa fa-add" style={{ color: "white" }}></i>
-                  </button>
-                  <button
-                    className="btn"
-                    type="button"
-                    onClick={(e) => (isAnalytical ? delParaQs(e) : delOpt(e))}
-                    style={{
-                      backgroundColor: "#10B65C",
-                      borderRadius: "100px",
-                      marginLeft: "5%",
-                      marginBottom: "10px",
-                    }}
-                  >
-                    <i className="fa fa-trash" style={{ color: "white" }}></i>
-                  </button>
-                </>
-              )}
-              {isUpdate ? (
-                <button
-                  className="btn"
-                  type="button"
-                  onClick={(e) => {
-                    if (
-                      !window.confirm("Do you want to discard these changes?")
-                    ) {
-                      // Save it!
-                      var ele = document.getElementById("actionBut");
-                      ele.focus();
-                      ele.classList.toggle("blinking");
-                    } else {
-                      setIsUpdate(!isUpdate);
-                      if (isNew) {
-                        window.location.reload();
-                        setNavArray(
-                          navArray.filter(
-                            (item, index) => index !== navArray.length - 1
-                          )
-                        );
-                        setIsNew(false);
-                      }
-                    }
-                  }}
-                  style={{
-                    backgroundColor: "#10B65C",
-                    borderRadius: "100px",
-                    marginLeft: "5%",
-                    marginBottom: "10px",
-                    marginTop: "5px",
-                  }}
-                >
-                  <i className="fa fa-edit" style={{ color: "white" }}></i>
-                </button>
-              ) : (
-                <button
-                  className="btn"
-                  type="button"
-                  onClick={(e) => {
-                    setIsUpdate(!isUpdate);
-                  }}
-                  style={{
-                    backgroundColor: "#10B65C",
-                    borderRadius: "100px",
-                    marginLeft: "5%",
-                    marginBottom: "10px",
-                    marginTop: "5px",
-                  }}
-                >
-                  <i className="fa fa-edit" style={{ color: "white" }}></i>
-                </button>
-              )}
-            </div>
-          </Col>
-          <Col md={3}>
-            <div className="basicRec" id="wrapper">
-              {isUpdate ? (
-                <>
-                  <div
-                    style={{
-                      justifyContent: "space-between",
-                      display: "flex",
-                      padding: "10px 10px 0 10px",
-                    }}
-                  >
-                    {" "}
-                    Question Navigator
-                    <button
-                      className="btn"
-                      type="button"
-                      style={{ padding: "0" }}
-                      onClick={(e) => {}}
-                    >
-                      <i className="fa fa-trash" style={{ color: "grey" }}></i>
-                    </button>
-                  </div>
-                  <div
-                    className="scrollbar"
-                    style={{
-                      height: window.screen.height - 500,
-                      padding: "5px",
-                      maxWidth: "100%",
-                      backgroundColor: "#e9ecef",
-                    }}
-                    id="style-4"
-                  >
-                    {navArray !== undefined &&
-                      navArray.map((ittr, index) => {
-                        return (
-                          <>
-                            <div
-                              style={{
-                                boxShadow: `rgba(0, 0, 0, 0.02) 0 1px 3px 0`,
-                                backgroundColor: "#e9ecef",
-                                minHeight: "40px",
-                                padding: "10px 5px 10px 5px",
-                                boxSizing: `border-box`,
-                                width: "100%",
-                                marginBottom: "2px",
-                                color: `rgba(0, 0, 0, 0.85)`,
-                              }}
-                            >
-                              <Row>
-                                <Col md={1}>
-                                  <input
-                                    className="styled-checkbox"
-                                    style={{ display: "none" }}
-                                    disabled
-                                    id={`styled-checkbox-${index}`}
-                                    type="checkbox"
-                                    onClick={(e) => {}}
-                                    value={`value${index}`}
-                                  />
-                                </Col>
-                                <Col md={11}>
-                                  <div
-                                    id={index}
-                                    className="qsNavButt"
-                                    style={{
-                                      textOverflow: "ellipsis",
-                                      whiteSpace: "nowrap",
-                                      overflow: "hidden",
-                                    }}
+                            {isCoding && (
+                              <div style={{ marginBottom: "20px" }}>
+                                <div className="form-group">
+                                  <b style={{ color: "red" }}>*</b>
+                                  <label for="selectSetQs">Type :</label>
+                                  <select
+                                    className="form-select"
+                                    name="type"
+                                    aria-label="Default select example"
+                                    disabled={!isUpdate}
                                   >
-                                    {isAnalytical
-                                      ? ittr.title
-                                      : isCoding
-                                      ? ittr.question || "New Qs"
-                                      : ittr.ques || "New Qs"}
-                                  </div>
-                                </Col>
-                              </Row>
+                                    <option id="Easy">Easy</option>
+                                    <option id="Medium">Medium</option>
+                                    <option id="Hard">Hard</option>
+                                  </select>
+                                </div>
+                              </div>
+                            )}
+                          </Col>
+                        </Row>
+                        <Row>
+                          {isNew && currentQsNo === navArray.length && (
+                            <>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetSampleInput">
+                                    <b style={{ color: "red" }}>*</b>Sample Input :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={""}
+                                    form="sbForm"
+                                    name={`sampleInput`}
+                                    id="qsSetSampleInput"
+                                    placeholder="Enter Sample Input"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetSampleOutput">
+                                    <b style={{ color: "red" }}>*</b> Sample Output
+                                    :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={""}
+                                    form="sbForm"
+                                    name={`sampleOutput`}
+                                    id="qsSetSampleOutput"
+                                    placeholder="Enter Sample Output"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                            </>
+                          )}
+                          {!isNew && (
+                            <>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetSampleInput">
+                                    <b style={{ color: "red" }}>*</b>Sample Input :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={sampleInput}
+                                    form="sbForm"
+                                    name={`sampleInput`}
+                                    id="qsSetSampleInput"
+                                    placeholder="Enter Sample Input"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetSampleOutput">
+                                    <b style={{ color: "red" }}>*</b>Sample Output :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={sampleOutput}
+                                    form="sbForm"
+                                    name={`sampleOutput`}
+                                    id="qsSetSampleOutput"
+                                    placeholder="Enter Sample Output"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                            </>
+                          )}
+                        </Row>
+                        <Row>
+                          {isNew && currentQsNo === navArray.length && (
+                            <div className="form-group">
+                              <label for="qsSetExplanation">Explanation : </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={""}
+                                form="sbForm"
+                                name={`explanation`}
+                                id="qsSetExplanation"
+                                placeholder="Enter Explanation"
+                                rows="3"
+                                style={{ maxWidth: "100%" }}
+                              ></textarea>
                             </div>
-                          </>
-                        );
-                      })}
-                    {navArray !== undefined && navArray.length === 0
-                      ? (setIsNew(true),
-                        setIsUpdate(true),
-                        isAnalytical
-                          ? setNavArray((prev) => [
-                              ...prev,
-                              {
-                                title: "New Question",
-                                paraId: "New",
-                                quetions: [],
-                              },
-                            ])
-                          : setNavArray((prev) => [...prev, -1]),
-                        setCurrentQsNo(navArray.length + 1),
-                        setCurrentQsID("New"),
-                        setOpt([]))
-                      : null}
-                  </div>
-                </>
-              ) : (
-                <>
-                  <div
-                    style={{
-                      justifyContent: "space-between",
-                      display: "flex",
-                      padding: "10px 10px 0 10px",
-                    }}
-                  >
-                    Question Navigator
-                    <button
-                      className="btn"
-                      type="button"
-                      style={{ padding: "0" }}
-                      onClick={(e) => delQuestion(e)}
-                    >
-                      <i className="fa fa-trash" style={{ color: "red" }}></i>
-                    </button>
-                  </div>
-                  <div
-                    className="scrollbar"
-                    style={{
-                      height: window.screen.height - 500,
-                      padding: "5px",
-                      maxWidth: "100%",
-                      backgroundColor: "white",
-                    }}
-                    id="style-4"
-                  >
-                    {navArray !== undefined &&
-                      navArray.map((ittr, index) => {
-                        return (
-                          <>
-                            <div
-                              style={{
-                                boxShadow: `rgba(0, 0, 0, 0.02) 0 1px 3px 0`,
-                                backgroundColor: "#e9ecef",
-                                minHeight: "40px",
-                                padding: "10px 5px 10px 5px",
-                                boxSizing: `border-box`,
-                                width: "100%",
-                                marginBottom: "2px",
-                                color: `rgba(0, 0, 0, 0.85)`,
-                              }}
-                            >
-                              {console.log(navArray)}
-                              <Row>
-                                <Col md={1}>
-                                  <input
-                                    className="styled-checkbox"
-                                    style={{ display: "none" }}
-                                    name="styleCheckBox"
-                                    id={`styled-checkbox-${index}`}
-                                    type="checkbox"
-                                    onClick={(e) => {}}
-                                    value={
-                                      isAnalytical
-                                        ? `valueCheckBox${ittr.paraId}`
-                                        : `valueCheckBox${ittr.id}`
-                                    }
-                                  />
-                                </Col>
-                                <Col md={11}>
-                                  <div
-                                    id={index}
-                                    className="qsNavBut"
-                                    onClick={fillData}
-                                    style={{
-                                      textOverflow: "ellipsis",
-                                      whiteSpace: "nowrap",
-                                      overflow: "hidden",
-                                    }}
-                                  >
-                                    {isAnalytical
-                                      ? ittr.title
-                                      : isCoding
-                                      ? ittr.question || "New Qs"
-                                      : ittr.ques || "New Qs"}
-                                  </div>
-                                </Col>
-                              </Row>
+                          )}
+                          {!isNew && (
+                            <div className="form-group">
+                              <label for="qsSetExplanation">Explanation : </label>
+                              <textarea
+                                className="form-control form-field style-4"
+                                disabled={!isUpdate}
+                                defaultValue={explanation}
+                                form="sbForm"
+                                name={`explanation`}
+                                id="qsSetExplanation"
+                                placeholder="Enter Explanation"
+                                rows="3"
+                                style={{ maxWidth: "100%" }}
+                              ></textarea>
                             </div>
-                          </>
-                        );
-                      })}
-                    {navArray !== undefined && navArray.length === 0 && (
-                      <h5>Add question to view</h5>
+                          )}
+                        </Row>
+                        <Row>
+                          {!isNew && (
+                            <>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase1Input">
+                                    <b style={{ color: "red" }}>*</b>TestCase Input
+                                    1 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={testCaseInput1}
+                                    form="sbForm"
+                                    name={`testCase1Input`}
+                                    id="qsSetTestCase1Input"
+                                    placeholder="Enter TestCase Input 1"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase1Output">
+                                    <b style={{ color: "red" }}>*</b>TestCase Output
+                                    1 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={testCaseOutput1}
+                                    form="sbForm"
+                                    name={`testCase1Output`}
+                                    id="qsSetTestCase1Output"
+                                    placeholder="Enter TestCase Output 1"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                            </>
+                          )}
+                          {isNew && currentQsNo === navArray.length && (
+                            <>
+                              {" "}
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase1Input">
+                                    <b style={{ color: "red" }}>*</b>TestCase Input
+                                    1 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={""}
+                                    form="sbForm"
+                                    name={`testCase1Input`}
+                                    id="qsSetTestCase1Input"
+                                    placeholder="Enter TestCase Input 1"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase1Output">
+                                    <b style={{ color: "red" }}>*</b>TestCase Output
+                                    1 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={""}
+                                    form="sbForm"
+                                    name={`testCase1Output`}
+                                    id="qsSetTestCase1Output"
+                                    placeholder="Enter TestCase Output 1"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                            </>
+                          )}
+                        </Row>
+                        <Row>
+                          {!isNew && (
+                            <>
+                              {" "}
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase2Input">
+                                    <b style={{ color: "red" }}>*</b>TestCase Input
+                                    2 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={testCaseInput2}
+                                    form="sbForm"
+                                    name={`testCase2Input`}
+                                    id="qsSetTestCase2Input"
+                                    placeholder="Enter TestCase Input 2"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase2Output">
+                                    <b style={{ color: "red" }}>*</b>TestCase Output
+                                    2 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={testCaseOutput2}
+                                    form="sbForm"
+                                    name={`testCase2Output`}
+                                    id="qsSetTestCase2Output"
+                                    placeholder="Enter TestCase Output 2"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                            </>
+                          )}
+
+                          {isNew && currentQsNo === navArray.length && (
+                            <>
+                              {" "}
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase2Input">
+                                    <b style={{ color: "red" }}>*</b>TestCase Input
+                                    2 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={""}
+                                    form="sbForm"
+                                    name={`testCase2Input`}
+                                    id="qsSetTestCase2Input"
+                                    placeholder="Enter TestCase Input 2"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase2Output">
+                                    <b style={{ color: "red" }}>*</b>TestCase Output
+                                    2 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={""}
+                                    form="sbForm"
+                                    name={`testCase2Output`}
+                                    id="qsSetTestCase2Output"
+                                    placeholder="Enter TestCase Output 2"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                            </>
+                          )}
+                        </Row>
+                        <Row>
+                          {!isNew && (
+                            <>
+                              {" "}
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase3Input">
+                                    <b style={{ color: "red" }}>*</b>TestCase Input
+                                    3 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={testCaseInput3}
+                                    form="sbForm"
+                                    name={`testCase3Input`}
+                                    id="qsSetTestCase3Input"
+                                    placeholder="Enter TestCase Input 3"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase3Output">
+                                    <b style={{ color: "red" }}>*</b>TestCase Output
+                                    3 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={testCaseOutput3}
+                                    form="sbForm"
+                                    name={`testCase3Output`}
+                                    id="qsSetTestCase3Output"
+                                    placeholder="Enter TestCase Output 3"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                            </>
+                          )}
+                          {isNew && currentQsNo === navArray.length && (
+                            <>
+                              {" "}
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase3Input">
+                                    <b style={{ color: "red" }}>*</b>TestCase Input
+                                    3 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={""}
+                                    form="sbForm"
+                                    name={`testCase3Input`}
+                                    id="qsSetTestCase3Input"
+                                    placeholder="Enter TestCase Input 3"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                              <Col md={6}>
+                                <div className="form-group">
+                                  <label for="qsSetTestCase3Output">
+                                    <b style={{ color: "red" }}>*</b>TestCase Output
+                                    3 :{" "}
+                                  </label>
+                                  <textarea
+                                    className="form-control form-field style-4"
+                                    disabled={!isUpdate}
+                                    defaultValue={""}
+                                    form="sbForm"
+                                    name={`testCase3Output`}
+                                    id="qsSetTestCase3Output"
+                                    placeholder="Enter TestCase Output 3"
+                                    rows="2"
+                                    style={{ maxWidth: "100%", resize: "none" }}
+                                    required
+                                  ></textarea>
+                                </div>
+                              </Col>
+                            </>
+                          )}
+                        </Row>
+                      </div>
                     )}
                   </div>
-                </>
-              )}
-            </div>
-          </Col>
-        </Row>
-        <Row style={{ paddingTop: "20px", paddingLeft: "10%" }}>
-          <button
-            style={{ color: "white" }}
-            type="button"
-            onClick={(e) =>
-              navigate("/admin/newTest", {
-                state: { sid: location.state.sid - 1 },
-              })
-            }
-            className="btn scTest"
-          >
-            Back
-          </button>
-
-          {(isUpdate || navArray.length === 0) && (
-            <>
+                  {isUpdate && !isCoding && !isPersonality && (
+                    <>
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={(e) => (isAnalytical ? addParaQs(e) : addOpt(e))}
+                        style={{
+                          backgroundColor: "#10B65C",
+                          borderRadius: "100px",
+                          marginLeft: "5%",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        <i className="fa fa-add" style={{ color: "white" }}></i>
+                      </button>
+                      <button
+                        className="btn"
+                        type="button"
+                        onClick={(e) => (isAnalytical ? delParaQs(e) : delOpt(e))}
+                        style={{
+                          backgroundColor: "#10B65C",
+                          borderRadius: "100px",
+                          marginLeft: "5%",
+                          marginBottom: "10px",
+                        }}
+                      >
+                        <i className="fa fa-trash" style={{ color: "white" }}></i>
+                      </button>
+                    </>
+                  )}
+                  {isUpdate ? (
+                    <button
+                      className="btn"
+                      type="button"
+                      onClick={(e) => {
+                        if (
+                          !window.confirm("Do you want to discard these changes?")
+                        ) {
+                          // Save it!
+                          var ele = document.getElementById("actionBut");
+                          ele.focus();
+                          ele.classList.toggle("blinking");
+                        } else {
+                          setIsUpdate(!isUpdate);
+                          if (isNew) {
+                            window.location.reload();
+                            setNavArray(
+                              navArray.filter(
+                                (item, index) => index !== navArray.length - 1
+                              )
+                            );
+                            setIsNew(false);
+                          }
+                        }
+                      }}
+                      style={{
+                        backgroundColor: "#10B65C",
+                        borderRadius: "100px",
+                        marginLeft: "5%",
+                        marginBottom: "10px",
+                        marginTop: "5px",
+                      }}
+                    >
+                      <i className="fa fa-edit" style={{ color: "white" }}></i>
+                    </button>
+                  ) : (
+                    <button
+                      className="btn"
+                      type="button"
+                      onClick={(e) => {
+                        setIsUpdate(!isUpdate);
+                      }}
+                      style={{
+                        backgroundColor: "#10B65C",
+                        borderRadius: "100px",
+                        marginLeft: "5%",
+                        marginBottom: "10px",
+                        marginTop: "5px",
+                      }}
+                    >
+                      <i className="fa fa-edit" style={{ color: "white" }}></i>
+                    </button>
+                  )}
+                </div>
+              </Col>
+              <Col md={3}>
+                <div className="basicRec" id="wrapper">
+                  {isUpdate ? (
+                    <>
+                      <div
+                        style={{
+                          justifyContent: "space-between",
+                          display: "flex",
+                          padding: "10px 10px 0 10px",
+                        }}
+                      >
+                        {" "}
+                        Question Navigator
+                        <button
+                          className="btn"
+                          type="button"
+                          style={{ padding: "0" }}
+                          onClick={(e) => { }}
+                        >
+                          <i className="fa fa-trash" style={{ color: "grey" }}></i>
+                        </button>
+                      </div>
+                      <div
+                        className="scrollbar"
+                        style={{
+                          height: window.screen.height - 500,
+                          padding: "5px",
+                          maxWidth: "100%",
+                          backgroundColor: "#e9ecef",
+                        }}
+                        id="style-4"
+                      >
+                        {navArray !== undefined &&
+                          navArray.map((ittr, index) => {
+                            return (
+                              <>
+                                <div
+                                  style={{
+                                    boxShadow: `rgba(0, 0, 0, 0.02) 0 1px 3px 0`,
+                                    backgroundColor: "#e9ecef",
+                                    minHeight: "40px",
+                                    padding: "10px 5px 10px 5px",
+                                    boxSizing: `border-box`,
+                                    width: "100%",
+                                    marginBottom: "2px",
+                                    color: `rgba(0, 0, 0, 0.85)`,
+                                  }}
+                                >
+                                  <Row>
+                                    <Col md={1}>
+                                      <input
+                                        className="styled-checkbox"
+                                        style={{ display: "none" }}
+                                        disabled
+                                        id={`styled-checkbox-${index}`}
+                                        type="checkbox"
+                                        onClick={(e) => { }}
+                                        value={`value${index}`}
+                                      />
+                                    </Col>
+                                    <Col md={11}>
+                                      <div
+                                        id={index}
+                                        className="qsNavButt"
+                                        style={{
+                                          textOverflow: "ellipsis",
+                                          whiteSpace: "nowrap",
+                                          overflow: "hidden",
+                                        }}
+                                      >
+                                        {isAnalytical
+                                          ? ittr.title
+                                          : isCoding
+                                            ? ittr.question || "New Qs"
+                                            : ittr.ques || "New Qs"}
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              </>
+                            );
+                          })}
+                        {navArray !== undefined && navArray.length === 0
+                          ? (setIsNew(true),
+                            setIsUpdate(true),
+                            isAnalytical
+                              ? setNavArray((prev) => [
+                                ...prev,
+                                {
+                                  title: "New Question",
+                                  paraId: "New",
+                                  quetions: [],
+                                },
+                              ])
+                              : setNavArray((prev) => [...prev, -1]),
+                            setCurrentQsNo(navArray.length + 1),
+                            setCurrentQsID("New"),
+                            setOpt([]))
+                          : null}
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div
+                        style={{
+                          justifyContent: "space-between",
+                          display: "flex",
+                          padding: "10px 10px 0 10px",
+                        }}
+                      >
+                        Question Navigator
+                        <button
+                          className="btn"
+                          type="button"
+                          style={{ padding: "0" }}
+                          onClick={(e) => delQuestion(e)}
+                        >
+                          <i className="fa fa-trash" style={{ color: "red" }}></i>
+                        </button>
+                      </div>
+                      <div
+                        className="scrollbar"
+                        style={{
+                          height: window.screen.height - 500,
+                          padding: "5px",
+                          maxWidth: "100%",
+                          backgroundColor: "white",
+                        }}
+                        id="style-4"
+                      >
+                        {navArray !== undefined &&
+                          navArray.map((ittr, index) => {
+                            return (
+                              <>
+                                <div
+                                  style={{
+                                    boxShadow: `rgba(0, 0, 0, 0.02) 0 1px 3px 0`,
+                                    backgroundColor: "#e9ecef",
+                                    minHeight: "40px",
+                                    padding: "10px 5px 10px 5px",
+                                    boxSizing: `border-box`,
+                                    width: "100%",
+                                    marginBottom: "2px",
+                                    color: `rgba(0, 0, 0, 0.85)`,
+                                  }}
+                                >
+                                  <Row>
+                                    <Col md={1}>
+                                      <input
+                                        className="styled-checkbox"
+                                        style={{ display: "none" }}
+                                        name="styleCheckBox"
+                                        id={`styled-checkbox-${index}`}
+                                        type="checkbox"
+                                        onClick={(e) => { }}
+                                        value={
+                                          isAnalytical
+                                            ? `valueCheckBox${ittr.paraId}`
+                                            : `valueCheckBox${ittr.id}`
+                                        }
+                                      />
+                                    </Col>
+                                    <Col md={11}>
+                                      <div
+                                        id={index}
+                                        className="qsNavBut"
+                                        onClick={fillData}
+                                        style={{
+                                          textOverflow: "ellipsis",
+                                          whiteSpace: "nowrap",
+                                          overflow: "hidden",
+                                        }}
+                                      >
+                                        {isAnalytical
+                                          ? ittr.title
+                                          : isCoding
+                                            ? ittr.question || "New Qs"
+                                            : ittr.ques || "New Qs"}
+                                      </div>
+                                    </Col>
+                                  </Row>
+                                </div>
+                              </>
+                            );
+                          })}
+                        {navArray !== undefined && navArray.length === 0 && (
+                          <h5>Add question to view</h5>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+              </Col>
+            </Row>
+            <Row style={{ paddingTop: "20px", paddingLeft: "10%" }}>
               <button
                 style={{ color: "white" }}
-                type="submit"
-                className="btn scTest flashBut"
-                id="actionBut"
+                type="button"
+                onClick={(e) =>
+                  navigate("/admin/newTest", {
+                    state: { sid: location.state.sid - 1 },
+                  })
+                }
+                className="btn scTest"
               >
-                {(isNew && currentQsNo == navArray.length) ||
-                navArray.length === 0
-                  ? "Save"
-                  : "Update"}
+                Back
               </button>
-            </>
-          )}
 
-          {!isNew && !isUpdate && navArray.length !== 0 && (
-            <button
-              style={{ color: "white" }}
-              className="btn scTest"
-              type="button"
-              onClick={(e) => {
-                setIsNew(true);
-                setIsUpdate(true);
-                isAnalytical
-                  ? setNavArray((prev) => [
-                      ...prev,
-                      { title: "New Question", paraId: "New", quetions: [] },
-                    ])
-                  : setNavArray((prev) => [...prev, -1]);
-                setCurrentQsNo(navArray.length + 1);
-                setCurrentQsID("New");
-                set_para_qs([]);
-                setOpt([]);
-                setPreviewSource("");
-              }}
-            >
-              Add new Question
-            </button>
-          )}
-        </Row>
-      </form>
-    </div>
-      )}
+              {(isUpdate || navArray.length === 0) && (
+                <>
+                  <button
+                    style={{ color: "white" }}
+                    type="submit"
+                    className="btn scTest flashBut"
+                    id="actionBut"
+                  >
+                    {(isNew && currentQsNo == navArray.length) ||
+                      navArray.length === 0
+                      ? "Save"
+                      : "Update"}
+                  </button>
+                </>
+              )}
+
+              {!isNew && !isUpdate && navArray.length !== 0 && (
+                <button
+                  style={{ color: "white" }}
+                  className="btn scTest"
+                  type="button"
+                  onClick={(e) => {
+                    setIsNew(true);
+                    setIsUpdate(true);
+                    isAnalytical
+                      ? setNavArray((prev) => [
+                        ...prev,
+                        { title: "New Question", paraId: "New", quetions: [] },
+                      ])
+                      : setNavArray((prev) => [...prev, -1]);
+                    setCurrentQsNo(navArray.length + 1);
+                    setCurrentQsID("New");
+                    set_para_qs([]);
+                    setOpt([]);
+                    setPreviewSource("");
+                  }}
+                >
+                  Add new Question
+                </button>
+              )}
+            </Row>
+          </form>
+        </div>
+      )};
     </>
-    
   );
 }
 

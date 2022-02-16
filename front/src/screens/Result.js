@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { isExpired, decodeToken } from "react-jwt";
 import { useNavigate } from "react-router";
 import axiosInstance from "../axios";
-import { Col, Modal, Row } from "react-bootstrap";
+import { Col, Modal, Row, Form } from "react-bootstrap";
 import TestHeaderComp from "../components/TestScreeen/TestHeaderComp";
 import Chart from "react-apexcharts";
 import "../css/ResultScreen.css";
@@ -23,6 +23,7 @@ function Result() {
   const [opt1, setOpt1] = useState({});
   const [optRadar, setOptRadar] = useState({});
   const [show, setShow] = useState(false);
+  const [show1, setShow1] = useState(false);
   const [idx, setIdx] = useState();
   const [userDetails, setUserDetails] = useState({});
   const [startTime, setStartTime] = useState("");
@@ -336,11 +337,29 @@ function Result() {
         <Loader />
       ) : (
         <div>
-          <style type="text/css" media="print">
-            {"\
-  @page { size: A4; margin : 40px 20px 20px 20px !important; }\
-"}
-          </style>
+          <Modal
+            id="feedback"
+            show={show1}
+            onHide={() => setShow1(false)}
+            aria-labelledby="example-custom-modal-styling-title"
+          >
+            <Modal.Header closeButton>
+            </Modal.Header>
+            <Modal.Body>
+              <p style={{fontSize: "20px", textAlign: "center", color: "#081466"}}> <b>Feedback Form</b></p>
+              <Form>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                  <Form.Label><b>Email address</b></Form.Label>
+                  <Form.Control type="email" placeholder="name@example.com" />
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                  <Form.Label><b>Feedback</b></Form.Label>
+                  <Form.Control as="textarea" rows={3} />
+                </Form.Group>
+              </Form>
+              <button className="btn" type="submit" style={{textAlign: "center", backgroundColor: "#10b65c", color: "white"}}> Submit </button>
+            </Modal.Body>
+          </Modal>
           <Modal
             id="result_page"
             show={show}
@@ -731,6 +750,20 @@ function Result() {
             }}
           >
             View Detailed Report
+          </button>
+          <button
+            type="button"
+            className="btn"
+            onClick={(e) => setShow1(true)}
+            style={{
+              marginTop: "20px",
+              marginLeft: "5px",
+              backgroundColor: "#081466",
+              color: "white",
+              border: "none",
+            }}
+          >
+            Feedback
           </button>
         </div>
       )}

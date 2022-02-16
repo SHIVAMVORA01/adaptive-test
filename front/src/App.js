@@ -8,8 +8,7 @@ import Login from "./screens/Login";
 import Logout from "./screens/logout";
 import Result from "./screens/Result";
 import Error from "./screens/Error";
-import AdminHome from "./screens/Admin/Home";
-import AdminAddQs from "./screens/Admin/AddQs";
+import AdminHome from "./screens/Admin/AdminHome";
 import SetQuestion from "./screens/Admin/SetQuestion";
 import NewTest from "./screens/Admin/NewTest";
 import CFTestScreen from "./screens/Test/CFTestScreen";
@@ -19,13 +18,11 @@ import ScheduledTest from "./screens/Admin/ScheduledTest";
 import ViewSchdlTest from "./screens/Admin/ViewSchdlTest";
 import Compiler from "./screens/Test/Compiler";
 import CompScreen from "./screens/Test/compScreen";
-import PersonalityResultComp from "./components/Result/personalityResultComp";
-import ACEEditor from "./components/TestScreeen/AceEditor";
 import Page_404 from "./screens/Page_404";
-import "./css/App.css";
-import ImageUpload from "./components/Admin/ImageUpload";
 import DetailScreen from "./screens/DetailScreen";
 import PrivateRoute from "./components/PrivateRoute";
+import "./css/App.css";
+
 function App() {
   return (
     <div className="App" id="element">
@@ -116,8 +113,8 @@ function App() {
                 path="/admin/home"
                 exact
                 element={
-                  <Row style={{ margin: "20px 0 0 0" }}>
-                    <Col style={{ padding: "10px 90px" }}>
+                  <Row style={{ margin: "0 0 0 0" }}>
+                    <Col style={{ padding: "0px 90px 10px 0px" }}>
                       <AdminHome />
                     </Col>
                   </Row>
@@ -153,10 +150,22 @@ function App() {
               />
             </Route>
 
-            <Route path="/home" exact element={<Home />} />
+            <Route path="/home" exact element={
+             <Row style={{ margin: "0 0 0 0" , overflowX: "hidden"}}>
+             <Col style={{ padding: "0px 0px 0px 0px" }}>
+            <Home />
+            </Col>
+             </Row>
+            } />
+            <Route path="/" exact element={
+             <Row style={{ margin: "0 0 0 0", overflowX: "hidden"}}>
+             <Col style={{ padding: "0px 0px 0px 0px" }}>
+            <Home />
+            </Col>
+             </Row>
+            } />
 
-            <Route path="/" exact element={<Home />} />
-
+              
             <Route
               path="/admin/personality"
               exact

@@ -1,6 +1,5 @@
-import React from "react";
-import { Container, Row, Col, Button, Footer, Modal } from "react-bootstrap";
-import "../css/Home.css";
+import React, { useState } from "react";
+import { Container, Row, Col, Button, Modal } from "react-bootstrap";
 import { useNavigate } from "react-router";
 import illustration1 from "../img/illustration1.svg";
 import illustration2 from "../img/illustration2.svg";
@@ -8,32 +7,18 @@ import illustration3 from "../img/illustration3.svg";
 import Chaitanya from "../img/Chaitanya.jpeg";
 import alan from "../img/alan.jpg";
 import Shivam from "../img/Shivam.jpeg";
-import {useState} from 'react'
-import '../../node_modules/react-modal-video/scss/modal-video.scss'
-import ReactPlayer from 'react-player/lazy'
+import ReactPlayer from "react-player/lazy";
+import "../css/Home.css";
 
 function Home() {
-  const [show, setShow] = useState(false);
   const navigate = useNavigate();
   return (
     <div>
-         <Modal
-            id="preview_video"
-            show={show}
-            onHide={() => setShow(false)}
-            aria-labelledby="example-custom-modal-styling-title"
-           style ={{"marginLeft":"-5%"}}
-            
-          >
-            <Modal.Header closeButton>
-            </Modal.Header>
-            <Modal.Body style={{padding: "0", margin:"0"}}>
-            <ReactPlayer height='532px' width='700px' controls={false} pip={true} muted={false} playbackRate= {2} loop={true}  url='https://youtu.be/OgtDzJHB5Po' />
-            </Modal.Body>
-          </Modal>
-      <div className="welcomeDiv">
+      <Row className="welcomeDiv">
+        <Col md={6}>
+<div >
         <div>
-          <div className="titleDiv" style={{ height: "400px" }}>
+          <div className="titleDiv" style={{ height: "450px" }}>
             <label className="mainheading">
               Welcome to the
               <br />
@@ -50,7 +35,6 @@ function Home() {
                   color: "#FFF",
                   width: "200px",
                   fontSize: "20px",
-                  marginTop: "2%",
                   border: "none",
                 }}
                 onClick={() => {
@@ -59,25 +43,35 @@ function Home() {
               >
                 Login
               </Button>
-              <Button
-                className="buttonDiv"
-                onClick={()=> setShow(true)}
-                style={{
-                  background: "#10B65C",
-                  color: "#FFF",
-                  width: "200px",
-                  fontSize: "20px",
-                  marginTop: "2%",
-                  border: "none",
-                }}
-              >
-                Preview
-              </Button>
+
               <br />
+           
             </div>
           </div>
         </div>
       </div>
+          </Col>
+        <Col md={6}>  
+        <div className="videoPlayer">
+                <div className="video">
+                <ReactPlayer style={{borderRadius:"10px"}} 
+                  height="300px"
+                  width="533px"
+                  playing={true}
+                  controls={false}
+                  light={false}
+                  pip={false}
+                  muted={true}
+                  playbackRate={2}
+                  loop={true}
+                  url="https://vimeo.com/76979871"
+                  config={{ youtube: { playerVars: { disablekb: 1, fs: 0 } } }}
+                />
+                </div>
+              </div>
+        </Col>
+      </Row>
+      
       <div>
         <div style={{ textAlign: "center", marginTop: "1%" }} id="initiative">
           <br />

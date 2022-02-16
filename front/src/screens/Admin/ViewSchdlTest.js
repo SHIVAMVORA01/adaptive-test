@@ -70,15 +70,18 @@ function ViewSchdlTest() {
   ];
   function deleteRow(id) {
     if (window.confirm("Delete this test?")) {
+      setIsloading(true);
       axiosInstance
         .delete(`api/delres/${id}`)
         .then((res) => {
+          setIsloading(false);
           let arr = data.rows.filter((ex) => {
             return ex.id !== id;
           });
           setTData({ columns: data.columns, rows: arr });
         })
         .catch((e) => {
+          setIsloading(false);
           console.log(e);
         });
     }
@@ -107,67 +110,66 @@ function ViewSchdlTest() {
           })),
         });
       });
-      setIsloading(false);
+    setIsloading(false);
   }, []);
   return (
     <>
       {isLoading ? (
         <Loader />
       ) : (
-    <div>
-      <button
-        style={{
-          marginLeft: "1%",
-          marginBottom: "5px",
-          backgroundColor: "#293E6F",
-          borderRadius: "5px",
-          border: "none",
-        }}
-        className="btn btn-secondary"
-        onClick={(e) => navigate("/admin/scheduledTest")}
-      >
-        Back
-      </button>
-      <div className="basicRec" style={{ padding: "20px 15px" }}>
-        <Row style={{ margin: "2% 0" }}>
-          <Col md={3}>Test Name: </Col>
-          <Col md={9}>
-            <input
-              type="string"
-              defaultValue={location.state.name}
-              disabled
-            ></input>
-          </Col>
-        </Row>
-        <Row style={{ margin: "2% 0" }}>
-          <Col md={3}>Start Time:</Col>
-          <Col md={9}>
-            <DateTimePicker disabled value={location.state.start} />
-          </Col>
-        </Row>
-        <Row style={{ margin: "2% 0" }}>
-          <Col md={3}>End Time:</Col>
-          <Col md={9}>
-            <DateTimePicker disabled value={location.state.end} />
-          </Col>
-        </Row>
-        <MDBDataTable
-          striped
-          bordered
-          noBottomColumns
-          hover
-          exportToCSV={true}
-          data={data}
-        />
+        <div>
+          <button
+            style={{
+              marginLeft: "1%",
+              marginBottom: "5px",
+              backgroundColor: "#293E6F",
+              borderRadius: "5px",
+              border: "none",
+            }}
+            className="btn btn-secondary"
+            onClick={(e) => navigate("/admin/scheduledTest")}
+          >
+            Back
+          </button>
+          <div className="basicRec" style={{ padding: "20px 15px" }}>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>Test Name: </Col>
+              <Col md={9}>
+                <input
+                  type="string"
+                  defaultValue={location.state.name}
+                  disabled
+                ></input>
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>Start Time:</Col>
+              <Col md={9}>
+                <DateTimePicker disabled value={location.state.start} />
+              </Col>
+            </Row>
+            <Row style={{ margin: "2% 0" }}>
+              <Col md={3}>End Time:</Col>
+              <Col md={9}>
+                <DateTimePicker disabled value={location.state.end} />
+              </Col>
+            </Row>
+            <MDBDataTable
+              striped
+              bordered
+              noBottomColumns
+              hover
+              exportToCSV={true}
+              data={data}
+            />
 
-        <CSVLink data={rows} headers={headers}>
-          Download csv
-        </CSVLink>
-      </div>
-    </div>
+            <CSVLink data={rows} headers={headers}>
+              Download csv
+            </CSVLink>
+          </div>
+        </div>
       )}
     </>
-    
   );
 }
 

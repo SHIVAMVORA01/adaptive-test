@@ -1,3 +1,4 @@
+from importlib import invalidate_caches
 import json
 from django.http import HttpResponseBadRequest
 from django.http.response import JsonResponse
@@ -253,7 +254,6 @@ def results(request,name):
             data=JSONParser().parse(request)['data']
             test = Test.objects.get(id=data['testId'])
             subs = Subject.objects.all() #change this when we change the model for subjects
-            print(subs)
             avg_ap,avg_cf,avg_c,avg_d,avg_p,avg_a=0,0,0,0,0,0
             for sub in subs:
                 if sub.sub_name == 'Aptitude':
@@ -454,7 +454,7 @@ def uploadCloudinary(request):
         if request.method=='POST':
             data=JSONParser().parse(request)['data']
             try:
-                cloudinary.uploader.upload(data['image'],folder='demo',public_id='imageId',overwrite=True,resource_type='image')
+                cloudinary.uploader.upload(data['image'],public_id='cld-sample',overwrite=True,resource_type='image')
                 return JsonResponse("successfully uploaded",safe=False)
             except:
                 print('Something went wrong')
@@ -467,7 +467,6 @@ def getImgs(request):
         if request.method=='GET':
             try:
                 imgs=cloudinary.Search().expression('folder=demo').execute()
-                print(imgs)
                 return JsonResponse(imgs["resources"],safe=False)
             except:
                 print('Something went wrong')
@@ -481,14 +480,15 @@ def addQs(request):
             data=JSONParser().parse(request)['data']
             if str(data['sectionName'])!='Coding' and str(data['sectionName'])!='Analytical Writing':
                 if data['action']=='Save':
-                    if data['image']!='':
-                        try:
-                            imgU=cloudinary.uploader.upload(data['image'],folder='adaptive_test/{0}'.format(data['sectionName']),overwrite=True,resource_type='image')
-                            imgId=imgU['public_id']
-                        except:
+                    if data['image']!=None: 
+                        if data['image']!='':
+                            try:
+                                imgU=cloudinary.uploader.upload(data['image'],folder='adaptive_test/{0}'.format(data['sectionName']),invalidate_caches=True,overwrite=True,resource_type='image')
+                                imgId=imgU['url']
+                            except:
+                                imgId=None
+                        else:
                             imgId=None
-                    else:
-                        imgId=None
                     f=Questions(subject=Subject.objects.get(sub_name=data['sectionName']),imgId=imgId,title=data['questionNew'],type=data['type'])
                     f.save()
                 elif data['action']=='Update':               
@@ -496,19 +496,28 @@ def addQs(request):
                     for qs in qData:                   
                         f=Questions.objects.get(id=qs.split('question')[1])
                         f.title=qData[qs]
-                        f.type=data['type']    
-                        try:
-                            cloudinary.uploader.destroy(public_id=f.imgId)
-                        except:
-                            pass 
-                        if data['image']!='':
-                            try:
-                                imgU=cloudinary.uploader.upload(data['image'],folder='adaptive_test/{0}'.format(data['sectionName']),overwrite=True,resource_type='image')
-                                f.imgId=imgU['public_id']
-                            except:
-                                print('error occured') 
-                        else:
-                            f.imgId=None
+                        f.type=data['type']
+                        if data['image']!=None:  
+                            if data['image']!='':
+                                try:
+                                    if f.imgId != None:
+                                        public_id=f.imgId.split('adaptive_test/{0}/'.format(data['sectionName']))[-1]
+                                        public_id=public_id.split('.')[0]
+                                    else:
+                                        public_id=''
+                                    imgU=cloudinary.uploader.upload(data['image'],folder='adaptive_test/{0}/'.format(data['sectionName']),public_id=public_id,overwrite=True,resource_type='image')
+                                    f.imgId=imgU['url']
+                                except:
+                                    print('error occured') 
+                            else:
+                                public_id_1='adaptive_test/{}'.format(data['sectionName'])
+                                public_id_2='{}'.format(f.imgId.split(data["sectionName"])[1]).split('.')[0]
+                                public_id='{0}{1}'.format(public_id_1,public_id_2)
+                                try:       
+                                    c=cloudinary.uploader.destroy(public_id=public_id)
+                                    f.imgId=None
+                                except:
+                                    print('could del pic') 
                         f.save()
                         Options.objects.filter(question=f).delete()
                 optionData = {x: data[x] for x in data if 'Option' in x}
@@ -588,7 +597,6 @@ def addQs(request):
                         else:
                             marks=0
                         paraOpt=Paraopt(paraqs=qs,title=data[y],marks=marks)
-                        print(paraOpt.marks)
                         paraOpt.save()
 
             return JsonResponse("Done",safe=False) 
@@ -603,7 +611,15 @@ def delQs(request):
             sid=int(data['sid'])
             for x in data['delQs']:
                 if sid != 5 and sid != 6:
-                    Questions.objects.get(id=x).delete()
+                    qs=Questions.objects.get(id=x)
+                    public_id_1='adaptive_test/{}'.format(qs.subject)
+                    public_id_2='{}'.format(qs.imgId.split('{}'.format(qs.subject))[1]).split('.')[0]
+                    public_id='{0}{1}'.format(public_id_1,public_id_2)
+                    try:       
+                        c=cloudinary.uploader.destroy(public_id=public_id) #return {result:'ok'}
+                    except:
+                        print('couldnt del pic') 
+                    qs.delete()
                 elif sid==5:
                     CodingTest.objects.get(id=x).delete()
                 elif sid==6:
@@ -689,7 +705,6 @@ def tests(request,idd=0):
 
         elif request.method == 'POST':
             data=JSONParser().parse(request)['data']
-            print(data)
             if not data['delete']:
                 if not data['update']:
                     test = Test.objects.create(test_name =data['name'],test_start=data['start'],test_end=data['end'])

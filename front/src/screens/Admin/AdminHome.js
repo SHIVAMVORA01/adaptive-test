@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row, ListGroup, Card } from "react-bootstrap";
+import { Col, Row, ListGroup, Card, Button } from "react-bootstrap";
 import "../../css/AdminHomeScreen.css";
 import Coding from "../../img/carbon_code.svg";
 import Setting from "../../img/Brain.svg";
@@ -21,110 +21,106 @@ function AdminHome() {
     <div>
       <Row>
         <Col md="4">
-          <div
-            className="displayCard"
-            style={{
-              display: "flex",
-              justifyContent: "flex-Start",
-            }}
-          >
-            <div>
+          <div className="rectngle">
+            <div className="rectngle1">
               <img
-                height="100px"
-                width="100px"
-                style={{ borderRadius: "50%" }}
+                height="50px"
+                width="50px"
+                style={{ borderRadius: "50%", marginLeft: "20px", marginTop: "20px", textAlign: "center" }}
                 src={Shivam}
                 alt="profilePic"
               />
-            </div>
-            <div
-              className="displayCardColumn"
-              style={{
-                display: "flex",
-                flexDirection: "column",
-              }}
-            >
               <p
                 style={{
                   fontFamily: "Poppins",
                   fontStyle: "normal",
                   fontWeight: "600",
-                  fontSize: "20px",
-                  lineHeight: " 18px",
+                  fontSize: "18px",
                   color: "#293E6F",
-                  marginLeft: "30px",
-                  marginTop: "20px",
+                  textAlign: "left",
+                  marginLeft: "90px",
+                  marginTop: "-50px",
                 }}
-              >
-                Shivam Vora
-              </p>
+              >Shivam Vora</p>
               <p
                 style={{
                   fontFamily: "Poppins",
                   fontStyle: "normal",
                   fontWeight: "normal",
-                  fontSize: "18px",
-                  lineHeight: " 14px",
+                  fontSize: "16px",
                   color: "#293E6F",
-                  marginLeft: "30px",
-                  marginTop: "10px",
+                  textAlign: "left",
+                  marginLeft: "90px",
+                  marginTop: "-8px",
                 }}
-              >
-                Admin
-              </p>
+              >Admin</p>
+
+              <ListGroup defaultActiveKey="#link1">
+                <ListGroup.Item
+                  action
+                  href="/admin/scheduledTest"
+                  style={{ padding: "22px", color: "#293E6F",fontSize: "13px"}}
+                >
+                  Schedule Test 
+
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  onClick={(e) => {
+                    navigate("/admin/newTest", { state: { sid: 0 } });
+                  }}
+                  style={{ padding: "24px", color: "#293E6F",fontSize: "13px" }}
+                >
+                  New test
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  href="#link3"
+                  style={{ padding: "24px", color: "#293E6F" ,fontSize: "13px"}}
+                >
+                  View profile
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  href="#link4"
+                  style={{ padding: "24px", color: "#293E6F" ,fontSize: "13px"}}
+                >
+                  Delete profile
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  href="#link5"
+                  style={{ padding: "24px", color: "#293E6F" ,fontSize: "13px"}}
+                >
+                   Edit profile
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  href="#link6"
+                  style={{ padding: "24px", color: "#293E6F" ,fontSize: "13px"}}
+                >
+                  Accept students
+                </ListGroup.Item>
+                <ListGroup.Item
+                  action
+                  href="#link7"
+                  style={{ padding: "24px", color: "#293E6F" ,fontSize: "13px"}}
+                >
+                  Feedback
+                </ListGroup.Item>
+              </ListGroup>
+                <ListGroup.Item
+                  action
+                  href="/logout"
+                  style={{ padding: "24px", color: "#293E6F" ,fontSize: "13px"}}
+                >
+                  Logout
+                </ListGroup.Item>
+               
             </div>
           </div>
-          <p
-            style={{
-              fontFamily: "Poppins",
-              fontStyle: "normal",
-              fontSize: "20px",
-              lineHeight: "30px",
-              color: "#293E6F",
-              marginTop: "40px",
-            }}
-          >
-            <b>Admin Panel</b>
-          </p>
-          <ListGroup defaultActiveKey="#link1">
-            <ListGroup.Item
-              action
-              href="/admin/scheduledTest"
-              style={{ padding: "25px", color: "#293E6F" }}
-            >
-              Scheduled Test
-            </ListGroup.Item>
-            <ListGroup.Item
-              action
-              onClick={(e) => {
-                navigate("/admin/newTest", { state: { sid: 0 } });
-              }}
-              style={{ padding: "25px", color: "#293E6F" }}
-            >
-              New test
-            </ListGroup.Item>
-            <ListGroup.Item
-              action
-              href="#link3"
-              style={{ padding: "25px", color: "#293E6F" }}
-            >
-              View profile
-            </ListGroup.Item>
-            <ListGroup.Item
-              action
-              href="/logout"
-              style={{ padding: "25px", color: "#293E6F" }}
-            >
-              Logout
-            </ListGroup.Item>
-            <ListGroup.Item
-              action
-              href="#link4"
-              style={{ padding: "25px", color: "#293E6F" }}
-            >
-              Feedback
-            </ListGroup.Item>
-          </ListGroup>
+
+
         </Col>
         <Col md="8" style={{ marginTop: "20px" }}>
           <Row>

@@ -43,13 +43,13 @@ export default function ImageUpload() {
 
   const uploadImage = async (base64EncodedImage) => {
     try {
-      console.log(base64EncodedImage);
       await axiosInstance.post("/api/testing", {
         data: { image: base64EncodedImage },
       });
       setFileInputState("");
       setPreviewSource("");
       setSuccessMsg("Image uploaded successfully");
+      window.location.reload();
     } catch (err) {
       console.error(err);
       setErrMsg("Something went wrong!");
@@ -68,6 +68,7 @@ export default function ImageUpload() {
           onChange={handleFileInputChange}
           value={fileInputState}
           className="form-input"
+          accept="image/png"
         />
         <button className="btn" type="submit">
           Submit
@@ -76,10 +77,11 @@ export default function ImageUpload() {
       {previewSource && (
         <img src={previewSource} alt="chosen" style={{ height: "300px" }} />
       )}
+      <h1>------------------</h1>
       <Zoom>
         <Image
           cloudName="chaitanya1911"
-          publicId="adaptive_test/Aptitude/yfsx029e8gico30muznw"
+          publicId="https://res.cloudinary.com/chaitanya1911/image/upload/c_scale,w_500/v2/adaptive_test/Domain/vbnhacfcnijmftvrckck.png"
           width="500"
           crop="scale"
           alt="img"
