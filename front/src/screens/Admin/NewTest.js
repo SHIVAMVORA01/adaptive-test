@@ -162,11 +162,11 @@ function NewTest() {
           });
       } else {
         setIsloading(false);
-        setDangerMsg("Test Clash");
+        setDangerMsg("A test is already scheduled in this time");
       }
     } else {
       setIsloading(false);
-      setDangerMsg("End time must be greater than Start time");
+      setDangerMsg("End time must be greater than start time");
     }
   }
   function clash(stx, etx) {
