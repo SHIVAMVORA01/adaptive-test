@@ -19,6 +19,8 @@ urlpatterns = [
    path('api/personality/res',views.personalityR),
    path('api/createUser',views.createUser),
    path('api/newuser',views.userr),
+   path("api/forgotpass",views.forgotpass),
+   path("api/changepass",views.changepass),
 
    # admin
    path('api/admin/addQs',views.addQs),

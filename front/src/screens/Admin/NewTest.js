@@ -320,7 +320,8 @@ function NewTest() {
 
   return (
     <>
-      <Alert msg={dangerMsg} type="danger" ></Alert>
+      <Alert msg={successMsg} type="success"></Alert>
+      <Alert msg={dangerMsg} type="danger"></Alert>
       {isLoading ? (
         <Loader />
       ) : (
@@ -656,7 +657,9 @@ function NewTest() {
                                         totalQs: CurrentDic.totalQs,
                                       });
                                     } else {
-                                      setDangerMsg("Minimum should be 20 seconds");
+                                      setDangerMsg(
+                                        "Minimum should be 20 seconds"
+                                      );
                                     }
                                   }}
                                   style={{
@@ -772,7 +775,9 @@ function NewTest() {
                                   totalQs: CurrentDic.totalQs,
                                 });
                               } else {
-                                setDangerMsg("Minimum time should be greater than 20 seconds");
+                                setDangerMsg(
+                                  "Minimum time should be greater than 20 seconds"
+                                );
                               }
                             }}
                             style={{

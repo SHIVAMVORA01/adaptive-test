@@ -20,6 +20,9 @@ from dateutil import tz
 import cloudinary
 import cloudinary.search
 from django.contrib.auth.models import User,auth
+from django.core.mail import send_mail
+from django.conf import settings
+import uuid
 CFG = {'DB': None}
 
 def checkAuthorization(auth):
@@ -64,6 +67,39 @@ def login(request):
                 return JsonResponse({"exist":1,"admin":0},safe=False)   
         else:
             return JsonResponse({"exist":0},safe=False)
+@csrf_exempt
+def changepass(request):
+    if request.method=="POST":
+        data=JSONParser().parse(request)['data']
+        if not data['token'] == "":
+            if not MyUser.objects.filter(token=data['token']).exists():
+                return JsonResponse({'exists':0},safe=False)  
+            myuser = MyUser.objects.get(token = data['token'])
+            user = User.objects.get(email=myuser.user.email)
+            user.set_password(data['pass'])
+            user.save() 
+            return JsonResponse({'exists':1},safe=False)   
+        else:
+           return JsonResponse({'exists':0},safe=False)         
+
+
+@csrf_exempt
+def forgotpass(request):
+    if request.method=="POST":
+        data=JSONParser().parse(request)['data']
+        if not User.objects.filter(email=data['email']).exists():
+            return JsonResponse({'exists':0},safe=False)
+        user = User.objects.get(email = data['email'])    
+        token = str(uuid.uuid4())
+        subject = "Your Forget PAssword Link"
+        message = f'Hi, Click on the link to to reset your password- http://localhost:3000/change-pass?token={token}'
+        email_from = settings.EMAIL_HOST_USER
+        recipient_list = [user.email]
+        send_mail(subject,message,email_from,recipient_list)
+        myuser = MyUser.objects.get(user=user)
+        myuser.token = token
+        myuser.save()
+        return JsonResponse({'exists':1},safe=False)
 
 @csrf_exempt
 def subqs(request,subject=0,tid=0):

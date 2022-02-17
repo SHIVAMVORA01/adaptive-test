@@ -158,7 +158,6 @@ function ScheduledTest() {
       valueStart > cDate
         ? setDangerMsg("Start date cannot be greater than current date")
         : setDangerMsg("End date cannot be less than start date");
-  
     }
   }
   function delTest(e) {
@@ -258,6 +257,9 @@ function ScheduledTest() {
       {isLoading ? (
         <Loader />
       ) : (
+        <>
+        <Alert msg={successMsg} type="success"></Alert>
+        <Alert msg={dangerMsg} type="danger"></Alert>
         <div className="SchdlTest">
           <Modal show={show} onHide={handleClose}>
             <form
@@ -716,6 +718,7 @@ function ScheduledTest() {
             </Col>
           </Row>
         </div>
+        </>
       )}
     </>
   );

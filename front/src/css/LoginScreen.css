@@ -35,12 +35,21 @@
   box-shadow: 1px 1px 7px 2px rgba(0, 0, 0, 0.25);
   border-radius: 14px;
 }
+.modal-dialog { 
+  width: 460px !important;
+  padding-top: 10px ;
+}
 
+input {
+  border: 0px;
+  outline: none;
+}
 
 input:focus {
   border: 0px !important;
   outline: none;
 }
+
 input::-ms-reveal,
 input::-ms-clear {
   display: none;
@@ -56,4 +65,3 @@ input::-ms-clear {
 .field-icon:hover {
   cursor: pointer;
 }
-

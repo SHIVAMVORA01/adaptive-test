@@ -23,7 +23,7 @@ import DetailScreen from "./screens/DetailScreen";
 import PrivateRoute from "./components/PrivateRoute";
 import "./css/App.css";
 import Signup from "./screens/Signup";
-
+import ChangePass from "./screens/ChangePass";
 function App() {
   return (
     <div className="App" id="element">
@@ -281,7 +281,16 @@ function App() {
                 </Row>
               }
             />
-
+            <Route
+              path="/change-pass"
+              element={
+                <Row style={{ margin: "20px 0 0 0" }}>
+                  <Col style={{ padding: "10px 90px" }}>
+                    <ChangePass />
+                  </Col>
+                </Row>
+              }
+            />
             {/* do not change */}
             <Route
               path="*"

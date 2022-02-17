@@ -5,12 +5,11 @@ import TestHeaderComp from "../../components/TestScreeen/TestHeaderComp";
 import "../../css/Compiler.css";
 import $ from "jquery";
 import keys from "../../components/TestScreeen/keys";
-import axios from "axios";
 import { useNavigate } from "react-router";
 import CustomTimer from "../Admin/CustomTimer";
 import getCurrentTime from "../../components/TestScreeen/dateCalc";
 import axiosInstance from "../../axios";
-import { isExpired, decodeToken } from "react-jwt";
+import { isExpired } from "react-jwt";
 import ACEEditor from "../../components/TestScreeen/AceEditor";
 import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
 import Alert from "../../components/Admin/Alert";
@@ -1455,6 +1454,8 @@ export default function Compiler() {
 
   return (
     <>
+      <Alert msg={successMsg} type="success"></Alert>
+      <Alert msg={dangerMsg} type="danger"></Alert>
       <Modal
         show={show}
         onHide={handleClose}

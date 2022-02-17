@@ -23,6 +23,7 @@ class MyUser(models.Model):
     mobile = models.IntegerField(blank=True,null=True)
     percent_10_std=models.IntegerField(default=1)
     percent_12_std=models.IntegerField(default=1)
+    token = models.CharField(max_length=400,null=True,blank=True)
     def __str__(self):
         return self.name
 

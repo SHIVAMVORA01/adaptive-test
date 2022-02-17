@@ -33,6 +33,7 @@ function Result() {
   const [isLoading, setIsloading] = useState(true);
   const [feedback_star, set_feedback_star] = useState(0);
   const [successMsg, setSuccessMsg] = useState("");
+  const [dangerMsg, setDangerMsg] = useState("");
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: "detailed_report",
@@ -338,11 +339,12 @@ function Result() {
 
   return (
     <>
-      <Alert msg={successMsg} type="success" ></Alert>
       {isLoading ? (
         <Loader />
       ) : (
         <div>
+          <Alert msg={successMsg} type="success"></Alert>
+          <Alert msg={dangerMsg} type="danger"></Alert>
           <Modal
             id="feedback"
             show={showFeedback}

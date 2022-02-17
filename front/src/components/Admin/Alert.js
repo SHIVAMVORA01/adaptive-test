@@ -7,7 +7,7 @@ export default function Alert({ msg, type }) {
       setShow(true);
       setInterval(() => {
         setShow(false);
-      }, 2000);
+      }, 3000);
     }
   }, [msg]);
   return <>{show && <div className={`alert alert-${type}`}>{msg}</div>}</>;
