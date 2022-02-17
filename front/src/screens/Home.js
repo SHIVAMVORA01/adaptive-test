@@ -15,11 +15,9 @@ function Home() {
   return (
     <div>
       <Row className="welcomeDiv">
-        <Col md={6}>
-<div >
-        <div>
-          <div className="titleDiv" style={{ height: "450px" }}>
-            <label className="mainheading">
+        <Col sm={12} md={12} lg={5}>
+          <Row className="titleDiv" style={{ height: "100%" }}>
+            <label className="mainheadingLanding">
               Welcome to the
               <br />
               Placement Test Portal
@@ -27,51 +25,41 @@ function Home() {
             <label className="subHeadingsProfile">
               One Step towards a successful career
             </label>
-            <div>
-              <Button
-                className="buttonDiv"
-                style={{
-                  background: "#10B65C",
-                  color: "#FFF",
-                  width: "200px",
-                  fontSize: "20px",
-                  border: "none",
-                }}
-                onClick={() => {
-                  navigate("/login");
-                }}
-              >
-                Login
-              </Button>
-
-              <br />
-           
-            </div>
+            <Button
+              className="buttonDiv"
+              style={{
+                background: "#10B65C",
+                color: "#FFF",
+                width: "200px",
+                fontSize: "20px",
+                border: "none",
+              }}
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              Login
+            </Button>
+          </Row>
+        </Col>
+        <Col sm={12} lg={7}>
+          <div className="videoPlayer">
+            <ReactPlayer
+              style={{ borderRadius: "10px" }}
+              playing={true}
+              controls={false}
+              light={false}
+              pip={false}
+              muted={true}
+              playbackRate={1}
+              loop={true}
+              url="https://vimeo.com/76979871"
+              config={{ youtube: { playerVars: { disablekb: 1, fs: 0 } } }}
+            />
           </div>
-        </div>
-      </div>
-          </Col>
-        <Col md={6}>  
-        <div className="videoPlayer">
-                <div className="video">
-                <ReactPlayer style={{borderRadius:"10px"}} 
-                  height="300px"
-                  width="533px"
-                  playing={true}
-                  controls={false}
-                  light={false}
-                  pip={false}
-                  muted={true}
-                  playbackRate={2}
-                  loop={true}
-                  url="https://vimeo.com/76979871"
-                  config={{ youtube: { playerVars: { disablekb: 1, fs: 0 } } }}
-                />
-                </div>
-              </div>
         </Col>
       </Row>
-      
+
       <div>
         <div style={{ textAlign: "center", marginTop: "1%" }} id="initiative">
           <br />
@@ -80,7 +68,7 @@ function Home() {
         <br />
         <Container>
           <Row>
-            <Col md={7} lg={8}>
+            <Col sm={12} md={7} lg={8}>
               <div className="landingPara">
                 <label className="subHeadingsProfile1">
                   What does this portal do?
@@ -93,7 +81,7 @@ function Home() {
                 </label>
               </div>
             </Col>
-            <Col md={5} lg={4}>
+            <Col sm={12} md={5} lg={4}>
               <img
                 alt="illustration1"
                 src={illustration1}
@@ -103,15 +91,15 @@ function Home() {
           </Row>
         </Container>
         <Container>
-          <Row>
-            <Col md={5} lg={4}>
+          <Row id='middleLogoRow'>
+            <Col className='first_col' sm={12} md={5} lg={4}>
               <img
                 alt="logo"
                 src={illustration2}
                 className="welcomeImage3"
               ></img>
             </Col>
-            <Col md={7} lg={8}>
+            <Col className='second_col' sm={12} md={7} lg={8}>
               <div className="landingPara1">
                 <label className="subHeadingsProfile1">
                   Why should I attempt these tests?
@@ -130,7 +118,7 @@ function Home() {
         </Container>
         <Container>
           <Row>
-            <Col md={7} lg={8}>
+            <Col sm={12} md={7} lg={8}>
               <div className="landingPara">
                 <label className="subHeadingsProfile1">
                   How will this portal benefit the undergraduate?
@@ -146,7 +134,7 @@ function Home() {
                 <br />
               </div>
             </Col>
-            <Col md={5} lg={4} className="colImageDiv">
+            <Col sm={12} md={5} lg={4} className="colImageDiv">
               <img
                 alt="illustration2"
                 src={illustration3}
@@ -170,7 +158,11 @@ function Home() {
               </h3>
             </div>
             <Row>
-              <Col style={{ textAlign: "center", marginTop: "35px" }} md={4}>
+              <Col
+                style={{ textAlign: "center", marginTop: "35px" }}
+                md={6}
+                lg={4}
+              >
                 <div
                   style={{
                     display: "flex",
@@ -185,7 +177,11 @@ function Home() {
                   </div>
                 </div>
               </Col>
-              <Col style={{ textAlign: "center", marginTop: "35px" }} md={4}>
+              <Col
+                style={{ textAlign: "center", marginTop: "35px" }}
+                md={6}
+                lg={4}
+              >
                 <div
                   style={{
                     display: "flex",
@@ -200,7 +196,11 @@ function Home() {
                   </div>
                 </div>
               </Col>
-              <Col style={{ textAlign: "center", marginTop: "35px" }} md={4}>
+              <Col
+                style={{ textAlign: "center", marginTop: "35px" }}
+                md={6}
+                lg={4}
+              >
                 <div
                   style={{
                     display: "flex",

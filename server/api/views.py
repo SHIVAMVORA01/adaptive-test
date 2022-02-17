@@ -1,4 +1,4 @@
-from importlib import invalidate_caches
+from django.contrib.auth.hashers import make_password
 import json
 from django.http import HttpResponseBadRequest
 from django.http.response import JsonResponse
@@ -33,6 +33,20 @@ def checkAuthorization(auth):
                 return False
         except:
             return False
+
+@csrf_exempt
+def userr(request):
+    if request.method=="GET":
+        if(User.objects.filter(username = request.GET['email']).exists()):
+            return JsonResponse({'exists':1},safe=False)
+        else:
+            return JsonResponse({'exists':0},safe=False) 
+
+    if request.method=="POST":
+        data=JSONParser().parse(request)['data']
+        user = User.objects.create(first_name=data['name'],username = data['email'],email=data['email'],password=make_password(data['pass']))
+        user.save()
+        return JsonResponse({'exists':0},safe=False)   
 
 @csrf_exempt
 def login(request):

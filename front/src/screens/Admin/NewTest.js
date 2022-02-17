@@ -8,6 +8,7 @@ import sidFunc from "./sidFunc";
 import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
 import Loader from "../../components/Loader";
+import Alert from "../../components/Admin/Alert";
 
 function NewTest() {
   //Current Sec Data
@@ -17,7 +18,8 @@ function NewTest() {
   const [qs, setQs] = useState(0);
   const [axData, setAxData] = useState({});
   const [tests, setTests] = useState([]);
-
+  const [successMsg, setSuccessMsg] = useState("");
+  const [dangerMsg, setDangerMsg] = useState("");
   const [aptDic, setAptDic] = useState({ time: "00:00:20", totalQs: 1 });
   const [CFDic, setCFDic] = useState({ time: "00:00:20", totalQs: 1 });
   const [DDic, setDDic] = useState({ time: "00:00:20", totalQs: 1 });
@@ -35,7 +37,6 @@ function NewTest() {
   const [eDate, setEDate] = useState(new Date());
   const [tName, setTName] = useState();
   const [sid, setSid] = useState(0);
-  //
   const location = useLocation();
   const navigate = useNavigate();
   const [isLoading, setIsloading] = useState(true);
@@ -161,11 +162,11 @@ function NewTest() {
           });
       } else {
         setIsloading(false);
-        alert(objClash.msg);
+        setDangerMsg("Test Clash");
       }
     } else {
       setIsloading(false);
-      alert("Start time should be less than End time");
+      setDangerMsg("End time must be greater than Start time");
     }
   }
   function clash(stx, etx) {
@@ -319,6 +320,7 @@ function NewTest() {
 
   return (
     <>
+      <Alert msg={dangerMsg} type="danger" ></Alert>
       {isLoading ? (
         <Loader />
       ) : (
@@ -654,9 +656,7 @@ function NewTest() {
                                         totalQs: CurrentDic.totalQs,
                                       });
                                     } else {
-                                      alert(
-                                        "Minimum time should be greater than 20 seconds"
-                                      );
+                                      setDangerMsg("Minimum should be 20 seconds");
                                     }
                                   }}
                                   style={{
@@ -772,9 +772,7 @@ function NewTest() {
                                   totalQs: CurrentDic.totalQs,
                                 });
                               } else {
-                                alert(
-                                  "Minimum time should be greater than 20 seconds"
-                                );
+                                setDangerMsg("Minimum time should be greater than 20 seconds");
                               }
                             }}
                             style={{

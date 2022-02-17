@@ -13,6 +13,7 @@ import axiosInstance from "../../axios";
 import { isExpired, decodeToken } from "react-jwt";
 import ACEEditor from "../../components/TestScreeen/AceEditor";
 import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
+import Alert from "../../components/Admin/Alert";
 
 export default function Compiler() {
   const [inputT, setInput] = useState();
@@ -20,7 +21,8 @@ export default function Compiler() {
   const [inputT_question_2, setInput_question_2] = useState();
   const [inputT_question_3, setInput_question_3] = useState();
   const [current_qs, set_current_qs] = useState(1);
-
+  const [successMsg, setSuccessMsg] = useState("");
+  const [dangerMsg, setDangerMsg] = useState("");
   const [language_id, setLanguage_id] = useState();
   const [language_id_question_1, setLanguage_id_question_1] = useState();
   const [language_id_question_2, setLanguage_id_question_2] = useState();
@@ -439,7 +441,7 @@ export default function Compiler() {
     if (code !== "") {
       console.log(user_input);
       if (customInputCheck && (user_input === undefined || user_input === "")) {
-        alert("Please enter input");
+        setDangerMsg("Please enter your input");
       } else {
         if (current_qs === 1) {
           set_q1_run_output("Creating Submission ...\n");
@@ -680,7 +682,7 @@ export default function Compiler() {
             }
           }
         } else {
-          alert("Contact Administrator");
+          setDangerMsg("Something went wrong. Please contact administartor");
         }
       }
     }
@@ -931,7 +933,7 @@ export default function Compiler() {
             flag = true;
           }
         } else {
-          alert("token dont exists");
+          setDangerMsg("Error Occured. Token doesn't exist");
           break;
         }
       }
@@ -1251,7 +1253,7 @@ export default function Compiler() {
           localStorage.setItem("test4", JSON.stringify(test));
         }
       } else {
-        alert("Contact Administrator");
+        setDangerMsg("Please contact the admin");
       }
     }
   }

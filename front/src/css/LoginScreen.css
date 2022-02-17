@@ -36,10 +36,7 @@
   border-radius: 14px;
 }
 
-input {
-  border: 0px !important;
-  outline: none;
-}
+
 input:focus {
   border: 0px !important;
   outline: none;
@@ -59,3 +56,4 @@ input::-ms-clear {
 .field-icon:hover {
   cursor: pointer;
 }
+

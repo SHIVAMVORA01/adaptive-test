@@ -1,0 +1,252 @@
+{
+"CollegeData":[
+ {
+  "Id": 1,
+  "CollegeNames": "Anjuman-I-Islam's M.H. Saboo Siddik College of Engineering"
+ },
+ {
+  "Id": 2,
+  "CollegeNames": "Fr. Conceicao Rodrigues College of Engineering"
+ },
+ {
+  "Id": 3,
+  "CollegeNames": "K.J. Somaiya College of Engineering"
+ },
+ {
+  "Id": 4,
+  "CollegeNames": "Mahavir Education Trust's Shah and Anchor Kutchi Enginering College"
+ },
+ {
+  "Id": 5,
+  "CollegeNames": "Thadomal Shahani Engineering College"
+ },
+ {
+  "Id": 6,
+  "CollegeNames": "Padmabhushan Vasantdada Patil Pratishthan's College of Engineering"
+ },
+ {
+  "Id": 7,
+  "CollegeNames": "Vivekanand Education Society's Institute of Technology"
+ },
+ {
+  "Id": 8,
+  "CollegeNames": "Watumull Institute of Electronic Engineering and Computer Technology"
+ },
+ {
+  "Id": 9,
+  "CollegeNames": "Shri Vile-Parle Kelavani Mandal's Dwarkadas J. Sanghvi College of Engineering"
+ },
+ {
+  "Id": 10,
+  "CollegeNames": "Rizvi Education Society's Rizvi College of Engineering"
+ },
+ {
+  "Id": 11,
+  "CollegeNames": "Manjara Charitable Trust's Rajiv Gandhi Institute of Technology"
+ },
+ {
+  "Id": 12,
+  "CollegeNames": "St. Francies Institute of Technology"
+ },
+ {
+  "Id": 13,
+  "CollegeNames": "Atharva Educational Trust's Atharva College of Engineering"
+ },
+ {
+  "Id": 14,
+  "CollegeNames": "Vidyalankar Institute of Technology"
+ },
+ {
+  "Id": 15,
+  "CollegeNames": "Zagdu Singh Charitable Trust's Thakur College of Engineering & Technology"
+ },
+ {
+  "Id": 16,
+  "CollegeNames": "The Bombay Salesian Society's Don Bosco Institute of Technology"
+ },
+ {
+  "Id": 17,
+  "CollegeNames": "K.J. Somaiya Institute of Engineering and Information Technology"
+ },
+ {
+  "Id": 18,
+  "CollegeNames": "Bharatiya Vidya Bhavan's Sardar Patel Institute of Technology"
+ },
+ {
+  "Id": 19,
+  "CollegeNames": "Xavier Institute of Engineering"
+ },
+ {
+  "Id": 20,
+  "CollegeNames": "Bharati Vidyapeeth's College of Engineering"
+ },
+ {
+  "Id": 21,
+  "CollegeNames": "Mahatma Gandhi Mission's College of Engineering & Technology"
+ },
+ {
+  "Id": 22,
+  "CollegeNames": "Ramrao Adik Education Society's Ramrao Adik Institute of Technology"
+ },
+ {
+  "Id": 23,
+  "CollegeNames": "Terna Public Charitable Trust's Terna College of Engineering"
+ },
+ {
+  "Id": 24,
+  "CollegeNames": "Jawahar Education Society's Annasaheb Chudaman Patil College of Engineering"
+ },
+ {
+  "Id": 25,
+  "CollegeNames": "Smt. Indira Gandhi Engineering College"
+ },
+ {
+  "Id": 26,
+  "CollegeNames": "Agnel Charitable Trust's Fr. Conceicao Rodrigues Institute of Technology"
+ },
+ {
+  "Id": 27,
+  "CollegeNames": "Datta Meghe College of Engineering"
+ },
+ {
+  "Id": 28,
+  "CollegeNames": "Lokmanya Tilak Jankalyan Shikshan Sanstha's Lokmanya Tilak College of Engineering"
+ },
+ {
+  "Id": 29,
+  "CollegeNames": "Mahatma Education Society's Pillai's Institute of Information Technology, Engineering, Media Studies & Research"
+ },
+ {
+  "Id": 30,
+  "CollegeNames": "South Indian Education Society's Graduate School of Technology"
+ },
+ {
+  "Id": 31,
+  "CollegeNames": "Saraswati Education Society's Saraswati College of Engineering"
+ },
+ {
+  "Id": 32,
+  "CollegeNames": "Anjuman-I-Islam's School of Engineering & Technology"
+ },
+ {
+  "Id": 33,
+  "CollegeNames": "Konkan Gyanpeeth College of Engineering"
+ },
+ {
+  "Id": 34,
+  "CollegeNames": "Leela Education Society's\n G.V. Acharya Institute of Engineering & Technology"
+ },
+ {
+  "Id": 35,
+  "CollegeNames": "Mahatma Education Society's Pillai HOCL College of Engg. & Technology"
+ },
+ {
+  "Id": 36,
+  "CollegeNames": "Saraswati Education Society's Yadavrao Tasgaonkar Institute of Engineering & Technology"
+ },
+ {
+  "Id": 37,
+  "CollegeNames": "Suman Education Trust's Dilkap Research Institute of Engineering & Management Studies"
+ },
+ {
+  "Id": 38,
+  "CollegeNames": "Saraswati Education Society's Yadavrao Tasgaonkar College of Engineering & Management"
+ },
+ {
+  "Id": 39,
+  "CollegeNames": "Saraswati Education Society's Group of Institutions Faculty of Engineering"
+ },
+ {
+  "Id": 40,
+  "CollegeNames": "Gopinath Mahadeo Vedak Pratishthan's G.M. Vedak Institute of Technology"
+ },
+ {
+  "Id": 41,
+  "CollegeNames": "Vishwaniketan's Institute of Management Entepreneurship and Engineeering Technology"
+ },
+ {
+  "Id": 42,
+  "CollegeNames": "Mandar Education Society's Rajaram Shinde College of Engineering"
+ },
+ {
+  "Id": 43,
+  "CollegeNames": "Finolex Academy of Management & Technology's College of Engineering"
+ },
+ {
+  "Id": 44,
+  "CollegeNames": "Prabodhan Shikshan Prasarak Sanstha's Rajendra\n M. Mane College of Engineering"
+ },
+ {
+  "Id": 45,
+  "CollegeNames": "Gharda Foundation's Gharda Institute of Technology"
+ },
+ {
+  "Id": 46,
+  "CollegeNames": "Vidya Prasarak Mandal's Maharshi Parshuram College of Engineering"
+ },
+ {
+  "Id": 47,
+  "CollegeNames": "Sindhudurg Shikshan Prasarak Mandal's College of Engineering"
+ },
+ {
+  "Id": 48,
+  "CollegeNames": "Jayawanti Babu Foundation's Metropolitan Institute of Technology & Management"
+ },
+ {
+  "Id": 49,
+  "CollegeNames": "Shivajirao S. Jondhale College of Engineering"
+ },
+ {
+  "Id": 50,
+  "CollegeNames": "Vidyavardhini's College of Engineering & Technology"
+ },
+ {
+  "Id": 51,
+  "CollegeNames": "Excelsior Education Society's K.C. College of Engineering"
+ },
+ {
+  "Id": 52,
+  "CollegeNames": "Vighnaharta Trust's Shivajirao S. Jondhale College of Engineering & Technology"
+ },
+ {
+  "Id": 53,
+  "CollegeNames": "Koti Vidya Charitable Trust's Alamuri Ratnamala Institute of Engineering & Technology"
+ },
+ {
+  "Id": 54,
+  "CollegeNames": "Aldel Education Trust's St. John College of Engineering"
+ },
+ {
+  "Id": 55,
+  "CollegeNames": "Haji Jamaluddin Thim Trust, Theem College of Engineering"
+ },
+ {
+  "Id": 56,
+  "CollegeNames": "Late Shri Vishnu Waman Thakur Charitable Trust's Viva Institute of Technology"
+ },
+ {
+  "Id": 57,
+  "CollegeNames": "Innovative Engineer's & Teacher's Education Society's Leelavati Awhad Institute of Technology, Management Studies & Research"
+ },
+ {
+  "Id": 58,
+  "CollegeNames": "Shree Rahul Education Society's L.R. Tiwari College Engineering"
+ },
+ {
+  "Id": 59,
+  "CollegeNames": "Vishwatmak Om Gurudev College of Engineering"
+ },
+ {
+  "Id": 60,
+  "CollegeNames": "Jay Shri Siddhivinayak Foundation's B.R. Harne College of Engineering & Technology"
+ },
+ {
+  "Id": 61,
+  "CollegeNames": "Vidya Vikas Education Trust's Universal College of Engineering"
+ },
+ {
+  "Id": 62,
+  "CollegeNames": "Ideal Foundation's Ideal Institute of Technology"
+ }
+]
+}

@@ -6,7 +6,10 @@ function key() {
   ];
   return a;
 }
+function googlecId(){
+  return "690837862024-tl6qj6k5o3b59nooqfmp5t9hmjb022tm.apps.googleusercontent.com";
+}
 function secretKey() {
   return "mySecretKey12345";
 }
-export default { key, secretKey };
+export default { key, secretKey ,googlecId};

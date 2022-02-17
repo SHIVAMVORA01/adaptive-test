@@ -10,13 +10,22 @@ import "../css/LoginScreen.css";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
 import AdminProtectUrl from "../components/Admin/AdminProtectUrl";
 import Loader from "../components/Loader";
+import { GoogleLogin, GoogleLogout } from "react-google-login";
+import keys from "../components/TestScreeen/keys";
+import { FcGoogle} from "react-icons/fc";
+import Alert from "../components/Admin/Alert";
+
 
 function Login() {
+  const clientId = keys.googlecId();
   const navigate = useNavigate();
   const [md, setMd] = useState(false);
   const [dataUpcoming, setTDataUpcoming] = useState({});
   const [dataPresent, setTDataPresent] = useState({});
   const [isLoading, setIsloading] = useState(true);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [dangerMsg, setDangerMsg] = useState("");
+
   const columnsP = [
     {
       label: "NAME",
@@ -183,7 +192,7 @@ function Login() {
                           navigate("/result");
                         } else {
                           setMd(true);
-                          alert("Already started on different device");
+                          setDangerMsg("Already started on different device");
                           navigate("/logout");
                         }
                       } else {
@@ -201,12 +210,13 @@ function Login() {
                 }
               } else {
                 setIsloading(false);
-                alert("test not available");
+                setDangerMsg("You are not allowed to login");
+
               }
             });
         } else {
           setIsloading(false);
-          alert("User Doesn't exists");
+          setDangerMsg("Invalid username or password");
         }
       });
   };
@@ -222,8 +232,18 @@ function Login() {
       });
     return parseInt(aa);
   }
+
+  const responseGoogle = async (res) => {
+    navigate("/signup", { state: { data: res.profileObj } });
+  };
+  const error = (res) => {
+    setDangerMsg("Attempt to log in failed");
+  };
+
   return (
     <>
+    <Alert msg={successMsg} type="success" ></Alert>
+    <Alert msg={dangerMsg} type="danger" ></Alert>
       {isLoading ? (
         <Loader />
       ) : (
@@ -274,7 +294,7 @@ function Login() {
                       ></span>
                     </Col>
                   </Row>
-                  <Row style={{ marginTop: "35px", paddingLeft: "200px" }}>
+                  <Row style={{ marginTop: "35px", paddingLeft: "180px" }}>
                     <Col>
                       <button
                         style={{
@@ -285,10 +305,26 @@ function Login() {
                         type="submit"
                         className="btn btn-primary"
                       >
-                        Start Test
+                        Login 
                       </button>
                     </Col>
                   </Row>
+                  <Row style={{ marginTop: "35px", paddingLeft: "200px" }}>
+                    <Col style={{ marginLeft: "-60px"}} >Not Registered? Sign up now </Col>
+                    <Row style={{ marginTop: "35px", paddingLeft: "55px" }}>
+                      <GoogleLogin
+                        render={renderProps => (
+                          <button style={{width:"45px", height: "45px", backgroundColor:"rgb(255, 255, 255)",display:"inline-flex",alignItems:"center",color:"rgba(0, 0, 0, 0.54)",boxShadow:"rgb(0 0 0 / 24%) 0px 2px 2px 0px, rgb(0 0 0 / 24%) 0px 0px 1px 0px", padding:"10px", borderRadius:"40%", border:"1px solid transparent", fontSize:"14px",fontWeight:"500",fontFamily:"Roboto, sans-serif"}} onClick={renderProps.onClick} disabled={renderProps.disabled}><FcGoogle style={{marginLeft: "5px"}}/></button>
+                        )}
+                        clientId={clientId}
+                        buttonText="Google"
+                        onSuccess={responseGoogle}
+                        onFailure={error}
+                        cookiePolicy={"single_host_origin"}
+                      />
+                    </Row>
+                  </Row>
+                  
                 </form>
               </div>
             </Col>
