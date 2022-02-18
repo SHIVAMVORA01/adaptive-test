@@ -10,6 +10,7 @@ import Alert from "../../components/Admin/Alert";
 function ScheduledTest() {
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
+  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
   const [isLoading, setIsloading] = useState(true);
   const [stests, setSTests] = useState([]);
   const [utests, setUTests] = useState([]);
@@ -150,11 +151,13 @@ function ScheduledTest() {
             });
         } else {
           setIsloading(false);
+          setIsAlertMsgLoaded(true);
           setDangerMsg("Test cannot be saved");
         }
       }
     } else {
       setIsloading(false);
+      setIsAlertMsgLoaded(true);
       valueStart > cDate
         ? setDangerMsg("Start date cannot be greater than current date")
         : setDangerMsg("End date cannot be less than start date");
@@ -258,466 +261,479 @@ function ScheduledTest() {
         <Loader />
       ) : (
         <>
-        <Alert msg={successMsg} type="success"></Alert>
-        <Alert msg={dangerMsg} type="danger"></Alert>
-        <div className="SchdlTest">
-          <Modal show={show} onHide={handleClose}>
-            <form
-              onSubmit={(e) => {
-                onSubmitModal(e);
-                e.preventDefault();
-              }}
-            >
-              <Modal.Header closeButton>
-                <h3>Edit</h3>
-              </Modal.Header>
-              <Modal.Body>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>Test Name: </Col>
-                  <Col md={9}>
-                    <input
-                      type="string"
-                      defaultValue={header}
-                      onChange={(e) => {
-                        setHeader(e.target.value);
-                      }}
-                    ></input>
-                  </Col>
-                </Row>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>Start Time:</Col>
-                  <Col md={9}>
-                    <DateTimePicker
-                      onChange={onChangeStart}
-                      value={valueStart}
-                    />
-                  </Col>
-                </Row>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>End Time:</Col>
-                  <Col md={9}>
-                    <DateTimePicker
-                      onChange={(e) => {
-                        onChangeEnd(e);
-                      }}
-                      value={valueEnd}
-                    />
-                  </Col>
-                </Row>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>Apt Qs: </Col>
-                  <Col md={2}>
-                    <input
-                      type="number"
-                      defaultValue={apt.qs}
-                      max={apt.maxQs}
-                      min={0}
-                      title={
-                        apt.maxQs > 0
-                          ? `Can set values between 0 and ${apt.maxQs} only`
-                          : "Can set value 0 only"
-                      }
-                      style={{ width: "100%" }}
-                      onChange={(e) => {
-                        setApt({
-                          qs: parseInt(e.target.value),
-                          time: apt.time,
-                          avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
-                          maxQs: apt.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                  <Col md={3}>Apt Time: </Col>
-                  <Col md={3}>
-                    <input
-                      type="time"
-                      style={{ width: "fit-content" }}
-                      min={"00:00:20"}
-                      step={1}
-                      defaultValue={apt.time}
-                      onChange={(e) => {
-                        setApt({
-                          qs: apt.qs,
-                          time: e.target.value,
-                          avg: apt.avg,
-                          maxQs: apt.maxQs,
-                        });
-                      }}
-                      required
-                    ></input>
-                  </Col>
-                </Row>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>CF Qs: </Col>
-                  <Col md={2}>
-                    <input
-                      type="number"
-                      defaultValue={cf.qs}
-                      style={{ width: "100%" }}
-                      max={cf.maxQs}
-                      min={0}
-                      title={
-                        cf.maxQs > 0
-                          ? `Can set values between 0 and ${cf.maxQs} only`
-                          : "Can set value 0 only"
-                      }
-                      onChange={(e) => {
-                        setCF({
-                          qs: parseInt(e.target.value),
-                          time: cf.time,
-                          avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
-                          maxQs: cf.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                  <Col md={3}>CF Time: </Col>
-                  <Col md={3}>
-                    <input
-                      type="time"
-                      min={"00:00:20"}
-                      step={1}
-                      style={{ width: "fit-content" }}
-                      defaultValue={cf.time}
-                      onChange={(e) => {
-                        setCF({
-                          qs: cf.qs,
-                          time: e.target.value,
-                          avg: cf.avg,
-                          maxQs: cf.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                </Row>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>C Qs: </Col>
-                  <Col md={2}>
-                    <input
-                      type="number"
-                      defaultValue={c.qs}
-                      title={`Can only set to ${c.qs}`}
-                      disabled
-                      style={{ width: "100%" }}
-                      onChange={(e) => {
-                        setC({
-                          qs: parseInt(e.target.value),
-                          time: c.time,
-                          avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
-                          maxQs: c.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                  <Col md={3}>C Time: </Col>
-                  <Col md={3}>
-                    <input
-                      type="time"
-                      min={"00:00:20"}
-                      step={1}
-                      style={{ width: "fit-content" }}
-                      defaultValue={c.time}
-                      onChange={(e) => {
-                        setC({
-                          qs: c.qs,
-                          time: e.target.value,
-                          avg: c.avg,
-                          maxQs: c.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                </Row>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>D Qs: </Col>
-                  <Col md={2}>
-                    <input
-                      type="number"
-                      defaultValue={domain.qs}
-                      max={domain.maxQs}
-                      min={0}
-                      title={
-                        domain.maxQs > 0
-                          ? `Can set values between 0 and ${domain.maxQs} only`
-                          : "Can set value 0 only"
-                      }
-                      style={{ width: "100%" }}
-                      onChange={(e) => {
-                        setDomain({
-                          qs: parseInt(e.target.value),
-                          time: domain.time,
-                          avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
-                          maxQs: domain.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                  <Col md={3}>D Time: </Col>
-                  <Col md={3}>
-                    <input
-                      type="time"
-                      min={"00:00:20"}
-                      step={1}
-                      style={{ width: "fit-content" }}
-                      defaultValue={domain.time}
-                      onChange={(e) => {
-                        setDomain({
-                          qs: domain.qs,
-                          time: e.target.value,
-                          avg: domain.avg,
-                          maxQs: domain.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                </Row>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>P Qs: </Col>
-                  <Col md={2}>
-                    <input
-                      type="number"
-                      defaultValue={p.qs}
-                      max={p.maxQs}
-                      min={0}
-                      title={
-                        p.maxQs > 0
-                          ? `Can set values between 0 and ${p.maxQs} only`
-                          : "Can set value 0 only"
-                      }
-                      style={{ width: "100%" }}
-                      onChange={(e) => {
-                        setP({
-                          qs: parseInt(e.target.value),
-                          time: p.time,
-                          avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
-                          maxQs: p.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                  <Col md={3}>P Time: </Col>
-                  <Col md={3}>
-                    <input
-                      type="time"
-                      min={"00:00:20"}
-                      step={1}
-                      style={{ width: "fit-content" }}
-                      defaultValue={p.time}
-                      onChange={(e) => {
-                        setP({
-                          qs: p.qs,
-                          time: e.target.value,
-                          avg: p.avg,
-                          maxQs: p.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                </Row>
-                <Row style={{ margin: "2% 0" }}>
-                  <Col md={3}>AW Qs: </Col>
-                  <Col md={2}>
-                    <input
-                      type="number"
-                      defaultValue={aw.qs}
-                      title={`Can set value ${aw.maxQs} only`}
-                      disabled
-                      onChange={(e) => {
-                        setAW({
-                          qs: parseInt(e.target.value),
-                          time: aw.time,
-                          avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
-                          maxQs: aw.maxQs,
-                        });
-                      }}
-                      style={{ width: "100%" }}
-                    ></input>
-                  </Col>
-                  <Col md={3}>AW Time: </Col>
-                  <Col md={3}>
-                    <input
-                      type="time"
-                      min={"00:00:20"}
-                      step={1}
-                      style={{ width: "fit-content" }}
-                      defaultValue={aw.time}
-                      onChange={(e) => {
-                        setAW({
-                          qs: aw.qs,
-                          time: e.target.value,
-                          avg: aw.avg,
-                          maxQs: aw.maxQs,
-                        });
-                      }}
-                    ></input>
-                  </Col>
-                </Row>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="danger" type="submit" id="delete_test">
-                  Delete
-                </Button>
-                <Button variant="primary" type="submit" id="save_changes">
-                  Save Changes
-                </Button>
-              </Modal.Footer>
-            </form>
-          </Modal>
-          <button
-            style={{
-              marginLeft: "1%",
-              backgroundColor: "#293E6F",
-              borderRadius: "5px",
-              border: "none",
-            }}
-            className="btn btn-secondary"
-            onClick={(e) => navigate("/admin/home")}
-          >
-            Back
-          </button>
-          <Row style={{ margin: "0 0 0 10%" }}>
-            <Col md={6} style={{ marginRight: "0%" }}>
-              {" "}
-              <div
-                className="basicRec"
-                style={{ minHeight: window.screen.height - 400, width: "90%" }}
-              >
-                <h4 style={{ paddingLeft: "30%", paddingTop: "10px" }}>
-                  Scheduled Test
-                </h4>
-                <div className="lineThrough"></div>
-                <div
-                  className="scrollbar"
-                  id="style-4"
-                  style={{ height: window.screen.height - 480 }}
-                >
-                  {stests.map((t, index) => {
-                    return (
-                      <Row
-                        style={{
-                          backgroundColor: "white",
-                          borderColor: "#F0F0F0",
-                          marginBottom: "1px",
-                          boxShadow:
-                            "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-                          borderRadius: "10px",
-                        }}
-                      >
-                        <Col>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              navigate("/admin/viewScheduledTest", {
-                                state: {
-                                  id: t.id,
-                                  name: t.test_name,
-                                  start: t.test_start,
-                                  end: t.test_end,
-                                },
-                              });
-                            }}
-                            style={{
-                              width: "100%",
-                              backgroundColor: "white",
-                              borderColor: "#F0F0F0",
-                              marginBottom: "1px",
-                              border: "none",
-                            }}
-                            key={index}
-                          >
-                            {t.test_name}
-                          </button>
-                        </Col>
-                        <Col md={1}>
-                          <i
-                            onClick={() => delSTest(t.id)}
-                            className="fa fa-trash"
-                            style={{
-                              backgroundColor: "white",
-                              color: "red",
-                              float: "right",
-                              marginRight: "15px",
-                              marginTop: "10px",
-                            }}
-                          ></i>
-                        </Col>
-                      </Row>
-                    );
-                  })}
-                </div>
-              </div>
-            </Col>
-            <Col md={6} style={{ marginRight: "0%" }}>
-              {" "}
-              <div
-                className="basicRec"
-                style={{
-                  minHeight: window.screen.height - 400,
-                  maxHeight: window.screen.height - 400,
-                  width: "90%",
+          <Alert
+            msg={successMsg}
+            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+            isAlertMsgLoaded={isAlertMsgLoaded}
+            type="success"
+          ></Alert>
+          <Alert
+            msg={dangerMsg}
+            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+            isAlertMsgLoaded={isAlertMsgLoaded}
+            type="danger"
+          ></Alert>
+          <div className="SchdlTest">
+            <Modal show={show} onHide={handleClose}>
+              <form
+                onSubmit={(e) => {
+                  onSubmitModal(e);
+                  e.preventDefault();
                 }}
               >
-                <h4 style={{ paddingLeft: "30%", paddingTop: "10px" }}>
-                  Upcoming Test
-                </h4>
-                <div className="lineThrough"></div>
-                <div
-                  className="scrollbar"
-                  id="style-4"
-                  style={{ height: window.screen.height - 480 }}
-                >
-                  {utests.map((t, index) => {
-                    return (
-                      <Row
-                        style={{
-                          backgroundColor: "white",
-                          borderColor: "#F0F0F0",
-                          marginBottom: "1px",
-                          boxShadow:
-                            "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
-                          borderRadius: "10px",
+                <Modal.Header closeButton>
+                  <h3>Edit</h3>
+                </Modal.Header>
+                <Modal.Body>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>Test Name: </Col>
+                    <Col md={9}>
+                      <input
+                        type="string"
+                        defaultValue={header}
+                        onChange={(e) => {
+                          setHeader(e.target.value);
                         }}
-                      >
-                        <Col>
-                          <button
-                            type="button"
-                            onClick={(e) => upcomingTest(e, t)}
-                            style={{
-                              width: "100%",
-                              backgroundColor: "white",
-                              borderColor: "#F0F0F0",
-                              marginBottom: "1px",
-                              border: "none",
-                            }}
-                            key={index}
-                          >
-                            {t.test_name}
-                          </button>
-                        </Col>
-                        <Col md={1}>
-                          <i
-                            onClick={() => {
-                              startTest(t.id);
-                            }}
-                            className="fa fa-eye"
-                            style={{
-                              backgroundColor: "white",
-                              color: "green",
-                              float: "right",
-                              marginRight: "15px",
-                              marginTop: "10px",
-                            }}
-                          ></i>
-                        </Col>
-                      </Row>
-                    );
-                  })}
+                      ></input>
+                    </Col>
+                  </Row>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>Start Time:</Col>
+                    <Col md={9}>
+                      <DateTimePicker
+                        onChange={onChangeStart}
+                        value={valueStart}
+                      />
+                    </Col>
+                  </Row>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>End Time:</Col>
+                    <Col md={9}>
+                      <DateTimePicker
+                        onChange={(e) => {
+                          onChangeEnd(e);
+                        }}
+                        value={valueEnd}
+                      />
+                    </Col>
+                  </Row>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>Apt Qs: </Col>
+                    <Col md={2}>
+                      <input
+                        type="number"
+                        defaultValue={apt.qs}
+                        max={apt.maxQs}
+                        min={0}
+                        title={
+                          apt.maxQs > 0
+                            ? `Can set values between 0 and ${apt.maxQs} only`
+                            : "Can set value 0 only"
+                        }
+                        style={{ width: "100%" }}
+                        onChange={(e) => {
+                          setApt({
+                            qs: parseInt(e.target.value),
+                            time: apt.time,
+                            avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                            maxQs: apt.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                    <Col md={3}>Apt Time: </Col>
+                    <Col md={3}>
+                      <input
+                        type="time"
+                        style={{ width: "fit-content" }}
+                        min={"00:00:20"}
+                        step={1}
+                        defaultValue={apt.time}
+                        onChange={(e) => {
+                          setApt({
+                            qs: apt.qs,
+                            time: e.target.value,
+                            avg: apt.avg,
+                            maxQs: apt.maxQs,
+                          });
+                        }}
+                        required
+                      ></input>
+                    </Col>
+                  </Row>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>CF Qs: </Col>
+                    <Col md={2}>
+                      <input
+                        type="number"
+                        defaultValue={cf.qs}
+                        style={{ width: "100%" }}
+                        max={cf.maxQs}
+                        min={0}
+                        title={
+                          cf.maxQs > 0
+                            ? `Can set values between 0 and ${cf.maxQs} only`
+                            : "Can set value 0 only"
+                        }
+                        onChange={(e) => {
+                          setCF({
+                            qs: parseInt(e.target.value),
+                            time: cf.time,
+                            avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                            maxQs: cf.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                    <Col md={3}>CF Time: </Col>
+                    <Col md={3}>
+                      <input
+                        type="time"
+                        min={"00:00:20"}
+                        step={1}
+                        style={{ width: "fit-content" }}
+                        defaultValue={cf.time}
+                        onChange={(e) => {
+                          setCF({
+                            qs: cf.qs,
+                            time: e.target.value,
+                            avg: cf.avg,
+                            maxQs: cf.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                  </Row>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>C Qs: </Col>
+                    <Col md={2}>
+                      <input
+                        type="number"
+                        defaultValue={c.qs}
+                        title={`Can only set to ${c.qs}`}
+                        disabled
+                        style={{ width: "100%" }}
+                        onChange={(e) => {
+                          setC({
+                            qs: parseInt(e.target.value),
+                            time: c.time,
+                            avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                            maxQs: c.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                    <Col md={3}>C Time: </Col>
+                    <Col md={3}>
+                      <input
+                        type="time"
+                        min={"00:00:20"}
+                        step={1}
+                        style={{ width: "fit-content" }}
+                        defaultValue={c.time}
+                        onChange={(e) => {
+                          setC({
+                            qs: c.qs,
+                            time: e.target.value,
+                            avg: c.avg,
+                            maxQs: c.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                  </Row>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>D Qs: </Col>
+                    <Col md={2}>
+                      <input
+                        type="number"
+                        defaultValue={domain.qs}
+                        max={domain.maxQs}
+                        min={0}
+                        title={
+                          domain.maxQs > 0
+                            ? `Can set values between 0 and ${domain.maxQs} only`
+                            : "Can set value 0 only"
+                        }
+                        style={{ width: "100%" }}
+                        onChange={(e) => {
+                          setDomain({
+                            qs: parseInt(e.target.value),
+                            time: domain.time,
+                            avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                            maxQs: domain.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                    <Col md={3}>D Time: </Col>
+                    <Col md={3}>
+                      <input
+                        type="time"
+                        min={"00:00:20"}
+                        step={1}
+                        style={{ width: "fit-content" }}
+                        defaultValue={domain.time}
+                        onChange={(e) => {
+                          setDomain({
+                            qs: domain.qs,
+                            time: e.target.value,
+                            avg: domain.avg,
+                            maxQs: domain.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                  </Row>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>P Qs: </Col>
+                    <Col md={2}>
+                      <input
+                        type="number"
+                        defaultValue={p.qs}
+                        max={p.maxQs}
+                        min={0}
+                        title={
+                          p.maxQs > 0
+                            ? `Can set values between 0 and ${p.maxQs} only`
+                            : "Can set value 0 only"
+                        }
+                        style={{ width: "100%" }}
+                        onChange={(e) => {
+                          setP({
+                            qs: parseInt(e.target.value),
+                            time: p.time,
+                            avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                            maxQs: p.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                    <Col md={3}>P Time: </Col>
+                    <Col md={3}>
+                      <input
+                        type="time"
+                        min={"00:00:20"}
+                        step={1}
+                        style={{ width: "fit-content" }}
+                        defaultValue={p.time}
+                        onChange={(e) => {
+                          setP({
+                            qs: p.qs,
+                            time: e.target.value,
+                            avg: p.avg,
+                            maxQs: p.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                  </Row>
+                  <Row style={{ margin: "2% 0" }}>
+                    <Col md={3}>AW Qs: </Col>
+                    <Col md={2}>
+                      <input
+                        type="number"
+                        defaultValue={aw.qs}
+                        title={`Can set value ${aw.maxQs} only`}
+                        disabled
+                        onChange={(e) => {
+                          setAW({
+                            qs: parseInt(e.target.value),
+                            time: aw.time,
+                            avg: Math.ceil(parseInt(e.target.value) * 2 * 0.7),
+                            maxQs: aw.maxQs,
+                          });
+                        }}
+                        style={{ width: "100%" }}
+                      ></input>
+                    </Col>
+                    <Col md={3}>AW Time: </Col>
+                    <Col md={3}>
+                      <input
+                        type="time"
+                        min={"00:00:20"}
+                        step={1}
+                        style={{ width: "fit-content" }}
+                        defaultValue={aw.time}
+                        onChange={(e) => {
+                          setAW({
+                            qs: aw.qs,
+                            time: e.target.value,
+                            avg: aw.avg,
+                            maxQs: aw.maxQs,
+                          });
+                        }}
+                      ></input>
+                    </Col>
+                  </Row>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button variant="danger" type="submit" id="delete_test">
+                    Delete
+                  </Button>
+                  <Button variant="primary" type="submit" id="save_changes">
+                    Save Changes
+                  </Button>
+                </Modal.Footer>
+              </form>
+            </Modal>
+            <button
+              style={{
+                marginLeft: "1%",
+                backgroundColor: "#293E6F",
+                borderRadius: "5px",
+                border: "none",
+              }}
+              className="btn btn-secondary"
+              onClick={(e) => navigate("/admin/home")}
+            >
+              Back
+            </button>
+            <Row style={{ margin: "0 0 0 10%" }}>
+              <Col md={6} style={{ marginRight: "0%" }}>
+                {" "}
+                <div
+                  className="basicRec"
+                  style={{
+                    minHeight: window.screen.height - 400,
+                    width: "90%",
+                  }}
+                >
+                  <h4 style={{ paddingLeft: "30%", paddingTop: "10px" }}>
+                    Scheduled Test
+                  </h4>
+                  <div className="lineThrough"></div>
+                  <div
+                    className="scrollbar"
+                    id="style-4"
+                    style={{ height: window.screen.height - 480 }}
+                  >
+                    {stests.map((t, index) => {
+                      return (
+                        <Row
+                          style={{
+                            backgroundColor: "white",
+                            borderColor: "#F0F0F0",
+                            marginBottom: "1px",
+                            boxShadow:
+                              "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+                            borderRadius: "10px",
+                          }}
+                        >
+                          <Col>
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                navigate("/admin/viewScheduledTest", {
+                                  state: {
+                                    id: t.id,
+                                    name: t.test_name,
+                                    start: t.test_start,
+                                    end: t.test_end,
+                                  },
+                                });
+                              }}
+                              style={{
+                                width: "100%",
+                                backgroundColor: "white",
+                                borderColor: "#F0F0F0",
+                                marginBottom: "1px",
+                                border: "none",
+                              }}
+                              key={index}
+                            >
+                              {t.test_name}
+                            </button>
+                          </Col>
+                          <Col md={1}>
+                            <i
+                              onClick={() => delSTest(t.id)}
+                              className="fa fa-trash"
+                              style={{
+                                backgroundColor: "white",
+                                color: "red",
+                                float: "right",
+                                marginRight: "15px",
+                                marginTop: "10px",
+                              }}
+                            ></i>
+                          </Col>
+                        </Row>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
-            </Col>
-          </Row>
-        </div>
+              </Col>
+              <Col md={6} style={{ marginRight: "0%" }}>
+                {" "}
+                <div
+                  className="basicRec"
+                  style={{
+                    minHeight: window.screen.height - 400,
+                    maxHeight: window.screen.height - 400,
+                    width: "90%",
+                  }}
+                >
+                  <h4 style={{ paddingLeft: "30%", paddingTop: "10px" }}>
+                    Upcoming Test
+                  </h4>
+                  <div className="lineThrough"></div>
+                  <div
+                    className="scrollbar"
+                    id="style-4"
+                    style={{ height: window.screen.height - 480 }}
+                  >
+                    {utests.map((t, index) => {
+                      return (
+                        <Row
+                          style={{
+                            backgroundColor: "white",
+                            borderColor: "#F0F0F0",
+                            marginBottom: "1px",
+                            boxShadow:
+                              "0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23)",
+                            borderRadius: "10px",
+                          }}
+                        >
+                          <Col>
+                            <button
+                              type="button"
+                              onClick={(e) => upcomingTest(e, t)}
+                              style={{
+                                width: "100%",
+                                backgroundColor: "white",
+                                borderColor: "#F0F0F0",
+                                marginBottom: "1px",
+                                border: "none",
+                              }}
+                              key={index}
+                            >
+                              {t.test_name}
+                            </button>
+                          </Col>
+                          <Col md={1}>
+                            <i
+                              onClick={() => {
+                                startTest(t.id);
+                              }}
+                              className="fa fa-eye"
+                              style={{
+                                backgroundColor: "white",
+                                color: "green",
+                                float: "right",
+                                marginRight: "15px",
+                                marginTop: "10px",
+                              }}
+                            ></i>
+                          </Col>
+                        </Row>
+                      );
+                    })}
+                  </div>
+                </div>
+              </Col>
+            </Row>
+          </div>
         </>
       )}
     </>

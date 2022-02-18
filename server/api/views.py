@@ -38,7 +38,7 @@ def checkAuthorization(auth):
             return False
 
 @csrf_exempt
-def userr(request):
+def newuser(request):
     if request.method=="GET":
         if(User.objects.filter(username = request.GET['email']).exists()):
             return JsonResponse({'exists':1},safe=False)
@@ -47,9 +47,25 @@ def userr(request):
 
     if request.method=="POST":
         data=JSONParser().parse(request)['data']
-        user = User.objects.create(first_name=data['name'],username = data['email'],email=data['email'],password=make_password(data['pass']))
+        user = User.objects.create(first_name=data['name'],username = data['email'],email=data['email'],password=make_password(data['pass']))   
+        if(MyUser.objects.filter(user=user).exists()):
+            MyUser.objects.get(user=user).delete()
+        if int(data['gender'])==1:
+            gender="Male"
+        elif int(data['gender'])==2:
+            gender="Female"
+        else:
+            gender="Other"
+        newuser = MyUser(user=user,name=data['name'],email=data['email'],
+                        age=int(data['age']),gender=gender,mobile=int(data['mobileNo']),
+                        percent_10_std=int(data['percent_10_std']),percent_12_std=int(data['percent_12_std']),
+                        avgCGPA=float(data['avgCGPA']),backlogs=int(data['backlogs']),
+                        internships=int(data['internships']),branch=data['branch'],
+                        college=data['college'],year=data['graduationYear']
+                        )
         user.save()
-        return JsonResponse({'exists':0},safe=False)   
+        newuser.save()
+        return JsonResponse({"msg":"Success","created":True,'exists':0},safe=False)     
 
 @csrf_exempt
 def login(request):
@@ -320,14 +336,18 @@ def results(request,name):
                     avg_a =test.aw['avg']  
             if(user):
                 d = datetime.datetime.utcnow()
+                myUser=MyUser.objects.get(user=user)
+                name=myUser.name
+                gender=myUser.gender
+                age=myUser.age
                 try:
                     if name != 'a' and user.is_staff!=True:
                         rr=Results.objects.get(student = user,test=Test.objects.get(id=data['testId']))
                         if rr:
                             if rr.endTime!=None:
-                                return JsonResponse({'end':True,'resultExists':True},safe=False)
+                                return JsonResponse({'end':True,'resultExists':True,'name':name,'gender':gender,'age':age},safe=False)
                             else:    
-                                return JsonResponse({'end':False,'resultExists':True},safe=False)
+                                return JsonResponse({'end':False,'resultExists':True,'name':name,'gender':gender,'age':age},safe=False)
                     else:
                         Results.objects.get(student = user,test=Test.objects.get(id=data['testId'])).delete()
                 except Results.DoesNotExist:
@@ -336,7 +356,7 @@ def results(request,name):
                 marks={"ap":0,'cf':0,'c':0,'d':0,'p':0,'a':0,"avg_ap":avg_ap,'avg_cf':avg_cf,'avg_c':avg_c,'avg_d':avg_d,'avg_p':avg_p,'avg_a':avg_a,'apMax':[],'cfMax':[],'cMax':[],'dMax':[],'pMax':[],'aMax':[],'apGot':[],'cfGot':[],'cGot':[],'dGot':[],'pGot':[evaluate(request,{'Nick':name,'Sex':'Male','Age':21,'Q':[0]*(121),'Country':'India'})],'aGot':[]}
                 )
                 result.save()
-                return JsonResponse({'end':False,'resultExists':False},safe=False)
+                return JsonResponse({'end':False,'resultExists':False,'name':name,'gender':gender,'age':age},safe=False)
             else:
                 return JsonResponse("User Doesn't exist",safe=False)
         elif request.method=='GET':

@@ -20,6 +20,7 @@ function NewTest() {
   const [tests, setTests] = useState([]);
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
+  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
   const [aptDic, setAptDic] = useState({ time: "00:00:20", totalQs: 1 });
   const [CFDic, setCFDic] = useState({ time: "00:00:20", totalQs: 1 });
   const [DDic, setDDic] = useState({ time: "00:00:20", totalQs: 1 });
@@ -162,10 +163,12 @@ function NewTest() {
           });
       } else {
         setIsloading(false);
+        setIsAlertMsgLoaded(true);
         setDangerMsg("A test is already scheduled in this time");
       }
     } else {
       setIsloading(false);
+      setIsAlertMsgLoaded(true);
       setDangerMsg("End time must be greater than start time");
     }
   }
@@ -320,8 +323,18 @@ function NewTest() {
 
   return (
     <>
-      <Alert msg={successMsg} type="success"></Alert>
-      <Alert msg={dangerMsg} type="danger"></Alert>
+      <Alert
+        msg={successMsg}
+        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+        isAlertMsgLoaded={isAlertMsgLoaded}
+        type="success"
+      ></Alert>
+      <Alert
+        msg={dangerMsg}
+        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+        isAlertMsgLoaded={isAlertMsgLoaded}
+        type="danger"
+      ></Alert>
       {isLoading ? (
         <Loader />
       ) : (
@@ -657,6 +670,7 @@ function NewTest() {
                                         totalQs: CurrentDic.totalQs,
                                       });
                                     } else {
+                                      setIsAlertMsgLoaded(true);
                                       setDangerMsg(
                                         "Minimum should be 20 seconds"
                                       );
@@ -775,6 +789,7 @@ function NewTest() {
                                   totalQs: CurrentDic.totalQs,
                                 });
                               } else {
+                                setIsAlertMsgLoaded(true);
                                 setDangerMsg(
                                   "Minimum time should be greater than 20 seconds"
                                 );

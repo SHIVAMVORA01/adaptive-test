@@ -24,6 +24,12 @@ class MyUser(models.Model):
     percent_10_std=models.IntegerField(default=1)
     percent_12_std=models.IntegerField(default=1)
     token = models.CharField(max_length=400,null=True,blank=True)
+    avgCGPA=models.FloatField(default=0)
+    backlogs=models.IntegerField(default=0)
+    internships=models.IntegerField(default=0)
+    branch=models.CharField(max_length=100,default=None)
+    college=models.CharField(max_length=100,default=None)
+    year=models.CharField(max_length=6,default=0)
     def __str__(self):
         return self.name
 

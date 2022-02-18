@@ -46,7 +46,8 @@ function SetQuestion() {
   const [previewSource, setPreviewSource] = useState("");
   const [selectedFile, setSelectedFile] = useState();
   const [successMsg, setSuccessMsg] = useState("");
-  const [errMsg, setErrMsg] = useState("");
+  const [dangerMsg, setDangerMsg] = useState("");
+  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
   const [imgDB, setImgDb] = useState("");
   const [delImage, setDelImage] = useState(false);
 
@@ -207,7 +208,8 @@ function SetQuestion() {
       };
       reader.onerror = () => {
         console.error("AHHHHHHHH!!");
-        setErrMsg("something went wrong!");
+        setIsAlertMsgLoaded(true);
+        setDangerMsg("something went wrong!");
       };
     } else if (delImage) {
       uploadImage("", dictionary);
@@ -229,7 +231,8 @@ function SetQuestion() {
         })
         .catch((e) => {
           console.log(e);
-          setErrMsg("something went wrong!,Try Again");
+          setIsAlertMsgLoaded(true);
+          setDangerMsg("something went wrong!,Try Again");
         });
     } catch (e) {}
   };
@@ -462,7 +465,18 @@ function SetQuestion() {
   }
   return (
     <div>
-      <Alert msg={errMsg} type="danger" />
+      <Alert
+        msg={successMsg}
+        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+        isAlertMsgLoaded={isAlertMsgLoaded}
+        type="success"
+      ></Alert>
+      <Alert
+        msg={dangerMsg}
+        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+        isAlertMsgLoaded={isAlertMsgLoaded}
+        type="danger"
+      ></Alert>
       <form onSubmit={(e) => handleSubmit(e)} id="sbForm">
         <input name="sectionName" value={location.state.sectionName} hidden />
         <input

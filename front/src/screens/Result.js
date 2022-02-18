@@ -34,6 +34,7 @@ function Result() {
   const [feedback_star, set_feedback_star] = useState(0);
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
+  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: "detailed_report",
@@ -343,8 +344,18 @@ function Result() {
         <Loader />
       ) : (
         <div>
-          <Alert msg={successMsg} type="success"></Alert>
-          <Alert msg={dangerMsg} type="danger"></Alert>
+          <Alert
+            msg={successMsg}
+            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+            isAlertMsgLoaded={isAlertMsgLoaded}
+            type="success"
+          ></Alert>
+          <Alert
+            msg={dangerMsg}
+            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+            isAlertMsgLoaded={isAlertMsgLoaded}
+            type="danger"
+          ></Alert>
           <Modal
             id="feedback"
             show={showFeedback}
@@ -359,6 +370,7 @@ function Result() {
                 onSubmit={(e) => {
                   e.preventDefault();
                   localStorage.setItem("submittedFeedback", "true");
+                  setIsAlertMsgLoaded(true);
                   setSuccessMsg("Thank you for your feedback");
                   setShowFeedback(false);
                 }}

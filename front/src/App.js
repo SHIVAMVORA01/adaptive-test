@@ -23,7 +23,9 @@ import DetailScreen from "./screens/DetailScreen";
 import PrivateRoute from "./components/PrivateRoute";
 import "./css/App.css";
 import Signup from "./screens/Signup";
+import SignUpModified from "./screens/SignUpModified";
 import ChangePass from "./screens/ChangePass";
+import DetailPageModified from "./screens/DetailPageModified";
 function App() {
   return (
     <div className="App" id="element">
@@ -82,7 +84,7 @@ function App() {
               element={
                 <Row style={{ margin: "20px 0 0 0" }}>
                   <Col style={{ padding: "10px 90px" }}>
-                    <Signup />
+                    <SignUpModified />
                   </Col>
                 </Row>
               }
@@ -276,7 +278,7 @@ function App() {
               element={
                 <Row style={{ margin: "20px 0 0 0" }}>
                   <Col style={{ padding: "10px 90px" }}>
-                    <DetailScreen />
+                    <DetailPageModified />
                   </Col>
                 </Row>
               }
