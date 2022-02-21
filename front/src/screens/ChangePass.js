@@ -110,14 +110,14 @@ function ChangePass() {
               <Form.Control
                 className="inputField"
                 onChange={handleChange}
-                id="password-field"
+                id="password-field-1"
                 name="pass"
                 type="password"
                 style={{ width: "100%" }}
                 required
               />
               <span
-                toggle="#password-field"
+                toggle="#password-field-1"
                 className="fa fa-fw fa-eye field-icon toggle-password"
                 onClick={(e) => showHide(e)}
                 style={{ marginTop: "-28px" }}
@@ -133,14 +133,14 @@ function ChangePass() {
               <Form.Control
                 className="inputField"
                 onChange={handleChange}
-                id="password-field"
+                id="password-field-2"
                 name="cpass"
                 type="password"
                 style={{ width: "100%" }}
                 required
               />
               <span
-                toggle="#password-field"
+                toggle="#password-field-2"
                 className="fa fa-fw fa-eye field-icon toggle-password"
                 onClick={(e) => showHide(e)}
                 style={{ marginTop: "-28px" }}

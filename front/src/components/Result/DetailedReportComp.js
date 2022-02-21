@@ -112,7 +112,7 @@ function DetailedReportComp({
             <Card.Body>
               <Card.Text>
                 <p>
-                  <b>Name :</b> {user_detail?.name || "Chaitanya Kmbhar"}
+                  <b>Name :</b> {user_detail?.name || "Chaitanya Kumbhar"}
                 </p>
                 <p style={{ marginTop: "35px" }}>
                   <b>Email :</b>{" "}

@@ -219,9 +219,79 @@
   cursor: pointer;
 }
 
-.list-group-item.active {
-  background-color: #293e6f !important;
-  color: #ffffff !important;
-  border: none;
-  outline: none;
+.welcomDiv {
+  height: 130px;
+  padding-top: 120px;
+  overflow: hidden;
+  width: 100%;
+  text-align: left;
 }
+
+.headingLanding {
+  font-family: Poppins;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 18px;
+  color: #293e6f;
+  text-align: left;
+  padding-bottom: 30px;
+  margin-top: -100px;
+  margin-left: 50px;
+}
+
+.Circle {
+  width: 75px;
+  height: 75px;
+  background-color: rgb(255, 255, 255);
+  color: rgba(0, 0, 0, 0.54);
+  box-shadow: rgb(0 0 0 / 24%) 0px 2px 2px 0px, rgb(0 0 0 / 24%) 0px 0px 1px 0px;
+  padding: 0px 0 2px 2px;
+  border-radius: 50px;
+  border: 1px solid transparent;
+  margin-bottom: 20px;
+  margin-right: 20px;
+  margin-left: 130px;
+  margin-top: 75px;
+}
+.Circle1 {
+  width: 75px;
+  height: 75px;
+  background-color: rgb(255, 255, 255);
+  color: rgba(0, 0, 0, 0.54);
+  box-shadow: rgb(0 0 0 / 24%) 0px 2px 2px 0px, rgb(0 0 0 / 24%) 0px 0px 1px 0px;
+  padding: 0px 0 2px 2px;
+  border-radius: 50px;
+  border: 1px solid transparent;
+  margin-right: 20px;
+  margin-left: 130px;
+  margin-top: 40px;
+}
+.gradient {
+  width: 125px;
+  height: 12px;
+  background: #293e6f;
+  border-radius: 34px;
+  margin-left: 730px;
+  margin-top: -20px;
+}
+
+.AdminHomeScreen{
+  height:80px !important;
+  width:115px !important;
+}
+
+.admina{
+  width: 115px;
+  height: 80px;
+  padding: 25px 0px;
+  display: block;
+  text-align: center;
+  color: #666666;
+  background-color: #ffffff;
+  font-size: 0.85em;
+  border-right: 2px solid rgba(0,0,0,0.07);
+  margin-left: 174.6px;
+  text-decoration: none;
+}
+
+

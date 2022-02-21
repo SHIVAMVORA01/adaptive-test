@@ -1,9 +1,9 @@
 from django.contrib.auth.hashers import make_password
 import json
-from django.http import HttpResponseBadRequest
+from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
-from api.models import Questions,Options,Results,Subject,Test,CodingTest,Para,Paraopt,Paraqs,MyUser
+from api.models import Questions,Options,Results,Subject,Test,CodingTest,Para,Paraopt,Paraqs,MyUser,Feedback
 from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 import datetime
 from rest_framework.parsers import JSONParser
 import random
-from .serializers import CodingTestSerializer, MyUserSerializer, SubjectSerializer,QuestionSerializer, TestSerializer ,ResultSerializer,OptionSerializer,AllUserSerializer
+from .serializers import CodingTestSerializer, MyUserSerializer, OptSerializer, SubjectSerializer,QuestionSerializer, TestSerializer ,ResultSerializer,OptionSerializer,AllUserSerializer
 import math
 from django.db.models import Q
 from dateutil import tz
@@ -37,6 +37,8 @@ def checkAuthorization(auth):
         except:
             return False
 
+def error_404(request):
+    return HttpResponseForbidden()
 @csrf_exempt
 def newuser(request):
     if request.method=="GET":
@@ -48,8 +50,9 @@ def newuser(request):
     if request.method=="POST":
         data=JSONParser().parse(request)['data']
         user = User.objects.create(first_name=data['name'],username = data['email'],email=data['email'],password=make_password(data['pass']))   
-        if(MyUser.objects.filter(user=user).exists()):
-            MyUser.objects.get(user=user).delete()
+        myuser = MyUser.objects.filter(user=user)
+        if(myuser.exists()):
+            myuser[0].delete()
         if int(data['gender'])==1:
             gender="Male"
         elif int(data['gender'])==2:
@@ -73,26 +76,34 @@ def login(request):
         data=JSONParser().parse(request)['data']
         username = data['username']
         password = data['password']
-        
         user = auth.authenticate(username = username,password = password)
         if user is not None:
             auth.login(request,user)
             if User.objects.get(username=username).is_staff ==True:
-                return JsonResponse({"exist":1,"admin":1},safe=False)
+                return JsonResponse({"exist":1,"allowed":1,"admin":1},safe=False)
             else :
-                return JsonResponse({"exist":1,"admin":0},safe=False)   
+                if int(data['mytid'])==-1:
+                    return JsonResponse({"exist":1,"allowed":1,"admin":0},safe=False)
+                testx = Test.objects.get(id=int(data['mytid']))
+                if testx.token == user.last_name:
+                    return JsonResponse({"exist":1,"allowed":1,"admin":0},safe=False)
+                else:
+                    return JsonResponse({"exist":1,"allowed":0,"admin":0},safe=False)       
         else:
             return JsonResponse({"exist":0},safe=False)
+
 @csrf_exempt
 def changepass(request):
     if request.method=="POST":
         data=JSONParser().parse(request)['data']
-        if not data['token'] == "":
-            if not MyUser.objects.filter(token=data['token']).exists():
+        if data['token'] != "":
+            if not MyUser.objects.filter(change_pass_token=data['token']).exists():
                 return JsonResponse({'exists':0},safe=False)  
-            myuser = MyUser.objects.get(token = data['token'])
+            myuser = MyUser.objects.get(change_pass_token = data['token'])
             user = User.objects.get(email=myuser.user.email)
             user.set_password(data['pass'])
+            myuser.change_pass_token=None
+            myuser.save()
             user.save() 
             return JsonResponse({'exists':1},safe=False)   
         else:
@@ -108,14 +119,68 @@ def forgotpass(request):
         user = User.objects.get(email = data['email'])    
         token = str(uuid.uuid4())
         subject = "Your Forget PAssword Link"
-        message = f'Hi, Click on the link to to reset your password- http://localhost:3000/change-pass?token={token}'
+        message = f'Hi,\n Click on the link to to reset your password- http://localhost:3000/change-pass?token={token}'
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [user.email]
         send_mail(subject,message,email_from,recipient_list)
         myuser = MyUser.objects.get(user=user)
-        myuser.token = token
+        myuser.change_pass_token = token
         myuser.save()
         return JsonResponse({'exists':1},safe=False)
+
+@csrf_exempt
+def getuserslist(request):
+    if request.method == "GET":
+        d = datetime.datetime.utcnow()
+        presentTest=Test.objects.filter(test_start__lte = d,test_end__gt=d)
+        if not presentTest.exists():   
+            return JsonResponse({'exists':0},safe=False) 
+        testx = presentTest[0]
+        allowed = User.objects.filter(last_name = testx.token).exclude(is_staff=True)
+        notallowed = User.objects.all().exclude(last_name = testx.token).exclude(is_staff=True)
+        bb=[]
+        for xx in allowed:
+            b={}
+            b['id'] = xx.id
+            b['first_name'] = xx.first_name
+            b['email'] = xx.email
+            bb.append(b) 
+        aa=[]
+        for xx in notallowed:
+            a={}
+            a['id'] = xx.id
+            a['checkBtn'] = False
+            a['first_name'] = xx.first_name
+            a['email'] = xx.email
+            aa.append(a)
+        return JsonResponse({'exists':1,'allowed':bb,'notallowed':aa},safe=False)
+
+@csrf_exempt
+def permission(request):
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == "POST":
+            data=JSONParser().parse(request)['data']
+            d = datetime.datetime.utcnow()
+            presentTest=Test.objects.filter(test_start__lte = d,test_end__gt=d)
+            if not presentTest.exists():   
+                return JsonResponse({'exists':0},safe=False)
+
+            testx = presentTest[0]
+            users = data['users']
+            userrs=[]
+            for user in users:
+                x = User.objects.get(id=int(user))
+                x.last_name = testx.token
+                userrs.append(x.email)
+                x.save()
+            subject = "Invitation Link For Aptitude Test"
+            message = f'You have been granted permission to attempt Aptitude Test: {testx.test_name}\n Go to link- http://localhost:3000/login'
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = userrs
+            send_mail(subject,message,email_from,recipient_list)
+            return JsonResponse({'exists':1},safe=False)
+    else:
+        return HttpResponseBadRequest()
 
 @csrf_exempt
 def subqs(request,subject=0,tid=0):
@@ -157,19 +222,18 @@ def subqs(request,subject=0,tid=0):
             if int(subject)!=4:
                 for x in qs:
                         aa={}
-                        aaOption=[]
+                        # aaOption=[]
                         aa['ques']=x.title
                         aa['id']=x.id
                         aa['img'] = x.imgId
                         ans = Options.objects.filter(question=x)
-                        for asss in ans:
-                            aaaOpt={}
-                            aaaOpt['opt']=asss.title
-                            aaaOpt['id']=asss.id
-                            aaaOpt['mrks']=asss.marks
-                            aaOption.append(aaaOpt)
-
-                        aa['options']=aaOption
+                        aa['options'] = OptSerializer(ans,many=True).data
+                        # for asss in ans:
+                        #     aaaOpt={}
+                        #     aaaOpt['opt']=asss.title
+                        #     aaaOpt['id']=asss.id
+                        #     aaaOpt['mrks']=asss.marks
+                        #     aaOption.append(aaaOpt)
                         if x.type==1:
                             a.append(aa)
                         elif x.type==2:
@@ -184,7 +248,7 @@ def subqs(request,subject=0,tid=0):
                     aa['ques']=x.title
                     aa['id']=x.id
                     a.append(aa)
-                return JsonResponse({'qs':qsno,'avg':avg,'time':time,'allQs':a},safe=False )#error for personality
+                return JsonResponse({'qs':qsno,'avg':avg,'time':time,'allQs':a},safe=False )
     else:
         return HttpResponseBadRequest()
 
@@ -232,20 +296,20 @@ def subs(request):
 
             qs=Questions.objects.all()
             for q in qs:
-                a={}
-                
+                a={} 
                 if str(q.subject.sub_name)!='Coding' and str(q.subject.sub_name)!='Analytical Writing':
                     a['ques']=q.title
                     a['id']=q.id
                     a['imgId']=q.imgId
-                    a['options']=[]
+                    # a['options']=[]
                     opts=Options.objects.filter(question=q)
-                    for opt in opts:
-                        o={}
-                        o['opt']=opt.title
-                        o['id']=opt.id
-                        o['mrks']=opt.marks
-                        a['options'].append(o)
+                    a['options'] = OptSerializer(opts,many=True).data
+                    # for opt in opts:
+                    #     o={}
+                    #     o['opt']=opt.title
+                    #     o['id']=opt.id
+                    #     o['mrks']=opt.marks
+                    #     a['options'].append(o)
                     if q.type==1:
                         f[str(q.subject)]['easy'].append(a)
                     if q.type==2:
@@ -279,14 +343,15 @@ def qs(request):
             qs = Questions.objects.all()
             for x in qs:
                 aa={}
-                aaOption=[]
+                # aaOption=[]
                 aa['ques']=x.title
                 ans = Options.objects.filter(question=x)
-                for asss in ans:
-                    aaaOpt={}
-                    aaaOpt['opt']=asss.title
-                    aaaOpt['mrks']=asss.marks
-                    aaOption.append(aaaOpt)
+                aaOption = OptSerializer(ans,many=True).data
+                # for asss in ans:
+                #     aaaOpt={}
+                #     aaaOpt['opt']=asss.title
+                #     aaaOpt['mrks']=asss.marks
+                #     aaOption.append(aaaOpt)
                 
                 aa['options']=aaOption
                 if x.type==1:
@@ -334,7 +399,7 @@ def results(request,name):
                     avg_p =test.p['avg']    
                 elif sub.sub_name == 'Analytical Writing':
                     avg_a =test.aw['avg']  
-            if(user):
+            if user:
                 d = datetime.datetime.utcnow()
                 myUser=MyUser.objects.get(user=user)
                 name=myUser.name
@@ -362,11 +427,12 @@ def results(request,name):
         elif request.method=='GET':
             if user:
                 testId=request.GET.get('testId')
-                data=chartData(user,testId)
+                data=chartData(user,testId,False)
             
             return JsonResponse(data,safe=False)
     else:
         return HttpResponseBadRequest()
+        
 def converttoist(datex):
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
@@ -381,7 +447,7 @@ def converttoist(datex):
     central = central.split('T')
     return central
 
-def chartData(user,testId=-1):
+def chartData(user,testId=-1,isPost=False):
     totalQs=0
     # subs=Subject.objects.all()
     a=[]
@@ -430,11 +496,32 @@ def chartData(user,testId=-1):
     except Results.DoesNotExist:
         print('No previous entry')
         resl=0
+    takeFeedback=0
     if(user.is_staff):
         user_detail=AllUserSerializer(user).data
-    else:    
-        user_detail=MyUserSerializer(MyUser.objects.get(user=user)).data
-    return {'startTime':resl.startTime,'endTime':resl.endTime,'personalityData':resl.marks['pGot'],'marks':resl.marks,'totalQs':totalQs,'avgMarksArr':a,'mrksScored':mrksScored,'mrksScoredPercent':mrksScoredPercent,'totalMarksScored':sum(mrksScored),'timeTaken':tdelta.seconds,'res_id':resl.id,'user_detail':user_detail}
+    else:
+        myUser=MyUser.objects.get(user=user)
+        if isPost:
+            takeFeedback=myUser.takeFeedback
+        user_detail=MyUserSerializer(myUser).data
+    return {'startTime':resl.startTime,'endTime':resl.endTime,'personalityData':resl.marks['pGot'],'marks':resl.marks,'totalQs':totalQs,'avgMarksArr':a,'mrksScored':mrksScored,'mrksScoredPercent':mrksScoredPercent,'totalMarksScored':sum(mrksScored),'timeTaken':tdelta.seconds,'res_id':resl.id,'user_detail':user_detail,'takeFeedback':takeFeedback}
+
+@csrf_exempt
+def takeFeedback(request):
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method=='POST':
+            data=JSONParser().parse(request)['data']
+            qs=MyUser.objects.all()
+            if int(data['isAllSelected'])==1:
+                qs.update(takeFeedback=1)
+            else:
+                qs.update(takeFeedback=0)
+                if len(data['userId'])!=0 and int(data['isAllSelected'])==0:
+                    for id in data['userId']:
+                        user=MyUser.objects.get(id=id)
+                        user.takeFeedback=1
+                        user.save()
+            return JsonResponse({'success':1},safe=False)
 
 @csrf_exempt
 def resultTest(request,id):
@@ -509,7 +596,7 @@ def marks(request,sid=0):
                         result.endTime = d
                     result.save()
                     if data['check_result']:
-                        data=chartData(user,data['testId'])
+                        data=chartData(user,data['testId'],True)
                     return JsonResponse(data,safe=False)
                 else:
                     return JsonResponse("Restart Test",safe=False)
@@ -702,8 +789,7 @@ def saveTest(request):
     if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
         if request.method == 'POST':
             data=JSONParser().parse(request)['data']
-            tst=Test(test_name=data['createTest']['testName'],test_start=data['createTest']['sTime'],test_end=data['createTest']['eTime'])
-
+            tst=Test(test_name=data['createTest']['testName'],test_start=data['createTest']['sTime'],test_end=data['createTest']['eTime'],token=str(uuid.uuid4()))
             for x in range(0,len(data['saveTest'])):
                 avgMrk=0
                 if str(data['saveTest'][x]['sub'])=='Coding' or str(data['saveTest'][x]['sub'])=='Analytical Writing':
@@ -764,16 +850,8 @@ def saveTest(request):
         return HttpResponseBadRequest()
 @csrf_exempt
 def tests(request,idd=0):
-    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
-        if request.method == 'GET':
-            d = datetime.datetime.utcnow()
-            ll=Test.objects.filter(test_start__lte = d,test_end__gte=d)
-            if(ll.exists()):
-                return JsonResponse({'testId':ll[0].id},safe=False)
-            else:
-                return JsonResponse({'testId':-1},safe=False)    
-
-        elif request.method == 'POST':
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):  
+        if request.method == 'POST':
             data=JSONParser().parse(request)['data']
             if not data['delete']:
                 if not data['update']:
@@ -810,6 +888,7 @@ def getTests(request):
         bb=[]
         if(presentTest.exists()):
             b={}
+            b['id'] = presentTest[0].id
             b['name']=presentTest[0].test_name
             b['start']="{0} {1}".format(presentTest[0].test_start.date(),str(presentTest[0].test_start.time()).split('.')[0])
             b['start'] = converttoist(b['start'])
@@ -928,6 +1007,42 @@ def personalityR(request):
     if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
         if request.method=='POST':
             return evaluate(request, CFG['DB'])
+    else:
+        return HttpResponseBadRequest()
+
+@csrf_exempt
+def feedback(request):
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method=='POST':
+            data=JSONParser().parse(request)['data']
+            user=MyUser.objects.get(email=data['username'])
+            feedback=Feedback.objects.filter(user=user)
+            flag=False
+            if feedback.exists():
+                feedback=feedback[0]
+                feedback.rating=data['rating']
+                feedback.comment=data['comment']
+                feedback.save()
+                flag=True
+            else:
+                newFeedback=Feedback(user=user,rating=data['rating'],comment=data['comment'])
+                newFeedback.save()
+                flag=True
+            return JsonResponse({'success':flag},safe=False)    
+        elif request.method=="GET":
+            users=User.objects.filter(is_staff=False)
+            newArr=[]
+            takeFeedback=True
+            for user in users:
+                myuser=MyUser.objects.get(user=user)
+                feedback=Feedback.objects.filter(user=myuser)
+                takeFeedback=takeFeedback and myuser.takeFeedback
+                if feedback.exists():
+                    newDict={'email':myuser.email,'userId':myuser.id,'comment':feedback[0].comment,'rating':feedback[0].rating,'checkBtn':myuser.takeFeedback}
+                else:
+                    newDict={'email':myuser.email,'userId':myuser.id,'comment':'-','rating':'-','checkBtn':myuser.takeFeedback}
+                newArr.append(newDict)
+            return JsonResponse({'feedback_data':newArr,'takeFeedback':takeFeedback},safe=False)   
     else:
         return HttpResponseBadRequest()
 
@@ -1289,19 +1404,6 @@ def evaluate(request, data=0):
 
     SEP, SEFP, LO, HI, SE, SAP, SAFP, SA, SC, SCP, SCFP, flev, SOP, SOFP, SO, \
             Nick, Country, SNP, SNFP, Category, SN, Sex, Age, Q = evaluate_api(request,data)
-
-    # Check sex and age
-    if Sex != "Male" and Sex != "Female":
-        return """You did not indicate your sex at the beginning of the
-    inventory. Your answers cannot be normed properly unless you indicate
-    whether you are male or female. Please return to the inventory and indicate
-    your sex."""
-
-    if Age < 10:
-        return """You did not indicate how old you are at the beginning of the
-    inventory, or you typed in an age that is too young. Your answers cannot be
-    normed properly unless type in a valid age. Please return to the inventory
-    and change your response."""
 
     # Save Data
     a={}

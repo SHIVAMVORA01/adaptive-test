@@ -25,7 +25,7 @@ function Result() {
   const [opt1, setOpt1] = useState({});
   const [optRadar, setOptRadar] = useState({});
   const [show, setShow] = useState(false);
-  const [showFeedback, setShowFeedback] = useState();
+  const [showFeedback, setShowFeedback] = useState(false);
   const [idx, setIdx] = useState();
   const [userDetails, setUserDetails] = useState({});
   const [startTime, setStartTime] = useState("");
@@ -34,6 +34,7 @@ function Result() {
   const [feedback_star, set_feedback_star] = useState(0);
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
+  const [feedback_comment, set_feedback_comment] = useState("");
   const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -41,13 +42,6 @@ function Result() {
   });
 
   useEffect(() => {
-    let feedbackBool = localStorage.getItem("submittedFeedback");
-    if (feedbackBool !== null && feedbackBool !== undefined && feedbackBool) {
-      setShowFeedback(false);
-    } else {
-      localStorage.setItem("submittedFeedback", "false");
-      setShowFeedback(true);
-    }
     var t = localStorage.getItem("test");
     var t2 = localStorage.getItem("test2");
     var t3 = localStorage.getItem("test3");
@@ -191,6 +185,7 @@ function Result() {
           setTimeTaken(res.data.timeTaken);
           setPersonalityData(res.data.personalityData);
           setIdx(res.data.res_id);
+          setShowFeedback(res.data.takeFeedback);
           // localStorage.setItem('result',total)
         })
         .catch((e) => console.log(e));
@@ -215,6 +210,7 @@ function Result() {
             setIdx(res.data.res_id);
             setUserDetails(res.data.user_detail);
             setStartTime(res.data.startTime);
+            setShowFeedback(false);
           })
           .catch((e) => console.log(e));
       }
@@ -301,43 +297,6 @@ function Result() {
     setIsloading(false);
   }, []);
 
-  function timeleft() {
-    if (localStorage.getItem("timetaken")) {
-      return localStorage.getItem("timetaken");
-    } else {
-      var test = JSON.parse(localStorage.getItem("test"));
-      if (test !== null) {
-        var diff = 0;
-        const nowd = new Date();
-        const nowh = nowd.getHours();
-        const nowm = nowd.getMinutes();
-        const nows = nowd.getSeconds();
-
-        let myar = test["STime"].split(" ");
-        let stime = myar[4].split(":");
-        if (nowh > stime[0]) {
-          diff = diff + (nowh - stime[1]) * 3600;
-        }
-        if (nowm > stime[1]) {
-          diff = diff + (nowm - stime[1]) * 60;
-        } else {
-          diff = diff - (stime[1] - nowm) * 60;
-        }
-
-        if (nows > stime[2]) {
-          diff = diff + (nows - stime[2]);
-        } else {
-          diff = diff - (stime[2] - nows);
-        }
-        let hours = parseInt(diff / 3600);
-        let minutes = parseInt((diff % 3600) / 60);
-        let seconds = parseInt(diff % 60);
-        localStorage.setItem("timetaken", `${hours}:${minutes}:${seconds}`);
-        return `${hours}:${minutes}:${seconds}`;
-      }
-    }
-  }
-
   return (
     <>
       {isLoading ? (
@@ -367,12 +326,27 @@ function Result() {
             <Modal.Body>
               <Form
                 style={{ paddingTop: "15px" }}
-                onSubmit={(e) => {
+                onSubmit={async (e) => {
                   e.preventDefault();
-                  localStorage.setItem("submittedFeedback", "true");
-                  setIsAlertMsgLoaded(true);
-                  setSuccessMsg("Thank you for your feedback");
-                  setShowFeedback(false);
+
+                  await axiosInstance
+                    .post("api/feedback", {
+                      data: {
+                        rating: feedback_star,
+                        comment: feedback_comment,
+                        username: localStorage.getItem("username"),
+                      },
+                    })
+                    .then((res) => {
+                      if (res.data.success) {
+                        setIsAlertMsgLoaded(true);
+                        setSuccessMsg("Thank you for your feedback");
+                        setShowFeedback(false);
+                      } else {
+                        setDangerMsg("Error Occured");
+                      }
+                    })
+                    .catch((e) => console.log(e));
                 }}
               >
                 <p
@@ -414,7 +388,13 @@ function Result() {
                     {" "}
                     <b>Feedback</b>
                   </Form.Label>
-                  <Form.Control as="textarea" rows={5} />
+                  <Form.Control
+                    as="textarea"
+                    rows={5}
+                    onChange={(e) => {
+                      set_feedback_comment(e.target.value);
+                    }}
+                  />
                 </Form.Group>
                 <button
                   className="btn"

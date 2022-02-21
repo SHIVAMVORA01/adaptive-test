@@ -4,7 +4,6 @@ import CodingQsComp from "../../components/TestScreeen/CodingQsComp";
 import TestHeaderComp from "../../components/TestScreeen/TestHeaderComp";
 import "../../css/Compiler.css";
 import $ from "jquery";
-import keys from "../../components/TestScreeen/keys";
 import { useNavigate } from "react-router";
 import CustomTimer from "../Admin/CustomTimer";
 import getCurrentTime from "../../components/TestScreeen/dateCalc";
@@ -232,16 +231,13 @@ export default function Compiler() {
           let xx = localStorage.getItem("testId");
           const getData = async () =>
             await axiosInstance
-              .get(`http://127.0.0.1:8000/api/codingTests/${xx}`)
+              .get(`api/codingTests/${xx}`)
               .then((res) => {
-                console.log(res.data.cQs);
                 let a = converttime(res.data.time);
                 var tf = a;
                 // setTimeFF(tf);
 
                 var ob = new Date();
-                console.log(test["strtTime"]);
-                console.log(ob.toLocaleTimeString());
                 var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
                 var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
                 var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
@@ -253,10 +249,6 @@ export default function Compiler() {
                   new Date().toLocaleDateString() + " " + h + ":" + m + ":" + s
                 );
                 var hourDiff = (timeEnd - timeStart) / 1000;
-                console.log(timeEnd);
-                console.log(timeStart);
-                console.log(hourDiff);
-                console.log(tf);
                 setTimeFF(tf - hourDiff);
 
                 set_db_data(res.data.cQs);
@@ -280,7 +272,6 @@ export default function Compiler() {
                   );
                 }
                 if (Object.keys(data[1]).length !== 0) {
-                  console.log(data[1]);
                   set_question_2(data[1]);
                   set_q2_testCase_1_input(data[1].test_case_input[0]);
 
@@ -314,7 +305,6 @@ export default function Compiler() {
                 }
               });
           getData();
-          console.log(JSON.parse(localStorage.getItem("test4"))["input_1"]);
           setInput(JSON.parse(localStorage.getItem("test4"))["input_1"]);
           setInput_question_1(
             JSON.parse(localStorage.getItem("test4"))["input_1"]
@@ -374,10 +364,8 @@ export default function Compiler() {
   function inputCodeToLocal() {
     //below func to get value from ace editor
     let inputCode = $(".ace_layer .ace_line");
-    console.log(inputCode);
     let code = "";
     for (let x = 0; x < inputCode.length; x++) {
-      console.log(inputCode[x].innerText);
       code += inputCode[x].innerText;
       if (inputCode.length - 1 !== x) {
         code += "\n";
@@ -439,7 +427,6 @@ export default function Compiler() {
     }
     e.preventDefault();
     if (code !== "") {
-      console.log(user_input);
       if (customInputCheck && (user_input === undefined || user_input === "")) {
         setDangerMsg("Please enter your input");
       } else {
@@ -452,11 +439,9 @@ export default function Compiler() {
         }
         let response;
         let count = 0;
-        let keyArr = keys.key();
+        let keyArr = process.env.REACT_APP_COMPILER_API_KEYS.split(",");
         let selectedKey;
-        console.log("########");
         do {
-          console.log("llllllllllllll");
           try {
             response = await fetch(
               "https://judge0-ce.p.rapidapi.com/submissions",
@@ -477,14 +462,10 @@ export default function Compiler() {
             );
             selectedKey = keyArr[count];
             count += 1;
-            console.log(response);
-            console.log(parseInt(response.status) !== 201);
-            console.log(typeof response.status);
           } catch (e) {
             console.log(e);
           }
         } while (parseInt(response.status) !== 201 && keyArr.length > count);
-        console.log(response);
         if (response.status === 201) {
           if (current_qs === 1) {
             set_q1_run_output(q1_run_output + "Submission Created ...\n");
@@ -525,7 +506,6 @@ export default function Compiler() {
                 },
               });
               jsonGetSolution = await getSolution.json();
-              console.log(jsonGetSolution);
               if (
                 jsonGetSolution.status.description === "Accepted" &&
                 jsonGetSolution.stderr === null &&
@@ -550,7 +530,6 @@ export default function Compiler() {
               }
             }
           }
-          console.log(jsonGetSolution);
           if (
             jsonGetSolution.stdout &&
             jsonGetSolution.stderr === null &&
@@ -607,7 +586,6 @@ export default function Compiler() {
           } else if (jsonGetSolution.stderr) {
             var b = new Buffer(jsonGetSolution.stderr, "base64");
             const error = b.toString();
-            console.log(error);
             if (current_qs === 1) {
               set_q1_testCase_Current_output(`Error :${error}`);
               set_q1_run_output(`Error :${error}`);
@@ -643,7 +621,6 @@ export default function Compiler() {
               localStorage.setItem("test4", JSON.stringify(test));
             }
           } else {
-            console.log(jsonGetSolution.compile_output);
             var b = new Buffer(jsonGetSolution.compile_output, "base64");
             const compilation_error = b.toString();
             if (current_qs === 1) {
@@ -691,7 +668,6 @@ export default function Compiler() {
 
   async function submitCode(e) {
     //below function to set to localStorage
-    console.log("asd");
     let code = inputCodeToLocal();
     if (current_qs === 1) {
       set_submitCode_qs1(true);
@@ -722,7 +698,7 @@ export default function Compiler() {
         set_q3_testCase_Current_output("Creating Submission ...\n");
       }
       let count = 0;
-      let keyArr = keys.key(),
+      let keyArr =process.env.REACT_APP_COMPILER_API_KEYS.split(","),
         selectedKey;
       let jsonResponse;
       do {
@@ -792,11 +768,6 @@ export default function Compiler() {
           }
         );
         jsonResponse = await response.json();
-        console.log(jsonResponse);
-        console.log(
-          jsonResponse.message ==
-            "You have exceeded the DAILY quota for Batched Submissions on your current plan, BASIC. Upgrade your plan at https://rapidapi.com/judge0-official/api/judge0-ce"
-        );
         count += 1;
       } while (
         jsonResponse.message !== undefined &&
@@ -865,8 +836,6 @@ export default function Compiler() {
             },
           });
           jsonGetSolution = await getSolution.json();
-          console.log(jsonGetSolution.submissions[1].status.description);
-          console.log(jsonGetSolution);
           if (
             (jsonGetSolution.submissions[0].status.description === "Accepted" ||
               jsonGetSolution.submissions[0].status.id === 4) &&
@@ -951,7 +920,6 @@ export default function Compiler() {
             const output = b.toString();
 
             if (jsonGetSolution.submissions[y].status.id === 3) {
-              console.log(output);
               if (current_qs === 1) {
                 if (y === 0) {
                   set_q1_testCase_1_output(
@@ -1605,10 +1573,6 @@ export default function Compiler() {
                     setUser_input(user_input_question_2);
                     setLanguage_id(language_id_question_2);
                     set_render_state(true);
-
-                    console.log(
-                      document.getElementsByClassName("codeOutput")[0]
-                    );
                     if (
                       document.getElementsByClassName("codeOutput")[0] !==
                       undefined

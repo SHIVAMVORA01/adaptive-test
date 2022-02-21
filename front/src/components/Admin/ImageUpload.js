@@ -92,8 +92,8 @@ export default function ImageUpload() {
       <h1>------------------</h1>
       <Zoom>
         <Image
-          cloudName="chaitanya1911"
-          publicId="https://res.cloudinary.com/chaitanya1911/image/upload/c_scale,w_500/v2/adaptive_test/Domain/vbnhacfcnijmftvrckck.png"
+          cloudName={process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}
+          publicId={`https://res.cloudinary.com/${process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}/image/upload/c_scale,w_500/v2/adaptive_test/Domain/vbnhacfcnijmftvrckck.png`}
           width="500"
           crop="scale"
           alt="img"

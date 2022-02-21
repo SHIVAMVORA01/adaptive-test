@@ -6,6 +6,8 @@ import axiosInstance from "../../axios";
 import { MDBDataTable } from "mdbreact";
 import { CSVLink, CSVDownload } from "react-csv";
 import Loader from "../../components/Loader";
+import { SiMicrosoftexcel } from 'react-icons/si';
+
 
 function ViewSchdlTest() {
   const [isLoading, setIsloading] = useState(true);
@@ -131,7 +133,17 @@ function ViewSchdlTest() {
           >
             Back
           </button>
-          <div className="basicRec" style={{ padding: "20px 15px" }}>
+          <div style={{
+            padding: "20px 15px", 
+            fontSize: "13.6px",
+            background: "#FFFFFF",
+            border: "2px solid #E5E5E5",
+            boxSizing: "border-box",
+            borderRadius: "14px",
+            marginBottom: "40px",
+            marginTop: "20px",
+
+          }}>
             <Row style={{ margin: "2% 0" }}>
               <Col md={3}>Test Name: </Col>
               <Col md={9}>
@@ -161,11 +173,24 @@ function ViewSchdlTest() {
               hover
               exportToCSV={true}
               data={data}
+              style={{ marginTop: "20px" , marginBottom:"30px"}}
             />
-
-            <CSVLink data={rows} headers={headers}>
-              Download csv
+            
+            <button style={{
+               border: "none",
+               outline: "none",
+               borderRadius: "5px",
+               fontWeight: "bolder",
+               backgroundColor: "#10B65C",
+               fontFamily: "Poppins",
+               padding: "5px 45px",
+               color: "#FFFFFF",
+               
+            }}>
+            <CSVLink style={{textDecoration:"none", color:"#FFFF"}} data={rows} headers={headers}>
+            <SiMicrosoftexcel style={{marginRight:"10px"}}/> Download csv
             </CSVLink>
+            </button>
           </div>
         </div>
       )}

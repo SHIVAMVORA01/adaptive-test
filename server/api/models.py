@@ -11,6 +11,7 @@ class Test(models.Model):
     dom = models.JSONField(null=True, blank=True)
     p = models.JSONField(null=True, blank=True)
     aw = models.JSONField(null=True, blank=True)
+    token = models.CharField(max_length=400,null=True,blank=True)
     def __str__(self):
         return self.test_name
 
@@ -23,15 +24,17 @@ class MyUser(models.Model):
     mobile = models.IntegerField(blank=True,null=True)
     percent_10_std=models.IntegerField(default=1)
     percent_12_std=models.IntegerField(default=1)
-    token = models.CharField(max_length=400,null=True,blank=True)
     avgCGPA=models.FloatField(default=0)
     backlogs=models.IntegerField(default=0)
     internships=models.IntegerField(default=0)
     branch=models.CharField(max_length=100,default=None)
     college=models.CharField(max_length=100,default=None)
     year=models.CharField(max_length=6,default=0)
+    takeFeedback=models.IntegerField(default=1)
+    change_pass_token = models.CharField(max_length=400,null=True,blank=True)
+
     def __str__(self):
-        return self.name
+        return '{0} -> {1}'.format(self.id,self.email)
 
 class Subject(models.Model):
    sub_name = models.CharField(max_length=255)
@@ -41,6 +44,13 @@ class Subject(models.Model):
    max_qs=models.IntegerField(default=0,null=True,blank=True)
    def __str__(self):
         return self.sub_name
+
+class Feedback(models.Model):
+    user = models.ForeignKey(MyUser,on_delete=models.CASCADE)
+    rating = models.IntegerField()
+    comment = models.TextField(blank=True)
+    def __str__(self):
+            return self.user.email
 
 class Questions(models.Model):
     subject = models.ForeignKey(Subject,on_delete=models.CASCADE)

@@ -108,7 +108,7 @@ function CompScreen() {
             let xx = localStorage.getItem("testId");
             const data = async () => {
               await axiosInstance
-                .get(`http://127.0.0.1:8000/api/para/${xx}`)
+                .get(`api/para/${xx}`)
                 .then((res) => {
                   let aa = converttime(res.data.time);
                   var tf = aa;

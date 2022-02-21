@@ -35,7 +35,7 @@
   box-shadow: 1px 1px 7px 2px rgba(0, 0, 0, 0.25);
   border-radius: 14px;
 }
-.modal-dialog {
+#Login_page .modal-dialog {
   width: 460px !important;
 }
 
@@ -53,6 +53,9 @@ input::-ms-reveal,
 input::-ms-clear {
   display: none;
 }
+input:focus::placeholder {
+  color: transparent;
+}
 .field-icon {
   float: right;
   margin-right: 10px;
@@ -63,4 +66,42 @@ input::-ms-clear {
 }
 .field-icon:hover {
   cursor: pointer;
+}
+
+.Background{
+  background-image: url("/src/img/Group 10.png");
+}
+
+.sorting{
+  font-size: 13px !important;
+  text-align: center;
+  font-weight: bold;
+}
+
+td{ 
+  font-size: 13px !important;
+  text-align: center;
+  font-weight: 200;
+
+}
+@media (max-width: 992px) {
+  .Background{
+    height:700px !important;
+  }
+}
+@media (max-width: 515px) {
+  .all_content{
+    margin:25px !important;
+  }
+  .tb_margin{
+    margin:25px 0px !important;
+  }
+}
+@media (max-width: 450px) {
+  .sign_in{
+    width:290px !important;
+  }
+  .Background{
+    height:650px !important;
+  }
 }

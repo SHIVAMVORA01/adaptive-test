@@ -134,7 +134,7 @@ function PTestScreen() {
           let xx = localStorage.getItem("testId");
           const getData = async () =>
             await axiosInstance
-              .get(`http://127.0.0.1:8000/api/subs/4/${xx}`)
+              .get(`api/subs/4/${xx}`)
               .then((res) => {
                 let a = converttime(res.data.time);
                 var tf = a;

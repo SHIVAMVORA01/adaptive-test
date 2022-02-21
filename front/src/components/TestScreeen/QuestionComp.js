@@ -41,7 +41,7 @@ function QuestionComp({
             <Col>
               {qsimg !== null && (
                 <Image
-                  cloudName="chaitanya1911"
+                  cloudName={process.env.REACT_APP_CLOUDINARY_CLOUD_NAME}
                   publicId={qsimg}
                   width="500"
                   crop="scale"
@@ -71,12 +71,12 @@ function QuestionComp({
                       type="radio"
                       id={index}
                       name={question}
-                      value={crypt.encryptVal(option.mrks)}
+                      value={crypt.encryptVal(option.marks)}
                       style={{}}
                     />
 
                     <TextAreaAutoSize
-                      text={option.opt}
+                      text={option.title}
                       checkBoxToggle={checkBoxToggle}
                       optId={index}
                     ></TextAreaAutoSize>

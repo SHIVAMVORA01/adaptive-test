@@ -46,7 +46,7 @@ function NewTest() {
     setIsloading(true);
     const data = async () =>
       await axiosInstance
-        .get(`http://127.0.0.1:8000/api/subs`)
+        .get(`api/subs`)
         .then((res) => {
           var ssid;
           if (localStorage.getItem("isNewTestReload") !== null) {
@@ -77,7 +77,7 @@ function NewTest() {
         });
     const getTest = async () => {
       await axiosInstance
-        .get("http://127.0.0.1:8000/api/admin/tests")
+        .get("api/admin/tests")
         .then((res) => {
           let ar = [];
           let st = res.data.stests;
