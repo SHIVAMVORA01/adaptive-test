@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../axios";
 import { Container, FormControl, InputGroup, Form } from "react-bootstrap";
-import Colleges from "./Colleges";
 import Alert from "../components/Admin/Alert";
 import Loader from "../components/Loader";
 import createFilterOptions from "react-select-fast-filter-options";
 import Select from "react-select";
 
 function SignUpModified() {
+  const [colleges, setColleges] = useState([]);
+  const [departments, setDepartments] = useState([]);
   const [isLoading, setIsloading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -33,7 +34,8 @@ function SignUpModified() {
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
   const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
-  const filterOptions = createFilterOptions(Colleges.CollegeData);
+  const filterOptions = createFilterOptions(colleges);
+  const filterOptions2 = createFilterOptions(departments);
   useEffect(() => {
     const check = async () =>
       await axiosInstance
@@ -53,7 +55,17 @@ function SignUpModified() {
           }
         })
         .catch((e) => console.log(e));
+
+    const list = async () =>
+      await axiosInstance
+        .get("api/const")
+        .then((res) => {
+          setColleges(res.data.colleges);
+          setDepartments(res.data.departments);
+        })
+        .catch((e) => console.log(e));
     check();
+    list();
     setIsloading(false);
   }, []);
 
@@ -131,11 +143,7 @@ function SignUpModified() {
                 Sign Up
               </p>
               <Form onSubmit={(e) => handleSubmit(e)}>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label>Email address </Form.Label>
                   <Form.Control
                     type="email"
@@ -149,11 +157,7 @@ function SignUpModified() {
                     We'll never share your email with anyone else.
                   </Form.Text>
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Name </Form.Label>
                   <Form.Control
                     name="name"
@@ -164,11 +168,7 @@ function SignUpModified() {
                     value={formData.name}
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicPassword"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label>Password</Form.Label>
                   <Form.Control
                     type="password"
@@ -179,11 +179,7 @@ function SignUpModified() {
                     id="password-field"
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicPassword"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Confirm password</Form.Label>
                   <Form.Control
                     type="password"
@@ -194,11 +190,7 @@ function SignUpModified() {
                     id="password-field"
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Age </Form.Label>
                   <Form.Control
                     type="number"
@@ -212,7 +204,7 @@ function SignUpModified() {
                 <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Gender </Form.Label>
                   <Form.Select onChange={handleChange} name="gender" required>
-                    <option selected></option>
+                    <option selected value="">Select...</option>
                     <option value="1">Male</option>
                     <option value="2">Female</option>
                     <option value="3">Other</option>
@@ -232,11 +224,7 @@ function SignUpModified() {
                     />
                   </InputGroup>
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> 10th percentage </Form.Label>
                   <Form.Control
                     type="number"
@@ -247,11 +235,7 @@ function SignUpModified() {
                     required
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> 12th percentage </Form.Label>
                   <Form.Control
                     type="number"
@@ -265,30 +249,32 @@ function SignUpModified() {
                 <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> College </Form.Label>
                   <Select
+                    name="college"
+                    onChange={(e) => {
+                      updateFormData({
+                        ...formData,
+                        ["college"]: e.label,
+                      });
+                    }}
                     filterOptions={filterOptions}
-                    options={Colleges.CollegeData}
+                    options={colleges}
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Branch </Form.Label>
-                  <Form.Control
-                    type="number"
-                    type="text"
-                    placeholder="Branch"
-                    onChange={handleChange}
+                  <Select
                     name="branch"
-                    required
+                    onChange={(e) => {
+                      updateFormData({
+                        ...formData,
+                        ["branch"]: e.label,
+                      });
+                    }}
+                    filterOptions={filterOptions2}
+                    options={departments}
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Year of graduation </Form.Label>
                   <Form.Control
                     type="number"
@@ -299,11 +285,7 @@ function SignUpModified() {
                     required
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Average C.G.P.A </Form.Label>
                   <Form.Control
                     type="number"
@@ -314,11 +296,7 @@ function SignUpModified() {
                     required
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Number of Backlogs </Form.Label>
                   <Form.Control
                     type="number"
@@ -329,11 +307,7 @@ function SignUpModified() {
                     required
                   />
                 </Form.Group>
-                <Form.Group
-                  className="mb-3"
-                  style={{ marginTop: "25px" }}
-                  controlId="formBasicEmail"
-                >
+                <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                   <Form.Label> Number of internships </Form.Label>
                   <Form.Control
                     type="number"

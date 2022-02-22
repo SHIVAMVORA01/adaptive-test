@@ -25,6 +25,7 @@ urlpatterns = [
    path("api/takeFeedback",views.takeFeedback),
 
    # admin
+   path('api/const',views.constdata),
    path('api/admin/addQs',views.addQs),
    path('api/admin/delQs',views.delQs),
    path('api/admin/saveTest',views.saveTest),

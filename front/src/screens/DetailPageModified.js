@@ -7,6 +7,7 @@ import "../css/LoginScreen.css";
 import Loader from "../components/Loader";
 
 function DetailPageModified() {
+  const [agree, setAgree] = useState(false);
   const [isLoading, setIsloading] = useState(true);
   const navigate = useNavigate();
   useEffect(() => {
@@ -53,6 +54,9 @@ function DetailPageModified() {
     navigate("/testScreen");
   };
 
+  const checkboxHandler = () => {
+    setAgree(!agree);
+  };
   return (
     <>
       {isLoading ? (
@@ -113,8 +117,24 @@ function DetailPageModified() {
               <Row style={{ marginTop: "25px" }}>
                 <Col>print(“ALL THE BEST”)</Col>
               </Row>
+              <Row style={{ marginTop: "25px" }}>
+                <Col>
+                  <input
+                    style={{ marginRight: "10px" }}
+                    type="checkbox"
+                    id="agree"
+                    onChange={checkboxHandler}
+                  />
+                  <label htmlFor="agree">
+                    {" "}
+                    I have read all the <b>instructions </b>and hereby accept to
+                    adhere them
+                  </label>
+                </Col>
+              </Row>
             </div>
             <button
+              disabled={!agree}
               onClick={(e) => {
                 handleSubmit(e);
               }}

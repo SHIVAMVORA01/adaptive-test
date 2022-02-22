@@ -164,7 +164,7 @@ function NewTest() {
       } else {
         setIsloading(false);
         setIsAlertMsgLoaded(true);
-        setDangerMsg("A test is already scheduled in this time");
+        setDangerMsg(objClash.msg);
       }
     } else {
       setIsloading(false);

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Row, Col, Modal, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
 import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
 import { MDBDataTable } from "mdbreact";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 import Loader from "../../components/Loader";
-import { SiMicrosoftexcel } from 'react-icons/si';
-
+import { SiMicrosoftexcel } from "react-icons/si";
 
 function ViewSchdlTest() {
   const [isLoading, setIsloading] = useState(true);
@@ -93,8 +92,6 @@ function ViewSchdlTest() {
     axiosInstance
       .get(`/api/admin/resultTest/${location.state.id}`)
       .then((res) => {
-        console.log(res.data);
-
         setRows(res.data.studentNameArr);
         setTData({
           columns: columns,
@@ -133,17 +130,18 @@ function ViewSchdlTest() {
           >
             Back
           </button>
-          <div style={{
-            padding: "20px 15px", 
-            fontSize: "13.6px",
-            background: "#FFFFFF",
-            border: "2px solid #E5E5E5",
-            boxSizing: "border-box",
-            borderRadius: "14px",
-            marginBottom: "40px",
-            marginTop: "20px",
-
-          }}>
+          <div
+            style={{
+              padding: "20px 15px",
+              fontSize: "13.6px",
+              background: "#FFFFFF",
+              border: "2px solid #E5E5E5",
+              boxSizing: "border-box",
+              borderRadius: "14px",
+              marginBottom: "40px",
+              marginTop: "20px",
+            }}
+          >
             <Row style={{ margin: "2% 0" }}>
               <Col md={3}>Test Name: </Col>
               <Col md={9}>
@@ -173,23 +171,29 @@ function ViewSchdlTest() {
               hover
               exportToCSV={true}
               data={data}
-              style={{ marginTop: "20px" , marginBottom:"30px"}}
+              style={{ marginTop: "5px" }}
             />
-            
-            <button style={{
-               border: "none",
-               outline: "none",
-               borderRadius: "5px",
-               fontWeight: "bolder",
-               backgroundColor: "#10B65C",
-               fontFamily: "Poppins",
-               padding: "5px 45px",
-               color: "#FFFFFF",
-               
-            }}>
-            <CSVLink style={{textDecoration:"none", color:"#FFFF"}} data={rows} headers={headers}>
-            <SiMicrosoftexcel style={{marginRight:"10px"}}/> Download csv
-            </CSVLink>
+
+            <button
+              style={{
+                border: "none",
+                outline: "none",
+                borderRadius: "5px",
+                fontWeight: "bolder",
+                backgroundColor: "#10B65C",
+                fontFamily: "Poppins",
+                padding: "5px 45px",
+                color: "#FFFFFF",
+              }}
+            >
+              <CSVLink
+                style={{ textDecoration: "none", color: "#FFFF" }}
+                data={rows}
+                headers={headers}
+              >
+                <SiMicrosoftexcel style={{ marginRight: "10px" }} /> Download
+                csv
+              </CSVLink>
             </button>
           </div>
         </div>

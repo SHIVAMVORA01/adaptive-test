@@ -4,3 +4,6 @@ form-control form-check-input {
   margin-bottom: 0;
   margin-left: 40px;
 }
+.dataTables_wrapper .dataTables_length label select {
+  width: 30% !important;
+}

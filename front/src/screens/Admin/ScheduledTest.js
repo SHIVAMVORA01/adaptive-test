@@ -6,6 +6,7 @@ import axiosInstance from "../../axios";
 import Loader from "../../components/Loader";
 import "../../css/SchdlTest.css";
 import Alert from "../../components/Admin/Alert";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 
 function ScheduledTest() {
   const [successMsg, setSuccessMsg] = useState("");
@@ -41,7 +42,6 @@ function ScheduledTest() {
       await axiosInstance
         .get("api/admin/tests")
         .then((res) => {
-          console.log(res.data);
           let ar = [];
           setSTests(res.data.stests);
           setUTests(res.data.utests);
@@ -83,15 +83,9 @@ function ScheduledTest() {
     setP(test.p);
     setAW(test.aw);
     let date = s.toLocaleDateString();
-    console.log(date);
-    console.log(s);
-
     date = date.split("/");
     let time = s.toTimeString().split(" ")[0];
     time = time.split(":");
-    console.log(
-      new Date(date[2], date[0] - 1, date[1], time[0], time[1], time[2])
-    );
     onChangeStart(
       new Date(date[2], date[0] - 1, date[1], time[0], time[1], time[2])
     );
@@ -117,9 +111,6 @@ function ScheduledTest() {
     setIsloading(true);
     var cDate = new Date();
     if (valueStart <= valueEnd && valueStart > cDate) {
-      console.log(valueStart);
-      console.log(valueEnd);
-
       if (valueStart !== valueStartCheck || valueEnd !== valueEndCheck) {
         let objClash = clash(valueStart.getTime(), valueEnd.getTime(), testId);
         if (!objClash.bool) {
@@ -142,7 +133,6 @@ function ScheduledTest() {
             })
             .then((res) => {
               setIsloading(false);
-              console.log(res);
               window.location.reload();
             })
             .catch((e) => {
@@ -177,7 +167,6 @@ function ScheduledTest() {
       })
       .then((res) => {
         setIsloading(false);
-        console.log(res);
         window.location.reload();
       })
       .catch((e) => {
@@ -246,7 +235,6 @@ function ScheduledTest() {
     setIsloading(false);
   }
   function onSubmitModal(e) {
-    console.log(e.nativeEvent.submitter.id);
     e.preventDefault();
     if (e.nativeEvent.submitter.id === "delete_test") {
       delTest(e);
@@ -589,31 +577,34 @@ function ScheduledTest() {
             >
               Back
             </button>
-            <p style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  marginBottom: "0px",
-                  marginTop: "10px",
-                  color: "#293e6f",
-                  textAlign: "center",
-                  marginLeft:"30px"
-                }}>Scheduled Test </p>
-                <p className="AdWell" style={{
-                  fontFamily: "Poppins",
-                  color: "#999999",
-                  fontWeight: "100",
-                  marginTop: "30px",
-                  fontSize: "15.4px",
-                  marginLeft: "60px",
-                  marginRight: "10px",
-                  marginBottom: "40px",
-                  textAlign: "center",
-                }}> Admins can view, delete and modify the tests scheduled by them. Click on delete button or eye button to delete/modify the tests and preview the scheduled tests</p>
+            <p
+              style={{
+                fontSize: "20px",
+                fontWeight: "bold",
+                marginBottom: "20px",
+                marginTop: "10px",
+                color: "#293e6f",
+                textAlign: "center",
+                marginLeft: "30px",
+              }}
+            >
+              {" "}
+              View Tests{" "}
+              <BsFillInfoCircleFill
+                className="info"
+                style={{
+                  height: "12px",
+                  width: "12px",
+                  marginLeft: "5px",
+                  justifyContent: "center",
+                }}
+                title="Admins can view, delete and modify the tests scheduled by them. Click on delete button or eye button to delete/modify the tests and preview the scheduled tests"
+              />{" "}
+            </p>
 
             <Row style={{ margin: "0 0 0 10%" }}>
               <Col md={6} style={{ marginRight: "0%" }}>
                 {" "}
-               
                 <div
                   style={{
                     minHeight: window.screen.height - 400,
@@ -623,11 +614,15 @@ function ScheduledTest() {
                     border: "2px solid #E5E5E5",
                     boxSizing: "border-box",
                     borderRadius: "14px",
-
                   }}
                 >
-
-                  <h4 style={{ paddingTop: "10px", fontSize: "15.6px", textAlign: "center" }}>
+                  <h4
+                    style={{
+                      paddingTop: "10px",
+                      fontSize: "15.6px",
+                      textAlign: "center",
+                    }}
+                  >
                     Scheduled Test
                   </h4>
                   <div className="lineThrough"></div>
@@ -694,7 +689,6 @@ function ScheduledTest() {
               <Col md={6} style={{ marginRight: "0%" }}>
                 {" "}
                 <div
-
                   style={{
                     minHeight: window.screen.height - 400,
                     maxHeight: window.screen.height - 400,
@@ -707,7 +701,13 @@ function ScheduledTest() {
                     marginBottom: "40px",
                   }}
                 >
-                  <h4 style={{ paddingTop: "10px", fontSize: "15.6px", textAlign: "center" }}>
+                  <h4
+                    style={{
+                      paddingTop: "10px",
+                      fontSize: "15.6px",
+                      textAlign: "center",
+                    }}
+                  >
                     Upcoming Test
                   </h4>
                   <div className="lineThrough"></div>
@@ -725,7 +725,6 @@ function ScheduledTest() {
                             marginBottom: "1px",
                             border: "1px solid #E5E5E5",
                             borderRadius: "10px",
-                           
                           }}
                         >
                           <Col>
@@ -768,8 +767,7 @@ function ScheduledTest() {
             </Row>
           </div>
         </>
-      )
-      }
+      )}
     </>
   );
 }

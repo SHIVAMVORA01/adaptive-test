@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@o2xp/react-datatable": "^2.0.0-beta.2",
     "@patternfly/react-charts": "^6.45.15",
     "@testing-library/jest-dom": "^5.15.0",
     "@testing-library/react": "^11.2.7",

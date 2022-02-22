@@ -110,6 +110,10 @@ class Paraopt(models.Model):
     marks = models.IntegerField()
     def __str__(self):
         return self.title
+
+class ConstData(models.Model):
+    colleges = models.JSONField(null=True, blank=True)
+    departments =  models.JSONField(null=True, blank=True)    
     
 
 

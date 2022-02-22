@@ -162,7 +162,6 @@ function Login() {
         },
       })
       .then(async (res) => {
-        console.log(res.data);
         if (res.data.exist) {
           if (res.data.allowed) {
             let adminn = res.data.admin;
@@ -366,7 +365,7 @@ function Login() {
           <div>
             <Row style={{ height: "100%", margin: "0px" }}>
               <Col lg={7} style={{ backgroundColor: "white", padding: "0px" }}>
-                <div class="all_content" style={{ margin: "0px 50px" }}>
+                <div className="all_content" style={{ margin: "0px 50px" }}>
                   <h5
                     style={{
                       fontStyle: " normal",

@@ -275,12 +275,7 @@
   margin-top: -20px;
 }
 
-.AdminHomeScreen{
-  height:80px !important;
-  width:115px !important;
-}
-
-.admina{
+.admina {
   width: 115px;
   height: 80px;
   padding: 25px 0px;
@@ -289,9 +284,10 @@
   color: #666666;
   background-color: #ffffff;
   font-size: 0.85em;
-  border-right: 2px solid rgba(0,0,0,0.07);
+  border-right: 2px solid rgba(0, 0, 0, 0.07);
   margin-left: 174.6px;
   text-decoration: none;
 }
-
-
+.dataTables_wrapper .dataTables_length label select {
+  width:30% !important;
+}

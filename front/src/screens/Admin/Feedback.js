@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../axios";
+import { Row, Col } from "react-bootstrap";
 import { MDBDataTable, MDBInput } from "mdbreact";
 import Alert from "../../components/Admin/Alert";
 import Loader from "../../components/Loader";
@@ -22,8 +23,6 @@ function Feedback() {
 
   function checkAllSelected(rowLength) {
     let c = $(".checkboxFeedback:checkbox:checked").length;
-    console.log(rowLength);
-    console.log(c);
     let areAllSected = parseInt(c) === parseInt(rowLength);
     setAreAllChecked(areAllSected ? true : false);
     document.getElementById("selectAllCheckboc").checked = areAllSected
@@ -36,7 +35,6 @@ function Feedback() {
     axiosInstance
       .get("api/feedback")
       .then((res) => {
-        console.log(res.data);
         setIsloading(false);
         let rowArr = res.data.feedback_data.map((v, index) => ({
           ...v,
@@ -117,9 +115,11 @@ function Feedback() {
       {isLoading ? (
         <Loader />
       ) : (
-        <div style={{ fontSize: "13.6px" }}>
+        <div style={{ fontSize: "13.6px", padding: "0 60px" }}>
           <button
-            onClick={() => { navigate("/admin/home") }}
+            onClick={() => {
+              navigate("/admin/home");
+            }}
             type="button"
             style={{
               marginTop: "10px",
@@ -137,26 +137,35 @@ function Feedback() {
           >
             Back
           </button>
-          <p style={{
-            fontSize: "20px",
-            fontWeight: "bold",
-            marginBottom: "0px",
-            marginTop: "10px",
-            color: "#293e6f",
-            textAlign: "center",
-
-          }}>Grant Permissions</p>
-          <p className="AdWell" style={{
-            fontFamily: "Poppins",
-            color: "#999999",
-            fontWeight: "100",
-            marginTop: "30px",
-            fontSize: "15.4px",
-            marginLeft: "10px",
-            marginRight: "10px",
-            marginBottom: "40px",
-            textAlign: "center",
-          }}> Permission must be granted for students to take their tests. From the tables below, choose the students to whom you want to grant permission.</p>
+          <p
+            style={{
+              fontSize: "20px",
+              fontWeight: "bold",
+              marginBottom: "0px",
+              marginTop: "10px",
+              color: "#293e6f",
+              textAlign: "center",
+            }}
+          >
+            Take Feedbacks
+          </p>
+          <p
+            className="AdWell"
+            style={{
+              fontFamily: "Poppins",
+              color: "#999999",
+              fontWeight: "100",
+              marginTop: "30px",
+              fontSize: "15.4px",
+              marginLeft: "10px",
+              marginRight: "10px",
+              marginBottom: "40px",
+              textAlign: "center",
+            }}
+          >
+            {" "}
+            To take feedbacks from students.
+          </p>
 
           <MDBDataTable
             className="feedbackTable"
@@ -167,55 +176,55 @@ function Feedback() {
             exportToCSV={true}
             data={data}
             noRecordsFoundLabel={"No Feedbacks"}
-            style={{ marginTop: "40px", fontSize: "13.6px" }}
+            style={{ marginTop: "5px", fontSize: "13.6px" }}
           />
-          <button
-            style={{
-              marginTop: "10px",
-              marginBottom: "30px",
-              border: "none",
-              outline: "none",
-              borderRadius: "5px",
-              fontWeight: "normal",
-              backgroundColor: "#10B65C",
-              fontFamily: "Poppins",
-              padding: "5px 45px",
-              color: "#FFFFFF",
-              marginLeft: "560px",
-            }}
-            type="button"
-            onClick={(e) => {
-              let x = $(".checkboxFeedback:checkbox:checked");
-              let arrIdFeedback = [];
-              let userId = [];
-              let isAllSelected = 0;
-              if (!areAllChecked && x.length !== 0) {
-                x.map((xx) =>
-                  userId.push(parseInt(x[xx].id.split("checkbox")[1]))
-                );
-
-                console.log(userId);
-              } else {
-                console.log("all select");
-                if (!(x.length === 0)) {
-                  isAllSelected = 1;
-                }
-              }
-              axiosInstance
-                .post("api/takeFeedback", {
-                  data: { isAllSelected: isAllSelected, userId: userId },
-                })
-                .then((res) => {
-                  console.log(res.data);
-                  window.location.reload();
-                })
-                .catch((e) => {
-                  console.log(e);
-                });
-            }}
-          >
-            Take Feedbacks
-          </button>
+          <Row>
+            <Col md={5} style={{ textAlign: "center" }}></Col>
+            <Col md={7}>
+              <button
+                style={{
+                  margin: "10px auto 30px auto",
+                  border: "none",
+                  outline: "none",
+                  borderRadius: "5px",
+                  fontWeight: "normal",
+                  backgroundColor: "#10B65C",
+                  fontFamily: "Poppins",
+                  padding: "5px 0px",
+                  color: "#FFFFFF",
+                  width: "165px",
+                  textAlign: "center",
+                }}
+                type="button"
+                onClick={(e) => {
+                  let x = $(".checkboxFeedback:checkbox:checked");
+                  let userId = [];
+                  let isAllSelected = 0;
+                  if (!areAllChecked && x.length !== 0) {
+                    x.map((xx) =>
+                      userId.push(parseInt(x[xx].id.split("checkbox")[1]))
+                    );
+                  } else {
+                    if (!(x.length === 0)) {
+                      isAllSelected = 1;
+                    }
+                  }
+                  axiosInstance
+                    .post("api/takeFeedback", {
+                      data: { isAllSelected: isAllSelected, userId: userId },
+                    })
+                    .then((res) => {
+                      window.location.reload();
+                    })
+                    .catch((e) => {
+                      console.log(e);
+                    });
+                }}
+              >
+                Take Feedbacks
+              </button>
+            </Col>
+          </Row>
         </div>
       )}
     </div>

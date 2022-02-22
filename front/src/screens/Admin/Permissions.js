@@ -20,8 +20,6 @@ function Permissions() {
 
   function checkAllSelected(rowLength) {
     let c = $(".checkboxFeedback:checkbox:checked").length;
-    console.log(rowLength);
-    console.log(c);
     let areAllSected = parseInt(c) === parseInt(rowLength);
     document.getElementById("selectAllCheckboc").checked = areAllSected
       ? true
@@ -136,11 +134,19 @@ function Permissions() {
         <Loader />
       ) : (
         <>
-          <div style={{ fontSize: "13.6px" }}>
+          <div
+            style={{
+              fontSize: "13.6px",
+              padding: "0 60px",
+              marginBottom: "20px",
+            }}
+          >
             <Row>
-              <Col>
+              <Col md={12}>
                 <button
-                  onClick={() => { navigate("/admin/home") }}
+                  onClick={() => {
+                    navigate("/admin/home");
+                  }}
                   type="button"
                   style={{
                     marginTop: "10px",
@@ -158,26 +164,37 @@ function Permissions() {
                 >
                   Back
                 </button>
-                <p style={{
-                  fontSize: "20px",
-                  fontWeight: "bold",
-                  marginBottom: "0px",
-                  marginTop: "10px",
-                  color: "#293e6f",
-                  textAlign: "center",
-
-                }}>Grant Permissions</p>
-                <p className="AdWell" style={{
-                  fontFamily: "Poppins",
-                  color: "#999999",
-                  fontWeight: "100",
-                  marginTop: "30px",
-                  fontSize: "15.4px",
-                  marginLeft: "10px",
-                  marginRight: "10px",
-                  marginBottom: "40px",
-                  textAlign: "center",
-                }}> Permission must be granted for students to take their tests. From the tables below, choose the students to whom you want to grant permission.</p>
+                <p
+                  style={{
+                    fontSize: "20px",
+                    fontWeight: "bold",
+                    marginBottom: "0px",
+                    marginTop: "10px",
+                    color: "#293e6f",
+                    textAlign: "center",
+                  }}
+                >
+                  Grant Permissions
+                </p>
+                <p
+                  className="AdWell"
+                  style={{
+                    fontFamily: "Poppins",
+                    color: "#999999",
+                    fontWeight: "100",
+                    marginTop: "30px",
+                    fontSize: "15.4px",
+                    marginLeft: "10px",
+                    marginRight: "10px",
+                    marginBottom: "40px",
+                    textAlign: "center",
+                  }}
+                >
+                  {" "}
+                  Permission must be granted for students to take their tests.
+                  From the tables below, choose the students to whom you want to
+                  grant permission.
+                </p>
 
                 <MDBDataTable
                   className="feedbackTable"
@@ -188,77 +205,76 @@ function Permissions() {
                   exportToCSV={true}
                   data={data}
                   noRecordsFoundLabel={"Allowed to All"}
-                  style={{ marginTop: "40px" }}
+                  style={{ marginTop: "5px", fontSize: "13.6px" }}
                 />
-                <button
-                  type="button"
-                  style={{
-                    marginTop: "10px",
-                    marginBottom: "30px",
-                    border: "none",
-                    outline: "none",
-                    borderRadius: "5px",
-                    fontWeight: "normal",
-                    backgroundColor: "#10B65C",
-                    fontFamily: "Poppins",
-                    padding: "5px 45px",
-                    color: "#FFFFFF",
-                    marginLeft: "550px",
-
-                  }}
-                  onClick={(e) => {
-                    setIsloading(true);
-                    let x = $(".checkboxFeedback:checkbox:checked");
-                    let arrIdFeedback = [];
-                    let userId = [];
-                    let isAllSelected = 0;
-                    x.map((xx) =>
-                      userId.push(parseInt(x[xx].id.split("checkbox")[1]))
-                    );
-                    console.log(userId);
-                    if (userId.length === 0) {
-                      setIsloading(false);
-                      setIsAlertMsgLoaded(true);
-                      setDangerMsg("select users to grant permission");
-                    } else {
-                      axiosInstance
-                        .post("api/permission", {
-                          data: { users: userId },
-                        })
-                        .then((res) => {
+                <Row>
+                  <Col md={5} style={{ textAlign: "center" }}></Col>
+                  <Col md={7}>
+                    <button
+                      style={{
+                        margin: "10px auto 30px auto",
+                        border: "none",
+                        outline: "none",
+                        borderRadius: "5px",
+                        fontWeight: "normal",
+                        backgroundColor: "#10B65C",
+                        fontFamily: "Poppins",
+                        padding: "5px 0px",
+                        color: "#FFFFFF",
+                        width: "165px",
+                        textAlign: "center",
+                      }}
+                      onClick={(e) => {
+                        setIsloading(true);
+                        let x = $(".checkboxFeedback:checkbox:checked");
+                        let userId = [];
+                        x.map((xx) =>
+                          userId.push(parseInt(x[xx].id.split("checkbox")[1]))
+                        );
+                        if (userId.length === 0) {
                           setIsloading(false);
-                          if (res.data.exists) {
-                            window.location.reload();
-                          } else {
-                            setIsAlertMsgLoaded(true);
-                            setDangerMsg("Error Occured");
-                          }
-                        })
-                        .catch((e) => {
-                          console.log(e);
-                          setIsloading(false);
-                        });
-                    }
-                  }}
-                >
-                  Grant Permission
-                </button>
+                          setIsAlertMsgLoaded(true);
+                          setDangerMsg("select users to grant permission");
+                        } else {
+                          axiosInstance
+                            .post("api/permission", {
+                              data: { users: userId },
+                            })
+                            .then((res) => {
+                              setIsloading(false);
+                              if (res.data.exists) {
+                                window.location.reload();
+                              } else {
+                                setIsAlertMsgLoaded(true);
+                                setDangerMsg("Error Occured");
+                              }
+                            })
+                            .catch((e) => {
+                              console.log(e);
+                              setIsloading(false);
+                            });
+                        }
+                      }}
+                    >
+                      Grant Permission
+                    </button>
+                  </Col>
+                </Row>
               </Col>
-              <Row>
-                <Col>
-                  <MDBDataTable
-                    className="feedbackTable2"
-                    striped
-                    bordered
-                    noBottomColumns
-                    hover
-                    exportToCSV={true}
-                    data={data2}
-                    noRecordsFoundLabel={"No Permissions given"}
-                    style={{ marginTop: "20px" , marginBottom:"30px"}}
-                  />
-                </Col>
-              </Row>
+
+              <Col md={12}>
+                <MDBDataTable
+                  className="feedbackTable2"
+                  striped
+                  bordered
+                  noBottomColumns
+                  hover
+                  exportToCSV={true}
+                  data={data2}
+                  noRecordsFoundLabel={"No Permissions given"}
+                  style={{ marginTop: "5px", fontSize: "13.6px" }}
+                />
+              </Col>
             </Row>
           </div>
         </>

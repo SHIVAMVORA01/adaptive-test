@@ -79,7 +79,6 @@ function CFTestScreen() {
               },
             })
             .then((res) => {
-              console.log("done");
               localStorage.removeItem("test");
             })
             .catch((e) => console.log(e));
@@ -106,8 +105,6 @@ function CFTestScreen() {
       const isMyTokenExpired = isExpired(token);
       const channel = new BroadcastChannel("tab");
       const items = { ...localStorage };
-      console.log(items);
-
       channel.postMessage("another-tab");
       // note that listener is added after posting the message
 
@@ -214,8 +211,6 @@ function CFTestScreen() {
                     setQsno(test["currentQsNo"] - 1);
                     setQs(test["question"]);
                     var ob = new Date();
-                    console.log(test["strtTime"]);
-                    console.log(ob.toLocaleTimeString());
                     var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
                     var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
                     var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
@@ -233,10 +228,6 @@ function CFTestScreen() {
                         s
                     );
                     var hourDiff = (timeEnd - timeStart) / 1000;
-                    console.log(timeEnd);
-                    console.log(timeStart);
-                    console.log(hourDiff);
-                    console.log(tf);
                     setTimeFF(tf - hourDiff);
                   }
                 } else {

@@ -68,7 +68,6 @@ function CompScreen() {
               },
             })
             .then((res) => {
-              console.log("done");
               localStorage.removeItem("test6");
             })
             .catch((e) => console.log(e));
@@ -113,10 +112,7 @@ function CompScreen() {
                   let aa = converttime(res.data.time);
                   var tf = aa;
                   // setTimeFF(tf);
-
                   var ob = new Date();
-                  console.log(test["strtTime"]);
-                  console.log(ob.toLocaleTimeString());
                   var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
                   var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
                   var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
@@ -134,13 +130,7 @@ function CompScreen() {
                       s
                   );
                   var hourDiff = (timeEnd - timeStart) / 1000;
-                  console.log(timeEnd);
-                  console.log(timeStart);
-                  console.log(hourDiff);
-                  console.log(tf);
                   setTimeFF(tf - hourDiff);
-
-                  console.log(res.data[0]);
                   let a = res.data.data;
                   let n = 0;
                   for (let i = 0; i < a.length; i++) {
@@ -167,8 +157,6 @@ function CompScreen() {
           } else {
             var tf = test["testtime"];
             var ob = new Date();
-            console.log(test["strtTime"]);
-            console.log(ob.toLocaleTimeString());
             var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
             var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
             var s = (ob.getSeconds() < 10 ? "0" : "") + ob.getSeconds();
@@ -180,10 +168,6 @@ function CompScreen() {
               new Date().toLocaleDateString() + " " + h + ":" + m + ":" + s
             );
             var hourDiff = (timeEnd - timeStart) / 1000;
-            console.log(timeEnd);
-            console.log(timeStart);
-            console.log(hourDiff);
-            console.log(tf);
             setTimeFF(tf - hourDiff);
             setPassage(test["passage"]);
             setQsNo(parseInt(test["qsno"]));

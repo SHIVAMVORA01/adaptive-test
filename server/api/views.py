@@ -3,7 +3,7 @@ import json
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
 from django.http.response import JsonResponse
 from rest_framework.views import APIView
-from api.models import Questions,Options,Results,Subject,Test,CodingTest,Para,Paraopt,Paraqs,MyUser,Feedback
+from api.models import Questions,Options,Results,Subject,Test,CodingTest,Para,Paraopt,Paraqs,MyUser,Feedback,ConstData
 from rest_framework_simplejwt.tokens import RefreshToken,AccessToken
 from rest_framework import status
 from rest_framework.permissions import AllowAny
@@ -25,6 +25,11 @@ from django.conf import settings
 import uuid
 CFG = {'DB': None}
 
+def constdata(request):
+    if request.method == "GET":
+        data = ConstData.objects.all()
+        return JsonResponse({"colleges":data[0].colleges,"departments":data[0].departments},safe=False)
+        
 def checkAuthorization(auth):
     if (auth!='null'):
         _token=auth.split(" ")[1]
@@ -119,7 +124,7 @@ def forgotpass(request):
         user = User.objects.get(email = data['email'])    
         token = str(uuid.uuid4())
         subject = "Your Forget PAssword Link"
-        message = f'Hi,\n Click on the link to to reset your password- http://localhost:3000/change-pass?token={token}'
+        message=f"Hello {user.first_name},\n\nSomeone (hopefully you!) has requested to change your password. Please click the link below to change your password now,\n\nhttp://localhost:3000/change-pass?token={token}\n\nIf you didn't make this request, please disregard this email.\nPlease note that your password will not change unless you click the link above and create a new one. If you've requested multiple reset emails, please make sure you click the link inside the most recent email.\n\nSincerely,\nThe Placement Portal Team"
         email_from = settings.EMAIL_HOST_USER
         recipient_list = [user.email]
         send_mail(subject,message,email_from,recipient_list)
@@ -674,7 +679,7 @@ def addQs(request):
                                     c=cloudinary.uploader.destroy(public_id=public_id)
                                     f.imgId=None
                                 except:
-                                    print('could del pic') 
+                                    pass
                         f.save()
                         Options.objects.filter(question=f).delete()
                 optionData = {x: data[x] for x in data if 'Option' in x}
@@ -775,7 +780,7 @@ def delQs(request):
                     try:       
                         c=cloudinary.uploader.destroy(public_id=public_id) #return {result:'ok'}
                     except:
-                        print('couldnt del pic') 
+                        pass
                     qs.delete()
                 elif sid==5:
                     CodingTest.objects.get(id=x).delete()

@@ -21,15 +21,13 @@ import CompScreen from "./screens/Test/compScreen";
 import Page_404 from "./screens/Page_404";
 import RegisterAdmin from "./screens/Admin/RegisterAdmin";
 import Profile from "./screens/Admin/Profile";
-import DetailScreen from "./screens/DetailScreen";
 import PrivateRoute from "./components/PrivateRoute";
-import "./css/App.css";
-import Signup from "./screens/Signup";
 import SignUpModified from "./screens/SignUpModified";
 import ChangePass from "./screens/ChangePass";
 import DetailPageModified from "./screens/DetailPageModified";
 import Feedback from "./screens/Admin/Feedback";
 import Permissions from "./screens/Admin/Permissions";
+import "./css/App.css";
 function App() {
   return (
     <div className="App" id="element">
@@ -88,7 +86,7 @@ function App() {
               element={
                 <Row style={{ margin: "0px" }}>
                   <Col style={{ padding: "0px" }}>
-                    <RegisterAdmin/>
+                    <RegisterAdmin />
                   </Col>
                 </Row>
               }
@@ -99,7 +97,7 @@ function App() {
               element={
                 <Row style={{ margin: "0px" }}>
                   <Col style={{ padding: "0px" }}>
-                    <Profile/>
+                    <Profile />
                   </Col>
                 </Row>
               }
@@ -153,7 +151,7 @@ function App() {
                 path="/admin/home"
                 exact
                 element={
-                  <Row style={{ margin: "0 0 0 0"}}>
+                  <Row style={{ margin: "0 0 0 0" }}>
                     <Col style={{ padding: "0px 0px 0px 0px" }}>
                       <AdminHome />
                     </Col>

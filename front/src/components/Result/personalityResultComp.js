@@ -168,7 +168,6 @@ export default function PersonalityResultComp({
     setValueC5([SOP, SOFP[1], SOFP[2], SOFP[3], SOFP[4], SOFP[5], SOFP[6]]);
   }, []);
   $(document).ready(function () {
-    console.log(location.state);
     var ticks1 = [
       "Cheerfulness",
       "Excitement-Seeking",

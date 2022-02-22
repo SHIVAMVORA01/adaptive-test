@@ -191,7 +191,6 @@ export default function Compiler() {
               },
             })
             .then((res) => {
-              console.log("done");
               localStorage.removeItem("test2");
             })
             .catch((e) => console.log(e));
