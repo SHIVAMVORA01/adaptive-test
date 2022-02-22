@@ -1,8 +1,16 @@
 import React from "react";
-import { Container, FormControl, InputGroup, Form } from "react-bootstrap";
+import { Container, FormControl, InputGroup, Form , OverlayTrigger, Popover} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 
 function RegisterAdmin() {
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Body>
+      Admins need to be registered to access the admin features of this portal.
+      </Popover.Body>
+    </Popover>
+  );
   const navigate = useNavigate();
   return (
     <div>
@@ -32,6 +40,16 @@ function RegisterAdmin() {
         }}
       >
         Register Admin{" "}
+        <OverlayTrigger trigger="hover" placement="bottom" overlay={popover}>
+                <button style={{ backgroundColor: "white", outline: "none", border: "none", marginLeft: "10px"}}>
+                  <BsFillInfoCircleFill
+                    className="info"
+                    style={{
+                      height: "12px",
+                      width: "12px",
+                    }} />
+                </button>
+              </OverlayTrigger>
       </p>
       <p
         className="AdWell"
@@ -48,8 +66,7 @@ function RegisterAdmin() {
         }}
       >
         {" "}
-        Admins need to be registered to access the admin features of this
-        portal.
+      
       </p>
 
       <Container

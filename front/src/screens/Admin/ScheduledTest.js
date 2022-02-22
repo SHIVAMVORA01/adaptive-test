@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Modal, Button } from "react-bootstrap";
+import { Row, Col, Modal, Button, Overlay, Tooltip, Image, OverlayTrigger, Popover } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
@@ -8,7 +8,16 @@ import "../../css/SchdlTest.css";
 import Alert from "../../components/Admin/Alert";
 import { BsFillInfoCircleFill } from "react-icons/bs";
 
+
 function ScheduledTest() {
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Body>
+        Admins can view, delete and modify the tests scheduled by them. Click on delete button or eye button to delete/modify the tests and preview the scheduled tests"
+      </Popover.Body>
+    </Popover>
+  );
+
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
   const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
@@ -242,6 +251,8 @@ function ScheduledTest() {
       saveChanges(e);
     }
   }
+
+
 
   return (
     <>
@@ -588,18 +599,17 @@ function ScheduledTest() {
                 marginLeft: "30px",
               }}
             >
-              {" "}
               View Tests{" "}
-              <BsFillInfoCircleFill
-                className="info"
-                style={{
-                  height: "12px",
-                  width: "12px",
-                  marginLeft: "5px",
-                  justifyContent: "center",
-                }}
-                title="Admins can view, delete and modify the tests scheduled by them. Click on delete button or eye button to delete/modify the tests and preview the scheduled tests"
-              />{" "}
+              <OverlayTrigger trigger="hover" placement="bottom" overlay={popover}>
+                <button style={{ backgroundColor: "white", outline: "none", border: "none", marginLeft: "10px"}}>
+                  <BsFillInfoCircleFill
+                    className="info"
+                    style={{
+                      height: "12px",
+                      width: "12px",
+                    }} />
+                </button>
+              </OverlayTrigger>
             </p>
 
             <Row style={{ margin: "0 0 0 10%" }}>

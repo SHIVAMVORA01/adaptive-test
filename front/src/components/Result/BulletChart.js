@@ -25,7 +25,7 @@ function BulletChart({ secId, score = 30 }) {
     ],
   ];
   return (
-    <div style={{ height: "150px", width: "100%" }}>
+    <div style={{ height: "120px", width: "100%" }}>
       <ChartBullet
         axisComponent={
           <ChartAxis

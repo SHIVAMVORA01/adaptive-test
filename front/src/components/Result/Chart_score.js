@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Chart from "react-apexcharts";
+import ChartScore from "../../css/ChartScore.css";
 
 function Chart_score({ percent, label }) {
   const [isCompSet, setisCompSet] = useState(false);
@@ -23,10 +24,11 @@ function Chart_score({ percent, label }) {
     <>
       {isCompSet && (
         <Chart
+          style={{fontFamily: "Poppins", fontSize:"13.6px"}}       
           series={[percent]}
           options={chartOpt(label)}
           type="radialBar"
-          height={300}
+          height={250}
         />
       )}
     </>

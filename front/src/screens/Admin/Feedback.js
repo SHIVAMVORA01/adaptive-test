@@ -1,13 +1,21 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../axios";
-import { Row, Col } from "react-bootstrap";
+import { Row, Col, OverlayTrigger, Popover  } from "react-bootstrap";
 import { MDBDataTable, MDBInput } from "mdbreact";
 import Alert from "../../components/Admin/Alert";
 import Loader from "../../components/Loader";
 import $ from "jquery";
 import { useNavigate } from "react-router-dom";
+import { BsFillInfoCircleFill } from "react-icons/bs";
 
 function Feedback() {
+  const popover = (
+    <Popover id="popover-basic">
+      <Popover.Body>
+       Allow feedbacks from students.      
+      </Popover.Body>
+    </Popover>
+  );
   const [data, setTData] = useState({ columns: [], rows: [] });
   const navigate = useNavigate();
   const [successMsg, setSuccessMsg] = useState("");
@@ -148,6 +156,16 @@ function Feedback() {
             }}
           >
             Take Feedbacks
+            <OverlayTrigger trigger="hover" placement="bottom" overlay={popover}>
+                <button style={{ backgroundColor: "white", outline: "none", border: "none", marginLeft: "10px"}}>
+                  <BsFillInfoCircleFill
+                    className="info"
+                    style={{
+                      height: "12px",
+                      width: "12px",
+                    }} />
+                </button>
+              </OverlayTrigger>
           </p>
           <p
             className="AdWell"
@@ -163,10 +181,7 @@ function Feedback() {
               textAlign: "center",
             }}
           >
-            {" "}
-            To take feedbacks from students.
           </p>
-
           <MDBDataTable
             className="feedbackTable"
             striped
