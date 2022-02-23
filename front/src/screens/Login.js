@@ -14,8 +14,13 @@ import { GoogleLogin, GoogleLogout } from "react-google-login";
 import { FcGoogle } from "react-icons/fc";
 import Alert from "../components/Admin/Alert";
 import forgotPass from "../img/forgotPass.png";
+import MobileWidth from "../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function Login() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID_API_KEY;
   const navigate = useNavigate();
   const [md, setMd] = useState(false);
@@ -246,6 +251,7 @@ function Login() {
 
   return (
     <>
+    {isDesktopOrLaptop ?<>
       <Alert
         msg={successMsg}
         setIsAlertMsgLoaded={setIsAlertMsgLoaded}
@@ -715,6 +721,7 @@ function Login() {
           </div>
         </>
       )}
+    </>:<MobileWidth />}
     </>
   );
 }

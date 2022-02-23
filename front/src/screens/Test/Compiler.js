@@ -12,8 +12,13 @@ import { isExpired } from "react-jwt";
 import ACEEditor from "../../components/TestScreeen/AceEditor";
 import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
 import Alert from "../../components/Admin/Alert";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 export default function Compiler() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const [inputT, setInput] = useState();
   const [inputT_question_1, setInput_question_1] = useState();
   const [inputT_question_2, setInput_question_2] = useState();
@@ -1425,6 +1430,7 @@ export default function Compiler() {
 
   return (
     <>
+    {isDesktopOrLaptop?<>
       <Alert
         msg={successMsg}
         setIsAlertMsgLoaded={setIsAlertMsgLoaded}
@@ -2186,6 +2192,7 @@ export default function Compiler() {
           </div>
         </Col>
       </Row>
-    </>
+</>:<MobileWidth/>}
+          </>
   );
 }

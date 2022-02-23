@@ -10,8 +10,14 @@ import "react-medium-image-zoom/dist/styles.css";
 import AnalyticalQsComp from "../../components/Admin/AnalyticalQsComp";
 import Alert from "../../components/Admin/Alert";
 import { Image } from "cloudinary-react";
+import ConfirmDialogBox from "../../components/ConfirmDialogBox";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function SetQuestion() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const [navArray, setNavArray] = useState([]);
@@ -50,6 +56,12 @@ function SetQuestion() {
   const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
   const [imgDB, setImgDb] = useState("");
   const [delImage, setDelImage] = useState(false);
+  const [showConfirmDialogBox, setShowConfirmDialogBox] = useState(false);
+  const [argConfirmModal, setArgConfirmModal] = useState();
+  const [confirm_yes_func, set_confirm_yes_func] = useState();
+  const [confirm_no_func, set_confirm_no_func] = useState();
+  const [confirm_dialog_msg, set_confirm_dialog_msg] = useState("");
+  const [confirm_dialog_title, set_confirm_dialog_title] = useState("");
 
   useEffect(() => {
     document.getElementById(location.state.type).selected = "selected";
@@ -337,7 +349,27 @@ function SetQuestion() {
     });
     set_rerenderState(true);
   }
+  function confirm_del_yes() {
+    var $boxes = $("input[name=styleCheckBox]:checked");
 
+    var a = [];
+    $boxes.each(function (item) {
+      // Do stuff here with this
+      var val = $boxes[item].value;
+      val = val.split("CheckBox")[1];
+      a.push(parseInt(val));
+    });
+    console.log(a);
+    axiosInstance
+      .post("api/admin/delQs", {
+        data: { delQs: a, sid: location.state.sid },
+      })
+      .then((res) => {
+        navigate("/admin/newTest", {
+          state: { sid: location.state.sid - 1 },
+        });
+      });
+  }
   function delQuestion(e) {
     var elCheckBox = document.getElementsByClassName("styled-checkbox");
     var $boxes = $("input[name=styleCheckBox]:checked");
@@ -348,24 +380,13 @@ function SetQuestion() {
           elCheckBox[x].style.display = "none";
         }
       } else {
-        if (window.confirm("Do you want to delete ?")) {
-          var a = [];
-          $boxes.each(function (item) {
-            // Do stuff here with this
-            var val = $boxes[item].value;
-            val = val.split("CheckBox")[1];
-            a.push(parseInt(val));
-          });
-          axiosInstance
-            .post("api/admin/delQs", {
-              data: { delQs: a, sid: location.state.sid },
-            })
-            .then((res) => {
-              navigate("/admin/newTest", {
-                state: { sid: location.state.sid - 1 },
-              });
-            });
-        }
+        set_confirm_yes_func(() => confirm_del_yes);
+        set_confirm_no_func(() => confirm_no);
+        set_confirm_dialog_msg(
+          "Are you sure you want to delete this question?"
+        );
+        set_confirm_dialog_title("Delete it?");
+        setShowConfirmDialogBox(true);
       }
     } else {
       for (var x = 0; x < elCheckBox.length; x++) {
@@ -459,13 +480,28 @@ function SetQuestion() {
     };
   };
   function del_Image() {
-    if (window.confirm("Remove this Image?")) {
-      setDelImage(true);
-    }
+    set_confirm_yes_func(() => confirm_yes);
+    set_confirm_no_func(() => confirm_no);
+    set_confirm_dialog_msg("Are you sure you want to remove this image?");
+    set_confirm_dialog_title("Remove?");
+    setShowConfirmDialogBox(true);
   }
+  function confirm_yes() {
+    setDelImage(true);
+  }
+  function confirm_discard_yes() {
+    window.location.reload();
+  }
+  function confirm_discard_no() {
+    var ele = document.getElementById("actionBut");
+    ele.focus();
+    ele.classList.toggle("blinking");
+  }
+  function confirm_no() {}
   return (
     <div>
-      <Alert
+      {isDesktopOrLaptop?<>
+        <Alert
         msg={successMsg}
         setIsAlertMsgLoaded={setIsAlertMsgLoaded}
         isAlertMsgLoaded={isAlertMsgLoaded}
@@ -477,6 +513,15 @@ function SetQuestion() {
         isAlertMsgLoaded={isAlertMsgLoaded}
         type="danger"
       ></Alert>
+      <ConfirmDialogBox
+        showConfirmDialogBox={showConfirmDialogBox}
+        setShowConfirmDialogBox={setShowConfirmDialogBox}
+        confirm_no={confirm_no_func}
+        confirm_yes={confirm_yes_func}
+        arg={argConfirmModal}
+        title={confirm_dialog_title}
+        msg={confirm_dialog_msg}
+      />
       <form onSubmit={(e) => handleSubmit(e)} id="sbForm">
         <input name="sectionName" value={location.state.sectionName} hidden />
         <input
@@ -1434,25 +1479,13 @@ function SetQuestion() {
                   className="btn"
                   type="button"
                   onClick={(e) => {
-                    if (
-                      !window.confirm("Do you want to discard these changes?")
-                    ) {
-                      // Save it!
-                      var ele = document.getElementById("actionBut");
-                      ele.focus();
-                      ele.classList.toggle("blinking");
-                    } else {
-                      setIsUpdate(!isUpdate);
-                      if (isNew) {
-                        window.location.reload();
-                        setNavArray(
-                          navArray.filter(
-                            (item, index) => index !== navArray.length - 1
-                          )
-                        );
-                        setIsNew(false);
-                      }
-                    }
+                    set_confirm_yes_func(() => confirm_discard_yes);
+                    set_confirm_no_func(() => confirm_discard_no);
+                    set_confirm_dialog_msg(
+                      "Do you want to discard these changes?"
+                    );
+                    set_confirm_dialog_title("Discard?");
+                    setShowConfirmDialogBox(true);
                   }}
                   style={{
                     backgroundColor: "#10B65C",
@@ -1734,6 +1767,7 @@ function SetQuestion() {
           )}
         </Row>
       </form>
+      </>:<MobileWidth/>}
     </div>
   );
 }

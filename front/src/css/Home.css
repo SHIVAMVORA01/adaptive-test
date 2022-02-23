@@ -164,21 +164,6 @@
   text-align: center;
   color: #0f1420;
 }
-
-@media (max-width: 612px) {
-  .videoPlayer {
-    margin-left: 10px !important;
-    margin-right: 10px !important;
-    width: 95% !important;
-  }
-  .videoPlayer div {
-    width: 100% !important;
-  }
-  .user {
-    height: 150px;
-    width: 150px;
-  }
-}
 @media (max-width: 991px) {
   .welcomeDiv {
     height: 1000px;
@@ -254,5 +239,20 @@
     -ms-flex-order: 1;
     -webkit-order: 1;
     order: 1;
+  }
+}
+
+@media (max-width: 612px) {
+  .videoPlayer {
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+    width: 95% !important;
+  }
+  .videoPlayer div {
+    width: 100% !important;
+  }
+  .user {
+    height: 150px;
+    width: 150px;
   }
 }

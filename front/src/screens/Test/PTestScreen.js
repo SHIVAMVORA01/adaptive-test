@@ -11,8 +11,13 @@ import CustomTimer from "../Admin/CustomTimer";
 import getCurrentTime from "../../components/TestScreeen/dateCalc";
 import axiosInstance from "../../axios";
 import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function PTestScreen() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const [hard, setHard] = useState([]);
   const [medium, setMedium] = useState([]);
   const [easy, setEasy] = useState([]);
@@ -300,7 +305,9 @@ function PTestScreen() {
 
   return (
     <div>
-      <Modal
+      {isDesktopOrLaptop?<>
+      
+        <Modal
         show={show}
         onHide={handleClose}
         backdrop="static"
@@ -451,7 +458,8 @@ function PTestScreen() {
           </div>
         </div>
       }
-    </div>
+</>:<MobileWidth/>}
+      </div>
   );
 }
 

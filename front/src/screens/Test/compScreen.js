@@ -10,8 +10,13 @@ import getCurrentTime from "../../components/TestScreeen/dateCalc";
 import axiosInstance from "../../axios";
 import { isExpired, decodeToken } from "react-jwt";
 import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function CompScreen() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   //prev pages
   const navigate = useNavigate();
   const [show, setShow] = useState(false);
@@ -282,7 +287,8 @@ function CompScreen() {
   }
   return (
     <div>
-      <Modal
+      {isDesktopOrLaptop?<>
+        <Modal
         show={show}
         onHide={handleClose}
         backdrop="static"
@@ -531,7 +537,8 @@ function CompScreen() {
           </Row>
         </>
       )}
-    </div>
+</>:<MobileWidth/>}
+          </div>
   );
 }
 

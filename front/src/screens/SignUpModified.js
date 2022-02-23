@@ -6,8 +6,13 @@ import Alert from "../components/Admin/Alert";
 import Loader from "../components/Loader";
 import createFilterOptions from "react-select-fast-filter-options";
 import Select from "react-select";
+import { useMediaQuery } from "react-responsive";
+import MobileWidth from "../components/MobileWidth";
 
 function SignUpModified() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const [colleges, setColleges] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [isLoading, setIsloading] = useState(true);
@@ -102,6 +107,7 @@ function SignUpModified() {
 
   return (
     <>
+    {isDesktopOrLaptop?<>
       <Alert
         msg={successMsg}
         setIsAlertMsgLoaded={setIsAlertMsgLoaded}
@@ -341,6 +347,7 @@ function SignUpModified() {
           </Container>
         </div>
       )}
+    </>:<MobileWidth/>}
     </>
   );
 }

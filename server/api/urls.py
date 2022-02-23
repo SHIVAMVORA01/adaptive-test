@@ -23,6 +23,7 @@ urlpatterns = [
    path("api/changepass",views.changepass),
    path("api/feedback",views.feedback),
    path("api/takeFeedback",views.takeFeedback),
+   path('api/checkToken',views.checkpassToken),
 
    # admin
    path('api/const',views.constdata),

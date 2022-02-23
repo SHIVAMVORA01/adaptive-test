@@ -1,20 +1,26 @@
 import React from "react";
-import { Container, FormControl, InputGroup, Form , OverlayTrigger, Popover} from "react-bootstrap";
+import { Container, Form, OverlayTrigger, Popover } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { BsFillInfoCircleFill } from "react-icons/bs";
-
+import { FiInfo } from "react-icons/fi";
+import { useMediaQuery } from "react-responsive";
+import MobileWidth from "../../components/MobileWidth";
 function RegisterAdmin() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const popover = (
     <Popover id="popover-basic">
       <Popover.Body>
-      Admins need to be registered to access the admin features of this portal.
+        Admins need to be registered to access the admin features of this
+        portal.
       </Popover.Body>
     </Popover>
   );
   const navigate = useNavigate();
   return (
     <div>
-      <button
+      {isDesktopOrLaptop ?<>
+        <button
         style={{
           marginLeft: "1%",
           backgroundColor: "#293E6F",
@@ -41,32 +47,25 @@ function RegisterAdmin() {
       >
         Register Admin{" "}
         <OverlayTrigger trigger="hover" placement="bottom" overlay={popover}>
-                <button style={{ backgroundColor: "white", outline: "none", border: "none", marginLeft: "10px"}}>
-                  <BsFillInfoCircleFill
-                    className="info"
-                    style={{
-                      height: "12px",
-                      width: "12px",
-                    }} />
-                </button>
-              </OverlayTrigger>
-      </p>
-      <p
-        className="AdWell"
-        style={{
-          fontFamily: "Poppins",
-          color: "#999999",
-          fontWeight: "100",
-          marginTop: "30px",
-          fontSize: "15.4px",
-          marginLeft: "60px",
-          marginRight: "10px",
-          marginBottom: "40px",
-          textAlign: "center",
-        }}
-      >
-        {" "}
-      
+          <button
+            style={{
+              backgroundColor: "white",
+              outline: "none",
+              border: "none",
+              marginLeft: "0px",
+              padding: "0px",
+            }}
+          >
+            <FiInfo
+              className="info"
+              style={{
+                height: "15px",
+                width: "15px",
+                marginTop: "5px",
+              }}
+            />
+          </button>
+        </OverlayTrigger>
       </p>
 
       <Container
@@ -76,7 +75,7 @@ function RegisterAdmin() {
           height: "630px",
           boxShadow: "1.5px 1.5px 7px 3px rgba(0,0,0,0.2)",
           borderRadius: "40px",
-          marginTop: "50px",
+          marginTop: "30px",
           marginBottom: "50px",
         }}
       >
@@ -165,6 +164,7 @@ function RegisterAdmin() {
           </Form>
         </div>
       </Container>
+      </>:<MobileWidth/>}
     </div>
   );
 }

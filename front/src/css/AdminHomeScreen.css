@@ -289,5 +289,15 @@
   text-decoration: none;
 }
 .dataTables_wrapper .dataTables_length label select {
-  width:30% !important;
+  width: 30% !important;
+}
+@media (max-width: 1440px) {
+  .features_card {
+    height: 250px !important;
+  }
+}
+@media (max-width: 1140px) {
+  .features_card {
+    height: 280px !important;
+  }
 }

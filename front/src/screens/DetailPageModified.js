@@ -5,8 +5,13 @@ import { isExpired } from "react-jwt";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
 import "../css/LoginScreen.css";
 import Loader from "../components/Loader";
+import MobileWidth from "../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function DetailPageModified() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const [agree, setAgree] = useState(false);
   const [isLoading, setIsloading] = useState(true);
   const navigate = useNavigate();
@@ -59,6 +64,7 @@ function DetailPageModified() {
   };
   return (
     <>
+    {isDesktopOrLaptop?<>
       {isLoading ? (
         <Loader />
       ) : (
@@ -153,7 +159,8 @@ function DetailPageModified() {
           </Col>
         </Row>
       )}
-    </>
+</>:<MobileWidth/>}
+          </>
   );
 }
 

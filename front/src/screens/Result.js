@@ -11,8 +11,13 @@ import DetailedReportComp from "../components/Result/DetailedReportComp";
 import Feedbackstar from "react-feedback-star-component";
 import Loader from "../components/Loader";
 import Alert from "../components/Admin/Alert";
+import { useMediaQuery } from "react-responsive";
+import MobileWidth from "../components/MobileWidth";
 
 function Result() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const navigate = useNavigate();
   const [mrks, setmrks] = useState(0);
   const [totalMarksScored, setTotalMarksScored] = useState(0);
@@ -299,6 +304,7 @@ function Result() {
 
   return (
     <>
+    {isDesktopOrLaptop?<>
       {isLoading ? (
         <Loader />
       ) : (
@@ -803,6 +809,7 @@ function Result() {
           </button>
         </div>
       )}
+    </>:<MobileWidth/>}
     </>
   );
 }

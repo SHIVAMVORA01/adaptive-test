@@ -4,3 +4,13 @@
   font-weight: 500;
   text-align: justify;
 }
+@media (max-width: 350px) {
+  .mobile_width_error {
+    height: 25% !important;
+  }
+}
+@media (max-width: 250px) {
+  .mobile_width_error {
+    height: 30% !important;
+  }
+}

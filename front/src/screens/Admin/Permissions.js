@@ -1,20 +1,32 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../../axios";
-import { Form, Button, Row, Col, OverlayTrigger, Popover } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Row,
+  Col,
+  OverlayTrigger,
+  Popover,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { MDBDataTable, MDBInput } from "mdbreact";
 import Alert from "../../components/Admin/Alert";
 import Loader from "../../components/Loader";
 import $ from "jquery";
 import "../../css/Permissions.css";
-import { BsFillInfoCircleFill } from "react-icons/bs";
-
+import { FiInfo } from "react-icons/fi";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function Permissions() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const popover = (
     <Popover id="popover-basic">
       <Popover.Body>
-      Permission must be granted for students to take their tests.From the tables below, choose the students to whom you want to grant permission.
+        Permission must be granted for students to take their tests.From the
+        tables below, choose the students to whom you want to grant permission.
       </Popover.Body>
     </Popover>
   );
@@ -127,6 +139,7 @@ function Permissions() {
 
   return (
     <>
+    {isDesktopOrLaptop?<>
       <Alert
         msg={successMsg}
         setIsAlertMsgLoaded={setIsAlertMsgLoaded}
@@ -177,39 +190,39 @@ function Permissions() {
                   style={{
                     fontSize: "20px",
                     fontWeight: "bold",
-                    marginBottom: "0px",
+                    marginBottom: "10px",
                     marginTop: "10px",
                     color: "#293e6f",
                     textAlign: "center",
                   }}
                 >
                   Grant Permissions
-                  <OverlayTrigger trigger="hover" placement="bottom" overlay={popover}>
-                <button style={{ backgroundColor: "white", outline: "none", border: "none", marginLeft: "10px"}}>
-                  <BsFillInfoCircleFill
-                    className="info"
-                    style={{
-                      height: "12px",
-                      width: "12px",
-                    }} />
-                </button>
-              </OverlayTrigger>
+                  <OverlayTrigger
+                    trigger="hover"
+                    placement="bottom"
+                    overlay={popover}
+                  >
+                    <button
+                      style={{
+                        backgroundColor: "white",
+                        outline: "none",
+                        border: "none",
+                        marginLeft: "5px",
+                        padding: "0px",
+                      }}
+                    >
+                      <FiInfo
+                        className="info"
+                        style={{
+                          height: "15px",
+                          width: "15px",
+                          marginTop: "5px",
+                        }}
+                      ></FiInfo>
+                    </button>
+                  </OverlayTrigger>
                 </p>
-                <p
-                  className="AdWell"
-                  style={{
-                    fontFamily: "Poppins",
-                    color: "#999999",
-                    fontWeight: "100",
-                    marginTop: "10px",
-                    fontSize: "15.4px",
-                    marginLeft: "10px",
-                    marginRight: "10px",
-                    marginBottom: "40px",
-                    textAlign: "center",
-                  }}
-                >
-                </p>
+
                 <MDBDataTable
                   className="feedbackTable"
                   striped
@@ -293,7 +306,8 @@ function Permissions() {
           </div>
         </>
       )}
-    </>
+</>:<MobileWidth/>}
+          </>
   );
 }
 export default Permissions;

@@ -1,14 +1,20 @@
 import React from "react";
 import { Container, FormControl, InputGroup, Form } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
+import MobileWidth from "../../components/MobileWidth";
 
 function Profile() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const navigate = useNavigate();
   return (
     <div
       style={{ fontSize: "13.6px", padding: "0 60px", marginBottom: "20px" }}
     >
-      <button
+      {isDesktopOrLaptop?<>
+        <button
         style={{
           marginLeft: "1%",
           backgroundColor: "#293E6F",
@@ -102,6 +108,7 @@ function Profile() {
           </Form>
         </div>
       </Container>
+      </>:<MobileWidth/>}
     </div>
   );
 }

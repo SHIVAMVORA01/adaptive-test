@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axiosInstance from "../../axios";
-import { Row, Col, OverlayTrigger, Popover  } from "react-bootstrap";
+import { Row, Col, OverlayTrigger, Popover } from "react-bootstrap";
 import { MDBDataTable, MDBInput } from "mdbreact";
 import Alert from "../../components/Admin/Alert";
 import Loader from "../../components/Loader";
 import $ from "jquery";
 import { useNavigate } from "react-router-dom";
-import { BsFillInfoCircleFill } from "react-icons/bs";
+import { FiInfo } from "react-icons/fi";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function Feedback() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const popover = (
     <Popover id="popover-basic">
-      <Popover.Body>
-       Allow feedbacks from students.      
-      </Popover.Body>
+      <Popover.Body>Allow feedbacks from students.</Popover.Body>
     </Popover>
   );
   const [data, setTData] = useState({ columns: [], rows: [] });
@@ -108,7 +111,8 @@ function Feedback() {
 
   return (
     <div>
-      <Alert
+      {isDesktopOrLaptop?<>
+        <Alert
         msg={successMsg}
         setIsAlertMsgLoaded={setIsAlertMsgLoaded}
         isAlertMsgLoaded={isAlertMsgLoaded}
@@ -149,38 +153,37 @@ function Feedback() {
             style={{
               fontSize: "20px",
               fontWeight: "bold",
-              marginBottom: "0px",
+              marginBottom: "10px",
               marginTop: "10px",
               color: "#293e6f",
               textAlign: "center",
             }}
           >
             Take Feedbacks
-            <OverlayTrigger trigger="hover" placement="bottom" overlay={popover}>
-                <button style={{ backgroundColor: "white", outline: "none", border: "none", marginLeft: "10px"}}>
-                  <BsFillInfoCircleFill
-                    className="info"
-                    style={{
-                      height: "12px",
-                      width: "12px",
-                    }} />
-                </button>
-              </OverlayTrigger>
-          </p>
-          <p
-            className="AdWell"
-            style={{
-              fontFamily: "Poppins",
-              color: "#999999",
-              fontWeight: "100",
-              marginTop: "30px",
-              fontSize: "15.4px",
-              marginLeft: "10px",
-              marginRight: "10px",
-              marginBottom: "40px",
-              textAlign: "center",
-            }}
-          >
+            <OverlayTrigger
+              trigger="hover"
+              placement="bottom"
+              overlay={popover}
+            >
+              <button
+                style={{
+                  backgroundColor: "white",
+                  outline: "none",
+                  border: "none",
+                  marginLeft: "5px",
+                  padding: "0px",
+                }}
+              >
+                <FiInfo
+                  className="info"
+                  style={{
+                    height: "15px",
+                    width: "15px",
+                    marginTop: "5px",
+                  }}
+                />
+              </button>
+            </OverlayTrigger>
           </p>
           <MDBDataTable
             className="feedbackTable"
@@ -242,7 +245,8 @@ function Feedback() {
           </Row>
         </div>
       )}
-    </div>
+</>:<MobileWidth/>}
+          </div>
   );
 }
 

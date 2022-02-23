@@ -9,8 +9,13 @@ import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
 import Loader from "../../components/Loader";
 import Alert from "../../components/Admin/Alert";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function NewTest() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   //Current Sec Data
   const [easy, setEasy] = useState([]);
   const [med, setMed] = useState([]);
@@ -323,6 +328,7 @@ function NewTest() {
 
   return (
     <>
+    {isDesktopOrLaptop?<>
       <Alert
         msg={successMsg}
         setIsAlertMsgLoaded={setIsAlertMsgLoaded}
@@ -859,6 +865,7 @@ function NewTest() {
           </Row>
         </form>
       )}
+    </>:<MobileWidth/>}
     </>
   );
 }

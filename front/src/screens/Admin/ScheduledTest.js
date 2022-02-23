@@ -1,19 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { Row, Col, Modal, Button, Overlay, Tooltip, Image, OverlayTrigger, Popover } from "react-bootstrap";
+import {
+  Row,
+  Col,
+  Modal,
+  Button,
+  OverlayTrigger,
+  Popover,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
 import Loader from "../../components/Loader";
 import "../../css/SchdlTest.css";
 import Alert from "../../components/Admin/Alert";
-import { BsFillInfoCircleFill } from "react-icons/bs";
-
+import { FiInfo } from "react-icons/fi";
+import ConfirmDialogBox from "../../components/ConfirmDialogBox";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function ScheduledTest() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const popover = (
     <Popover id="popover-basic">
       <Popover.Body>
-        Admins can view, delete and modify the tests scheduled by them. Click on delete button or eye button to delete/modify the tests and preview the scheduled tests"
+        Admins can view, delete and modify the tests scheduled by them. Click on
+        delete button or eye button to delete/modify the tests and preview the
+        scheduled tests"
       </Popover.Body>
     </Popover>
   );
@@ -44,6 +58,11 @@ function ScheduledTest() {
   const [p, setP] = useState({});
   const [aw, setAW] = useState({});
   const navigate = useNavigate();
+  const [showConfirmDialogBox, setShowConfirmDialogBox] = useState(false);
+  const [argConfirmModal, setArgConfirmModal] = useState();
+  const [confirm_yes_func, set_confirm_yes_func] = useState();
+  const [confirm_no_func, set_confirm_no_func] = useState();
+  const [confirm_dialog_msg, set_confirm_dialog_msg] = useState("");
 
   useEffect(() => {
     const data = async () => {
@@ -162,7 +181,7 @@ function ScheduledTest() {
         : setDangerMsg("End date cannot be less than start date");
     }
   }
-  function delTest(e) {
+  function del_upcoming_test() {
     setIsloading(true);
     axiosInstance
       .delete(`api/test/${testId}`, {
@@ -183,8 +202,14 @@ function ScheduledTest() {
         console.log(e);
       });
   }
-  function delSTest(idd) {
-    if (window.confirm("Delete this test?")) {
+  function delTest(e) {
+    set_confirm_yes_func(() => del_upcoming_test);
+    set_confirm_no_func(() => confirm_no);
+    set_confirm_dialog_msg("Are you sure you want to delete this test");
+    setShowConfirmDialogBox(true);
+  }
+  function confirm_yes(idd) {
+    if (idd !== undefined) {
       setIsloading(true);
       axiosInstance
         .delete(`api/test/${idd}`)
@@ -200,6 +225,14 @@ function ScheduledTest() {
           console.log(e);
         });
     }
+  }
+  function confirm_no() {}
+  function delSTest(idd) {
+    setArgConfirmModal(idd);
+    set_confirm_yes_func(() => confirm_yes);
+    set_confirm_no_func(() => confirm_no);
+    set_confirm_dialog_msg("Are you sure you want to delete this test");
+    setShowConfirmDialogBox(true);
   }
 
   function startTest(tid) {
@@ -252,10 +285,9 @@ function ScheduledTest() {
     }
   }
 
-
-
   return (
     <>
+    {isDesktopOrLaptop?<>
       {isLoading ? (
         <Loader />
       ) : (
@@ -273,6 +305,15 @@ function ScheduledTest() {
             type="danger"
           ></Alert>
           <div className="SchdlTest">
+            <ConfirmDialogBox
+              showConfirmDialogBox={showConfirmDialogBox}
+              setShowConfirmDialogBox={setShowConfirmDialogBox}
+              title={"Delete it?"}
+              confirm_no={confirm_no_func}
+              confirm_yes={confirm_yes_func}
+              arg={argConfirmModal}
+              msg={confirm_dialog_msg}
+            />
             <Modal show={show} onHide={handleClose}>
               <form
                 onSubmit={(e) => {
@@ -600,18 +641,31 @@ function ScheduledTest() {
               }}
             >
               View Tests{" "}
-              <OverlayTrigger trigger="hover" placement="bottom" overlay={popover}>
-                <button style={{ backgroundColor: "white", outline: "none", border: "none", marginLeft: "10px"}}>
-                  <BsFillInfoCircleFill
+              <OverlayTrigger
+                trigger="hover"
+                placement="bottom"
+                overlay={popover}
+              >
+                <button
+                  style={{
+                    backgroundColor: "white",
+                    outline: "none",
+                    border: "none",
+                    marginLeft: "0px",
+                    padding: "0px",
+                  }}
+                >
+                  <FiInfo
                     className="info"
                     style={{
-                      height: "12px",
-                      width: "12px",
-                    }} />
+                      height: "15px",
+                      width: "15px",
+                      marginTop: "5px",
+                    }}
+                  />
                 </button>
               </OverlayTrigger>
             </p>
-
             <Row style={{ margin: "0 0 0 10%" }}>
               <Col md={6} style={{ marginRight: "0%" }}>
                 {" "}
@@ -778,7 +832,8 @@ function ScheduledTest() {
           </div>
         </>
       )}
-    </>
+ </>:<MobileWidth/>}
+         </>
   );
 }
 

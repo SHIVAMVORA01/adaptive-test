@@ -12,8 +12,13 @@ import CustomTimer from "./Admin/CustomTimer";
 import crypt from "../components/TestScreeen/crypt";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
 import Loader from "../components/Loader";
+import MobileWidth from "../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function TestScreen() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const [hard, setHard] = useState([]);
   const [medium, setMedium] = useState([]);
   const [easy, setEasy] = useState([]);
@@ -314,6 +319,7 @@ function TestScreen() {
   }
   return (
     <>
+    {isDesktopOrLaptop?<>
       {isLoading ? (
         <Loader />
       ) : (
@@ -468,6 +474,7 @@ function TestScreen() {
           }
         </div>
       )}
+    </>:<MobileWidth/>}
     </>
   );
 }

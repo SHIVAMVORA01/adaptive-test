@@ -1,8 +1,13 @@
 import React, { useEffect } from "react";
 import axiosInstance from "../axios";
 import { useNavigate } from "react-router-dom";
+import { useMediaQuery } from "react-responsive";
+import MobileWidth from "../components/MobileWidth";
 
 export default function Logout() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,5 +25,5 @@ export default function Logout() {
     axiosInstance.defaults.headers["Authorization"] = null;
     navigate("/login");
   });
-  return <div>Logout</div>;
+  return <div>{isDesktopOrLaptop?"Logout":<MobileWidth/>}</div>;
 }

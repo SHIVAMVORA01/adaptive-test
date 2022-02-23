@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Col,
-  Row,
-  ListGroup,
-  Card,
-  Navbar,
-  Nav,
-} from "react-bootstrap";
+import { Col, Row, ListGroup, Card, Navbar, Nav } from "react-bootstrap";
 import "../../css/AdminHomeScreen.css";
 import Coding from "../../img/carbon_code.svg";
 import Setting from "../../img/Brain.svg";
@@ -29,8 +22,13 @@ import { BsFillFileEarmarkPersonFill } from "react-icons/bs";
 import { RiLogoutCircleFill } from "react-icons/ri";
 import { RiAdminFill } from "react-icons/ri";
 import { AiFillControl } from "react-icons/ai";
+import MobileWidth from "../../components/MobileWidth";
+import { useMediaQuery } from "react-responsive";
 
 function AdminHome() {
+  const isDesktopOrLaptop = useMediaQuery({
+    query: "(min-width: 1024px)",
+  });
   useEffect(() => {
     if (localStorage.getItem("isNewTestReload") !== undefined) {
       localStorage.removeItem("isNewTestReload");
@@ -39,7 +37,8 @@ function AdminHome() {
   const navigate = useNavigate();
   return (
     <div className="AdminHomeScreen">
-      <Navbar
+      {isDesktopOrLaptop?<>
+        <Navbar
         style={{
           backgroundColor: "#FFF",
           boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)",
@@ -414,19 +413,24 @@ function AdminHome() {
               display: "inline-block",
             }}
           >
-            <Card
-              style={{ height: "66px", textAlign: "center", margin: "0 17%" }}
-            >
+            <Card style={{ textAlign: "center", margin: "0 17%" }}>
               <img
                 src={Brain}
                 style={{
-                  width: "30px",
-                  height: "30px",
-                  marginLeft: "25%",
-                  marginTop: "15px",
+                  width: "50px",
+                  height: "50px",
+                  margin: "15px 41% 0px auto",
                 }}
               ></img>
-              <p style={{ marginLeft: "45%", marginTop: "-25px" }}>Aptitude</p>
+              <p
+                style={{
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontWeight: "bold",
+                }}
+              >
+                Aptitude
+              </p>
             </Card>
           </Col>
           <Col
@@ -439,24 +443,22 @@ function AdminHome() {
               display: "inline-block",
             }}
           >
-            <Card
-              style={{
-                height: "66px",
-                textAlign: "center",
-                margin: "0 17%",
-                paddingTop: "15px",
-                paddingRight: "5%",
-                paddingLeft: "15%",
-              }}
-            >
+            <Card style={{ textAlign: "center", margin: "0 17%" }}>
               <img
                 src={CompFund}
                 style={{
-                  width: "30px",
-                  height: "30px",
+                  width: "50px",
+                  height: "50px",
+                  margin: "15px 41% 0px auto",
                 }}
               ></img>
-              <p style={{ marginLeft: "30%", marginTop: "-25px" }}>
+              <p
+                style={{
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontWeight: "bold",
+                }}
+              >
                 Fundamentals
               </p>
             </Card>
@@ -471,19 +473,24 @@ function AdminHome() {
               display: "inline-block",
             }}
           >
-            <Card
-              style={{ height: "66px", textAlign: "center", margin: "0 17%" }}
-            >
+            <Card style={{ textAlign: "center", margin: "0 17%" }}>
               <img
                 src={Setting}
                 style={{
-                  width: "30px",
-                  height: "30px",
-                  marginLeft: "70px",
-                  marginTop: "15px",
+                  width: "50px",
+                  height: "50px",
+                  margin: "15px 41% 0px auto",
                 }}
               ></img>
-              <p style={{ marginLeft: "130px", marginTop: "-25px" }}>Domain</p>
+              <p
+                style={{
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontWeight: "bold",
+                }}
+              >
+                Domain
+              </p>
             </Card>
           </Col>
           <Col
@@ -496,19 +503,22 @@ function AdminHome() {
               display: "inline-block",
             }}
           >
-            <Card
-              style={{ height: "66px", textAlign: "center", margin: "0 17%" }}
-            >
+            <Card style={{ textAlign: "center", margin: "0 17%" }}>
               <img
                 src={Personality}
                 style={{
-                  width: "30px",
-                  height: "30px",
-                  marginLeft: "70px",
-                  marginTop: "15px",
+                  width: "50px",
+                  height: "50px",
+                  margin: "15px 41% 0px auto",
                 }}
               ></img>
-              <p style={{ marginLeft: "130px", marginTop: "-25px" }}>
+              <p
+                style={{
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontWeight: "bold",
+                }}
+              >
                 Personality
               </p>
             </Card>
@@ -523,19 +533,24 @@ function AdminHome() {
               display: "inline-block",
             }}
           >
-            <Card
-              style={{ height: "66px", textAlign: "center", margin: "0 17%" }}
-            >
+            <Card style={{ textAlign: "center", margin: "0 17%" }}>
               <img
                 src={Coding}
                 style={{
-                  width: "30px",
-                  height: "30px",
-                  marginLeft: "70px",
-                  marginTop: "15px",
+                  width: "50px",
+                  height: "50px",
+                  margin: "15px 41% 0px auto",
                 }}
               ></img>
-              <p style={{ marginLeft: "130px", marginTop: "-25px" }}>Coding</p>
+              <p
+                style={{
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontWeight: "bold",
+                }}
+              >
+                Coding
+              </p>
             </Card>
           </Col>
           <Col
@@ -548,19 +563,22 @@ function AdminHome() {
               display: "inline-block",
             }}
           >
-            <Card
-              style={{ height: "66px", textAlign: "center", margin: "0 17%" }}
-            >
+            <Card style={{ textAlign: "center", margin: "0 17%" }}>
               <img
                 src={AnalyticalWr}
                 style={{
-                  width: "30px",
-                  height: "30px",
-                  marginLeft: "70px",
-                  marginTop: "15px",
+                  width: "50px",
+                  height: "50px",
+                  margin: "15px 41% 0px auto",
                 }}
               ></img>
-              <p style={{ marginLeft: "130px", marginTop: "-25px" }}>
+              <p
+                style={{
+                  textAlign: "center",
+                  marginTop: "20px",
+                  fontWeight: "bold",
+                }}
+              >
                 Reasoning
               </p>
             </Card>
@@ -583,8 +601,9 @@ function AdminHome() {
         <Row style={{ margin: "0 auto 40px auto", textAlign: "center" }}>
           <Col sm={12} md={6} lg={4}>
             <Card
+              className="features_card"
               style={{
-                height: "230px",
+                height: "220px",
                 textAlign: "center",
                 margin: "0 17%",
                 padding: "0 10px",
@@ -623,8 +642,9 @@ function AdminHome() {
           </Col>
           <Col sm={12} md={6} lg={4}>
             <Card
+              className="features_card"
               style={{
-                height: "230px",
+                height: "220px",
                 textAlign: "center",
                 margin: "0 17%",
                 padding: "0 10px",
@@ -663,11 +683,12 @@ function AdminHome() {
           </Col>
           <Col sm={12} md={6} lg={4}>
             <Card
+              className="features_card"
               style={{
-                height: "230px",
+                height: "220px",
                 textAlign: "center",
                 margin: "0 17%",
-                padding: "0 10px",
+                padding: "0 10px 10px 10px",
               }}
             >
               <img
@@ -703,6 +724,7 @@ function AdminHome() {
           </Col>
         </Row>
       </Row>
+      </>:<MobileWidth/>}
     </div>
   );
 }

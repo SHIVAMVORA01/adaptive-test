@@ -24,7 +24,7 @@ function Chart_score({ percent, label }) {
     <>
       {isCompSet && (
         <Chart
-          style={{fontFamily: "Poppins", fontSize:"13.6px"}}       
+          style={{ fontFamily: "Poppins", fontSize: "13.6px" }}
           series={[percent]}
           options={chartOpt(label)}
           type="radialBar"
