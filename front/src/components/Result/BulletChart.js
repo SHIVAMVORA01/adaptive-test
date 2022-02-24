@@ -52,13 +52,13 @@ function BulletChart({ secId, score = 30 }) {
         maxDomain={{ y: 100 }}
         primarySegmentedMeasureData={[{ name: "Measure", y: score }]}
         qualitativeRangeData={[
-          { name: "Introvert", y: 25 },
-          { name: "Moderately Introvert", y: 50 },
-          { name: "Moderately Extrovert", y: 75 },
-          { name: "Extrovert", y: 100 },
+          { name: sectionArr[secId][0], y: 25 },
+          { name: sectionArr[secId][1], y: 50 },
+          { name: sectionArr[secId][2], y: 75 },
+          { name: sectionArr[secId][3], y: 100 },
         ]}
         width={800}
-      />
+      />{console.log(sectionArr)}
     </div>
   );
 }

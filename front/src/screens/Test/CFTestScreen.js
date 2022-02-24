@@ -15,6 +15,7 @@ import crypt from "../../components/TestScreeen/crypt";
 import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
 import MobileWidth from "../../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
+import { AiFillWarning } from "react-icons/ai";
 
 function CFTestScreen() {
   const isDesktopOrLaptop = useMediaQuery({
@@ -487,29 +488,51 @@ function CFTestScreen() {
                           qsimg={qs[qsno].img}
                         ></QuestionComp>
                       )}
-                    {countWindowAwayModal && (
-                      <>
-                        <h4 style={{ color: "red" }}>
-                          Screen Change Detected !!{" "}
-                          {countWindowAway === 1 ? "1st" : "LAST"} WARNING
-                        </h4>
-                        <h6>
-                          Screen changed detected.Test will get auto submitted
-                          if you try to change screen again !!
-                        </h6>
-                        <button
-                          className="btn"
-                          onClick={(e) => handleCloseSChange(e)}
-                          style={{
-                            backgroundColor: "#10B65C",
-                            margin: "0px 0px 10px 3px",
-                            color: "white",
-                          }}
-                        >
-                          Okay
-                        </button>
-                      </>
-                    )}
+                       {countWindowAwayModal && (
+                            <>
+                              <div
+                                style={{
+                                  backgroundColor: "#F8D7DA",
+                                  height: "fit-content",
+                                  width: "95%",
+                                  border: "1px #8A3C5B",
+                                  borderRadius: "8px",
+                                  margin: "10px 10px 10px 25px",
+                                }}
+                              >
+                                <AiFillWarning
+                                  style={{
+                                    height: "30px",
+                                    width: "30px",
+                                    margin: "10px 500px 0px",
+                                    color: "#842029"
+                                  }}
+                                />
+                                <p style={{ color: "#842029", margin:"10px 0px 0px 470px"}}>
+                                  <p>
+                                    <b>{countWindowAway === 1 ? "1st" : "Last"} Warning</b>
+                                  </p>
+                                </p>
+                                <p style={{ color: "#842029", fontWeight: "normal", fontSize: "14px", textAlign:"center" }}>
+                                  The screen has been changed.Test will get auto submitted if you try to
+                                  change screen again{" "}
+                                </p>
+                                <Button
+                                  
+                                  onClick={(e) => handleCloseSChange(e)}
+                                  style={{
+                                    backgroundColor: "#842029",
+                                    margin: "0px 0px 20px 470px",
+                                    color: "white",
+                                    outline: "none",
+                                    border: "none",
+                                  }}
+                                >
+                                  Continue
+                                </Button>
+                              </div>
+                            </>
+                          )}
                   </form>
                 </div>
               </Col>
