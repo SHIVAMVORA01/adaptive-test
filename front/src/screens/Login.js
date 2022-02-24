@@ -370,7 +370,7 @@ function Login() {
           </Modal>
           <div>
             <Row style={{ height: "100%", margin: "0px" }}>
-              <Col lg={7} style={{ backgroundColor: "white", padding: "0px" }}>
+              <Col lg={8} style={{ backgroundColor: "white", padding: "0px" }}>
                 <div className="all_content" style={{ margin: "0px 50px" }}>
                   <h5
                     style={{
@@ -499,10 +499,7 @@ function Login() {
                   </Row>
                 </div>
               </Col>
-              <Col
-                lg={5}
-                className="Background"
-                style={{ padding: "3% 0 5% 0" }}
+              <Col lg={4} className="Background" style={{ padding: "3% 0 5% 0" }}
               >
                 <Container
                   className="sign_in"
