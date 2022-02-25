@@ -18,6 +18,9 @@ function ChangePass() {
     cpass: "",
   });
   const [formData, updateFormData] = useState(initialFormData);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [dangerMsg, setDangerMsg] = useState("");
+  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
 
   useEffect(() => {
     axiosInstance.post('api/checkToken',{data:{'mail': searchParams.get("user"),'token':searchParams.get("token")}})
@@ -43,14 +46,17 @@ function ChangePass() {
           if (res.data.exists) {
             navigate("/login");
           } else {
-            alert("Error occured");
+            setIsAlertMsgLoaded(true);
+            setDangerMsg("Something went wrong");
           }
         })
         .catch((e) => {
           console.log(e);
         });
     } else {
-      alert("password should be same");
+      setIsAlertMsgLoaded(true);
+      setDangerMsg("Password and confirm password do not match");
+      
     }
   };
 

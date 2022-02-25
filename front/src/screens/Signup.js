@@ -13,14 +13,17 @@ function Signup() {
     cpass: "",
   });
   const [formData, updateFormData] = useState(initialFormData);
-
+  const [successMsg, setSuccessMsg] = useState("");
+  const [dangerMsg, setDangerMsg] = useState("");
+  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
   useEffect(() => {
     const check = async () =>
       await axiosInstance
         .get("api/newuser", { params: { email: location.state.data.email } })
         .then((res) => {
           if (res.data.exists) {
-            alert("email already exists");
+            setIsAlertMsgLoaded(true);
+            setDangerMsg("The email is already registered");
             navigate("/login");
           } else {
             updateFormData({
@@ -41,7 +44,8 @@ function Signup() {
         .post(`api/newuser`, { data: formData })
         .then((res) => {
           if (res.data.exists) {
-            alert("email taken");
+            setIsAlertMsgLoaded(true);
+            setDangerMsg("The email is already registered");
             navigate("/login");
           } else {
             navigate("/login");
@@ -51,7 +55,8 @@ function Signup() {
           console.log(e);
         });
     } else {
-      alert("password should be same");
+      setIsAlertMsgLoaded(true);
+      setDangerMsg("Password and confirm password do not match");
     }
   };
 

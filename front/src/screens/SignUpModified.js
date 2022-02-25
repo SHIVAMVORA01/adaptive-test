@@ -48,8 +48,7 @@ function SignUpModified() {
         .then((res) => {
           if (res.data.exists) {
             setIsAlertMsgLoaded(true);
-            setDangerMsg("User already exists");
-            alert("User already exists");
+            setDangerMsg("User is already registered");
             navigate("/login");
           } else {
             updateFormData({
@@ -83,7 +82,8 @@ function SignUpModified() {
         .then((res) => {
           setIsloading(true);
           if (res.data.exists) {
-            alert("User already exists");
+            setIsAlertMsgLoaded(true);
+            setDangerMsg("The user is already registered");
           }
           navigate("/login");
         })
@@ -92,7 +92,7 @@ function SignUpModified() {
         });
     } else {
       setIsAlertMsgLoaded(true);
-      setDangerMsg("Passwords do not match");
+      setDangerMsg("Password and confirm password do not match");
     }
   };
 

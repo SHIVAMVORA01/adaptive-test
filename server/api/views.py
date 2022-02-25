@@ -25,6 +25,12 @@ from django.template.loader import get_template
 from django.conf import settings
 import uuid
 CFG = {'DB': None}
+import pandas as pd
+
+def predict():
+    regressor = pd.read_pickle(r'C:\Users\voras\Desktop\adaptive-test\server\model1.pickle') 
+    result = regressor.predict([[0,0,0,0,0]])
+    return int(result[0])
 
 def constdata(request):
     if request.method == "GET":
@@ -536,7 +542,7 @@ def chartData(user,testId=-1,isPost=False):
         if isPost:
             takeFeedback=myUser.takeFeedback
         user_detail=MyUserSerializer(myUser).data
-    return {'startTime':resl.startTime,'endTime':resl.endTime,'personalityData':resl.marks['pGot'],'marks':resl.marks,'totalQs':totalQs,'avgMarksArr':a,'mrksScored':mrksScored,'mrksScoredPercent':mrksScoredPercent,'totalMarksScored':sum(mrksScored),'timeTaken':tdelta.seconds,'res_id':resl.id,'user_detail':user_detail,'takeFeedback':takeFeedback}
+    return {'startTime':resl.startTime,'endTime':resl.endTime,'personalityData':resl.marks['pGot'],'marks':resl.marks,'totalQs':totalQs,'avgMarksArr':a,'mrksScored':mrksScored,'mrksScoredPercent':mrksScoredPercent,'totalMarksScored':sum(mrksScored),'timeTaken':tdelta.seconds,'res_id':resl.id,'user_detail':user_detail,'takeFeedback':takeFeedback, "prediction": predict()}
 
 @csrf_exempt
 def takeFeedback(request):
@@ -662,6 +668,7 @@ def getImgs(request):
                 return JsonResponse("Error occured",safe=False)
     else:
         return HttpResponseBadRequest()
+
 @csrf_exempt        
 def addQs(request):
     if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):

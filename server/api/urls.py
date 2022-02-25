@@ -24,6 +24,7 @@ urlpatterns = [
    path("api/feedback",views.feedback),
    path("api/takeFeedback",views.takeFeedback),
    path('api/checkToken',views.checkpassToken),
+   path('api/predict',views.predict),
 
    # admin
    path('api/const',views.constdata),

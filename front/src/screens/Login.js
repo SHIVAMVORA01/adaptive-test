@@ -205,7 +205,8 @@ function Login() {
                             navigate("/result");
                           } else {
                             setMd(true);
-                            alert("Already started on different device");
+                            setIsAlertMsgLoaded(true);
+                            setDangerMsg("Test is ongoing on a different device");
                             navigate("/logout");
                           }
                         } else {
@@ -330,7 +331,8 @@ function Login() {
                       if (res.data.exists) {
                         setShow(false);
                       } else {
-                        alert("Error occured");
+                        setIsAlertMsgLoaded(true);
+                        setDangerMsg("An Error occured");
                       }
                     })
                     .catch((e) => console.log(e));

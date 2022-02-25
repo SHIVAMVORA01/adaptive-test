@@ -128,7 +128,8 @@ function Permissions() {
               rows: res.data.allowed,
             });
           } else {
-            alert("There is no ongoing test");
+            setIsAlertMsgLoaded(true);
+            setDangerMsg("There are no ongoing tests");
             navigate("/admin/home");
           }
         })
