@@ -167,159 +167,205 @@ function ViewSchdlTest() {
         console.log(e);
       });
   }
-  function confirm_no() { }
+  function confirm_no() {}
   return (
     <>
-      {isDesktopOrLaptop ? <>
-        {isLoading ? (
-          <Loader />
-        ) : (
-          <div>
-            <Modal
-              show={sendMail}
-              onHide={() => setSendMail(false)}
-              aria-labelledby="send_mail"
-              centered
-            >
-              <Modal.Header style={{ backgroundColor: "#404040", fontWeight: "300", color: "white", fontSize: "14px", height: "100%" }} closeButton> Send Message</Modal.Header>
-              <Modal.Body>
-                <Form style={{ fontSize: "12px" }}>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Control style={{ fontsize: "12px", borderTop: "none", borderLeft: "none", borderRight: "none" }} type="text" placeholder="To" />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-                    <Form.Control style={{ fontsize: "12px", borderTop: "none", borderLeft: "none", borderRight: "none" }} type="text" placeholder="Subject" />
-                  </Form.Group>
-                  <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
-                    <Form.Control style={{ fontsize: "12px", border: "none" }} as="textarea" rows={3} />
-                  </Form.Group>
-                </Form>
-              </Modal.Body>
-              < Modal.Footer>
-                <Button
+      {isDesktopOrLaptop ? (
+        <>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <div>
+              <Modal
+                show={sendMail}
+                onHide={() => setSendMail(false)}
+                aria-labelledby="send_mail"
+                centered
+              >
+                <Modal.Header
                   style={{
-                    marginBottom: "5px",
-                    backgroundColor: "#1a73e8",
-                    borderRadius: "5px",
+                    backgroundColor: "#404040",
+                    fontWeight: "300",
+                    color: "white",
+                    fontSize: "14px",
+                    height: "100%",
+                  }}
+                  closeButton
+                >
+                  {" "}
+                  Send Message
+                </Modal.Header>
+                <Modal.Body>
+                  <Form style={{ fontSize: "12px" }}>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Control
+                        style={{
+                          fontsize: "12px",
+                          borderTop: "none",
+                          borderLeft: "none",
+                          borderRight: "none",
+                        }}
+                        type="text"
+                        placeholder="To"
+                      />
+                    </Form.Group>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlInput1"
+                    >
+                      <Form.Control
+                        style={{
+                          fontsize: "12px",
+                          borderTop: "none",
+                          borderLeft: "none",
+                          borderRight: "none",
+                        }}
+                        type="text"
+                        placeholder="Subject"
+                      />
+                    </Form.Group>
+                    <Form.Group
+                      className="mb-3"
+                      controlId="exampleForm.ControlTextarea1"
+                    >
+                      <Form.Control
+                        style={{ fontsize: "12px", border: "none" }}
+                        as="textarea"
+                        rows={3}
+                      />
+                    </Form.Group>
+                  </Form>
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    style={{
+                      marginBottom: "5px",
+                      backgroundColor: "#1a73e8",
+                      borderRadius: "5px",
+                      border: "none",
+                      fontSize: "12px",
+                      width: "100px",
+                      textAlign: "center",
+                    }}
+                  >
+                    Send
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              <ConfirmDialogBox
+                showConfirmDialogBox={showConfirmDialogBox}
+                setShowConfirmDialogBox={setShowConfirmDialogBox}
+                confirm_no={confirm_no}
+                confirm_yes={confirm_yes}
+                arg={argConfirmModal}
+                msg={"Are you sure you want to delete this student result?"}
+                title={"Delete it?"}
+              />
+              <button
+                style={{
+                  marginLeft: "1%",
+                  marginBottom: "5px",
+                  backgroundColor: "#293E6F",
+                  borderRadius: "5px",
+                  border: "none",
+                }}
+                className="btn btn-secondary"
+                onClick={(e) => navigate("/admin/scheduledTest")}
+              >
+                Back
+              </button>
+              <div
+                style={{
+                  padding: "20px 15px",
+                  fontSize: "12px",
+                  background: "#FFFFFF",
+                  border: "2px solid #E5E5E5",
+                  boxSizing: "border-box",
+                  borderRadius: "14px",
+                  marginBottom: "40px",
+                  marginTop: "20px",
+                }}
+              >
+                <Row style={{ margin: "2% 0" }}>
+                  <Col md={3}>Test Name: </Col>
+                  <Col md={9}>
+                    <input
+                      type="string"
+                      defaultValue={location.state.name}
+                      disabled
+                    ></input>
+                  </Col>
+                </Row>
+                <Row style={{ margin: "2% 0" }}>
+                  <Col md={3}>Start Time:</Col>
+                  <Col md={9}>
+                    <DateTimePicker disabled value={location.state.start} />
+                  </Col>
+                </Row>
+                <Row style={{ margin: "2% 0" }}>
+                  <Col md={3}>End Time:</Col>
+                  <Col md={9}>
+                    <DateTimePicker disabled value={location.state.end} />
+                  </Col>
+                </Row>
+                <MDBDataTable
+                  striped
+                  bordered
+                  noBottomColumns
+                  hover
+                  exportToCSV={true}
+                  data={data}
+                  style={{ marginTop: "5px" }}
+                />
+                <button
+                  style={{
                     border: "none",
-                    fontSize: "12px",
-                    width: "100px",
-                    textAlign:"center",
+                    outline: "none",
+                    borderRadius: "5px",
+                    fontWeight: "bolder",
+                    backgroundColor: "#10B65C",
+                    fontFamily: "Poppins",
+                    padding: "5px 45px",
+                    color: "#FFFFFF",
                   }}
                 >
-                  Send
-                </Button>
-              </Modal.Footer>
-            </Modal>
-            <ConfirmDialogBox
-              showConfirmDialogBox={showConfirmDialogBox}
-              setShowConfirmDialogBox={setShowConfirmDialogBox}
-              confirm_no={confirm_no}
-              confirm_yes={confirm_yes}
-              arg={argConfirmModal}
-              msg={"Are you sure you want to delete this student result?"}
-              title={"Delete it?"}
-            />
-            <button
-              style={{
-                marginLeft: "1%",
-                marginBottom: "5px",
-                backgroundColor: "#293E6F",
-                borderRadius: "5px",
-                border: "none",
-              }}
-              className="btn btn-secondary"
-              onClick={(e) => navigate("/admin/scheduledTest")}
-            >
-              Back
-            </button>
-            <div
-              style={{
-                padding: "20px 15px",
-                fontSize: "12px",
-                background: "#FFFFFF",
-                border: "2px solid #E5E5E5",
-                boxSizing: "border-box",
-                borderRadius: "14px",
-                marginBottom: "40px",
-                marginTop: "20px",
-              }}
-            >
-              <Row style={{ margin: "2% 0" }}>
-                <Col md={3}>Test Name: </Col>
-                <Col md={9}>
-                  <input
-                    type="string"
-                    defaultValue={location.state.name}
-                    disabled
-                  ></input>
-                </Col>
-              </Row>
-              <Row style={{ margin: "2% 0" }}>
-                <Col md={3}>Start Time:</Col>
-                <Col md={9}>
-                  <DateTimePicker disabled value={location.state.start} />
-                </Col>
-              </Row>
-              <Row style={{ margin: "2% 0" }}>
-                <Col md={3}>End Time:</Col>
-                <Col md={9}>
-                  <DateTimePicker disabled value={location.state.end} />
-                </Col>
-              </Row>
-              <MDBDataTable
-                striped
-                bordered
-                noBottomColumns
-                hover
-                exportToCSV={true}
-                data={data}
-                style={{ marginTop: "5px" }}
-              />
+                  <CSVLink
+                    style={{ textDecoration: "none", color: "#FFFF" }}
+                    data={rows}
+                    headers={headers}
+                  >
+                    <SiMicrosoftexcel style={{ marginRight: "10px" }} />{" "}
+                    Download csv
+                  </CSVLink>
+                </button>
 
-              <button
-                style={{
-                  border: "none",
-                  outline: "none",
-                  borderRadius: "5px",
-                  fontWeight: "bolder",
-                  backgroundColor: "#10B65C",
-                  fontFamily: "Poppins",
-                  padding: "5px 45px",
-                  color: "#FFFFFF",
-                }}
-              >
-                <CSVLink
-                  style={{ textDecoration: "none", color: "#FFFF" }}
-                  data={rows}
-                  headers={headers}
+                <button
+                  onClick={(e) => setSendMail(true)}
+                  style={{
+                    border: "none",
+                    outline: "none",
+                    borderRadius: "5px",
+                    fontWeight: "normal",
+                    backgroundColor: "#10B65C",
+                    fontFamily: "Poppins",
+                    padding: "5px 45px",
+                    color: "#FFFFFF",
+                    margin: "0 0 0 40px",
+                  }}
                 >
-                  <SiMicrosoftexcel style={{ marginRight: "10px" }} /> Download
-                  csv
-                </CSVLink>
-              </button>
-
-              <button
-                onClick={(e) => setSendMail(true)}
-                style={{
-                  border: "none",
-                  outline: "none",
-                  borderRadius: "5px",
-                  fontWeight: "normal",
-                  backgroundColor: "#10B65C",
-                  fontFamily: "Poppins",
-                  padding: "5px 45px",
-                  color: "#FFFFFF",
-                  margin: "0 0 0 40px"
-                }}
-              >
-                 <AiFillMail style={{ marginRight: "10px" }} />
-                Send Mail
-              </button>
+                  <AiFillMail style={{ marginRight: "10px" }} />
+                  Send Mail
+                </button>
+              </div>
             </div>
-          </div>
-        )}
-      </> : <MobileWidth />}
+          )}
+        </>
+      ) : (
+        <MobileWidth />
+      )}
     </>
   );
 }

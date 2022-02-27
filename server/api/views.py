@@ -25,12 +25,6 @@ from django.template.loader import get_template
 from django.conf import settings
 import uuid
 CFG = {'DB': None}
-import pandas as pd
-
-def predict():
-    regressor = pd.read_pickle(r'C:\Users\voras\Desktop\adaptive-test\server\model1.pickle') 
-    result = regressor.predict([[0,0,0,0,0]])
-    return int(result[0])
 
 def constdata(request):
     if request.method == "GET":
@@ -112,11 +106,11 @@ def changepass(request):
             if not MyUser.objects.filter(change_pass_token=data['token']).exists():
                 return JsonResponse({'exists':0},safe=False)  
             myuser = MyUser.objects.get(change_pass_token = data['token'])
-            user = User.objects.get(email=myuser.user.email)
+            user = myuser.user
             user.set_password(data['pass'])
+            user.save()
             myuser.change_pass_token=None
             myuser.save()
-            user.save() 
             return JsonResponse({'exists':1},safe=False)   
         else:
            return JsonResponse({'exists':0},safe=False)         
@@ -127,7 +121,7 @@ def checkpassToken(request):
         data=JSONParser().parse(request)['data']
         user = User.objects.filter(email = data['mail'])
         if user.exists():
-            myuser = MyUser.objects.get(user=user[0])
+            myuser = user[0].myuser
             if myuser.change_pass_token == data['token']:
                 return JsonResponse({'exists':1},safe=False)
             else:
@@ -155,7 +149,7 @@ def forgotpass(request):
             html_template=get_template("api/ChangePassword.html").render(args)
             msg.attach_alternative(html_template,"text/html")
             msg.send()
-            myuser = MyUser.objects.get(user=user[0])
+            myuser =user[0].myuser
             myuser.change_pass_token = token
             myuser.save()
             return JsonResponse({'exists':1},safe=False)
@@ -357,20 +351,6 @@ def subs(request):
             return JsonResponse({'data':f},safe=False)
     else:
         return HttpResponseBadRequest()
-           
-@csrf_exempt
-def createUser(request):
-    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
-        if request.method == "POST":
-            data = JSONParser().parse(request)['data']
-            user = User.objects.get(username = data['username'])
-            if(MyUser.objects.filter(user=user).exists()):
-                MyUser.objects.get(user=user).delete()
-            newuser = MyUser.objects.create(user=user,name=data['name'],email=data['email'],age=int(data['age']),gender=data['gender'],mobile=int(data['mobileNo']),percent_10_std=int(data['percent_10_std']),percent_12_std=int(data['percent_12_std']))
-            newuser.save()
-            return JsonResponse("created",safe=False)     
-    else:
-        return HttpResponseBadRequest()
 
 def qs(request):
     if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
@@ -403,6 +383,7 @@ def qs(request):
         return JsonResponse({'easy':a,'medium':b,'hard':c},safe=False)
     else:
         return HttpResponseBadRequest()
+
 class BlackListTokenView(APIView):
     permission_classes=[AllowAny]
 
@@ -439,7 +420,7 @@ def results(request,name):
                     avg_a =test.aw['avg']  
             if user:
                 d = datetime.datetime.utcnow()
-                myUser=MyUser.objects.get(user=user)
+                myUser=user.myuser
                 name=myUser.name
                 gender=myUser.gender
                 age=myUser.age
@@ -538,11 +519,11 @@ def chartData(user,testId=-1,isPost=False):
     if(user.is_staff):
         user_detail=AllUserSerializer(user).data
     else:
-        myUser=MyUser.objects.get(user=user)
+        myUser=user.myuser
         if isPost:
             takeFeedback=myUser.takeFeedback
         user_detail=MyUserSerializer(myUser).data
-    return {'startTime':resl.startTime,'endTime':resl.endTime,'personalityData':resl.marks['pGot'],'marks':resl.marks,'totalQs':totalQs,'avgMarksArr':a,'mrksScored':mrksScored,'mrksScoredPercent':mrksScoredPercent,'totalMarksScored':sum(mrksScored),'timeTaken':tdelta.seconds,'res_id':resl.id,'user_detail':user_detail,'takeFeedback':takeFeedback, "prediction": predict()}
+    return {'startTime':resl.startTime,'endTime':resl.endTime,'personalityData':resl.marks['pGot'],'marks':resl.marks,'totalQs':totalQs,'avgMarksArr':a,'mrksScored':mrksScored,'mrksScoredPercent':mrksScoredPercent,'totalMarksScored':sum(mrksScored),'timeTaken':tdelta.seconds,'res_id':resl.id,'user_detail':user_detail,'takeFeedback':takeFeedback}
 
 @csrf_exempt
 def takeFeedback(request):
@@ -668,7 +649,6 @@ def getImgs(request):
                 return JsonResponse("Error occured",safe=False)
     else:
         return HttpResponseBadRequest()
-
 @csrf_exempt        
 def addQs(request):
     if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
@@ -1074,7 +1054,7 @@ def feedback(request):
             newArr=[]
             takeFeedback=True
             for user in users:
-                myuser=MyUser.objects.get(user=user)
+                myuser=user.myuser
                 feedback=Feedback.objects.filter(user=myuser)
                 takeFeedback=takeFeedback and myuser.takeFeedback
                 if feedback.exists():

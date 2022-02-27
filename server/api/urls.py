@@ -17,14 +17,12 @@ urlpatterns = [
    path('api/para/<int:tid>',views.comprehension),
    path('api/personality/res',views.personalityR),
    path('api/personality/res',views.personalityR),
-   path('api/createUser',views.createUser),
    path('api/newuser',views.newuser),
    path("api/forgotpass",views.forgotpass),
    path("api/changepass",views.changepass),
    path("api/feedback",views.feedback),
    path("api/takeFeedback",views.takeFeedback),
    path('api/checkToken',views.checkpassToken),
-   path('api/predict',views.predict),
 
    # admin
    path('api/const',views.constdata),

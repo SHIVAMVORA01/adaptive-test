@@ -41,8 +41,6 @@ function Result() {
   const [dangerMsg, setDangerMsg] = useState("");
   const [feedback_comment, set_feedback_comment] = useState("");
   const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
-  const [prediction, setPrediction] = useState(false);
-  
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: "detailed_report",
@@ -193,7 +191,6 @@ function Result() {
           setPersonalityData(res.data.personalityData);
           setIdx(res.data.res_id);
           setShowFeedback(res.data.takeFeedback);
-          setPrediction(res.data.prediction);
           // localStorage.setItem('result',total)
         })
         .catch((e) => console.log(e));
@@ -219,8 +216,6 @@ function Result() {
             setUserDetails(res.data.user_detail);
             setStartTime(res.data.startTime);
             setShowFeedback(false);
-            setPrediction(res.data.prediction);
- 
           })
           .catch((e) => console.log(e));
       }
@@ -454,7 +449,6 @@ function Result() {
                 totalMarksScored !== undefined &&
                 startTime !== undefined && (
                   <DetailedReportComp
-                    prediction={prediction}
                     componentRef={componentRef}
                     SEP={personalityData[0].SEP}
                     SEFP={personalityData[0].SEFP}

@@ -14,7 +14,6 @@ import MobileWidth from "../../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
 import { AiFillWarning } from "react-icons/ai";
 
-
 function CompScreen() {
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1024px)",
@@ -129,12 +128,12 @@ function CompScreen() {
                   );
                   var timeEnd = new Date(
                     new Date().toLocaleDateString() +
-                    " " +
-                    h +
-                    ":" +
-                    m +
-                    ":" +
-                    s
+                      " " +
+                      h +
+                      ":" +
+                      m +
+                      ":" +
+                      s
                   );
                   var hourDiff = (timeEnd - timeStart) / 1000;
                   setTimeFF(tf - hourDiff);
@@ -289,278 +288,294 @@ function CompScreen() {
   }
   return (
     <div>
-      {isDesktopOrLaptop ? <>
-        <Modal
-          show={show}
-          onHide={handleClose}
-          backdrop="static"
-          keyboard={false}
-        >
-          <Modal.Header>
-            <Modal.Title>Enter FullScreeen</Modal.Title>
-          </Modal.Header>
-          <Modal.Body>
-            {reload ? (
-              <CustomTimer
-                msg={`Please Enter Full Screen or Test will get auto submitted in`}
-                onlyS={true}
-                reset={md}
-                time={10}
-                start={show}
-                setMd={setMd}
-                nextpage={"result"}
-              ></CustomTimer>
-            ) : (
-              "Please enter Full Screen mode"
-            )}
-          </Modal.Body>
-          <Modal.Footer>
-            <Button
-              variant="primary"
-              onClick={(e) => {
-                handleClose(e);
-                GoInFullscreen(document.querySelector("#element"));
-              }}
-            >
-              Enter Full Screeen
-            </Button>
-          </Modal.Footer>
-        </Modal>
-        {countWindowAwayModal && (
-          <>
-            <div
-              style={{
-                backgroundColor: "#F8D7DA",
-                height: "fit-content",
-                width: "95%",
-                border: "1px #8A3C5B",
-                borderRadius: "8px",
-                margin: "10px 10px 10px 25px",
-              }}
-            >
-              <AiFillWarning
-                style={{
-                  height: "30px",
-                  width: "30px",
-                  margin: "10px 50% 0px",
-                  color: "#842029"
-                }}
-              />
-              <p style={{ color: "#842029", margin: "10px 0px 0px 47.8%" }}>
-                <p>
-                  <b>{countWindowAway === 1 ? "1st" : "Last"} Warning</b>
-                </p>
-              </p>
-              <p style={{ color: "#842029", fontWeight: "normal", fontSize: "14px", textAlign: "center" }}>
-                The screen has been changed.Test will get auto submitted if you try to
-                change screen again{" "}
-              </p>
+      {isDesktopOrLaptop ? (
+        <>
+          <Modal
+            show={show}
+            onHide={handleClose}
+            backdrop="static"
+            keyboard={false}
+          >
+            <Modal.Header>
+              <Modal.Title>Enter FullScreeen</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              {reload ? (
+                <CustomTimer
+                  msg={`Please Enter Full Screen or Test will get auto submitted in`}
+                  onlyS={true}
+                  reset={md}
+                  time={10}
+                  start={show}
+                  setMd={setMd}
+                  nextpage={"result"}
+                ></CustomTimer>
+              ) : (
+                "Please enter Full Screen mode"
+              )}
+            </Modal.Body>
+            <Modal.Footer>
               <Button
-
-                onClick={(e) => handleCloseSChange(e)}
-                style={{
-                  backgroundColor: "#842029",
-                  margin: "0px 0px 20px 47.7%",
-                  color: "white",
-                  outline: "none",
-                  border: "none",
+                variant="primary"
+                onClick={(e) => {
+                  handleClose(e);
+                  GoInFullscreen(document.querySelector("#element"));
                 }}
               >
-                Continue
+                Enter Full Screeen
               </Button>
-            </div>
-          </>
-        )}
-        {passage !== undefined && (
-          <>
-            <Row className="verbalRHeader">
-              <Col md={7}>
-                {timeFF !== undefined && (
-                  <div
-                    style={{ border: "0px solid black", paddingBottom: "7px" }}
-                  >
-                    <TestHeaderComp
-                      timer={timeFF}
-                      timeKey="Time"
-                      noTotal={true}
-                      header="Verbal Reasoning"
-                      nextpage={"result"}
-                      start={!testFinshBool}
-                      reset={testFinshBool}
-                      setMd={setMd}
-                    ></TestHeaderComp>
-                  </div>
-                )}
-              </Col>
-
-              <Col md={5}>
-                <button
-                  type="button"
-                  className="btn btn-success"
-                  onClick={(e) => {
-                    setTestFinishBool(true);
-                    setShow(false);
-                    setMd(true);
-                    navigate("/result");
-                    if (document.exitFullscreen) {
-                      document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                      document.webkitExitFullscreen();
-                    } else if (document.mozCancelFullScreen) {
-                      document.mozCancelFullScreen();
-                    } else if (document.msExitFullscreen) {
-                      document.msExitFullscreen();
-                    }
-                  }}
+            </Modal.Footer>
+          </Modal>
+          {countWindowAwayModal && (
+            <>
+              <div
+                style={{
+                  backgroundColor: "#F8D7DA",
+                  height: "fit-content",
+                  width: "95%",
+                  border: "1px #8A3C5B",
+                  borderRadius: "8px",
+                  margin: "10px 10px 10px 25px",
+                }}
+              >
+                <AiFillWarning
                   style={{
-                    float: "right",
-                    backgroundColor: "#081466",
-                    width: "fit-content",
-                    borderRadius: "10px",
-                    marginRight: "30px",
+                    height: "30px",
+                    width: "30px",
+                    margin: "10px 50% 0px",
+                    color: "#842029",
+                  }}
+                />
+                <p style={{ color: "#842029", margin: "10px 0px 0px 47.8%" }}>
+                  <p>
+                    <b>{countWindowAway === 1 ? "1st" : "Last"} Warning</b>
+                  </p>
+                </p>
+                <p
+                  style={{
+                    color: "#842029",
+                    fontWeight: "normal",
+                    fontSize: "14px",
+                    textAlign: "center",
+                  }}
+                >
+                  The screen has been changed.Test will get auto submitted if
+                  you try to change screen again{" "}
+                </p>
+                <Button
+                  onClick={(e) => handleCloseSChange(e)}
+                  style={{
+                    backgroundColor: "#842029",
+                    margin: "0px 0px 20px 47.7%",
                     color: "white",
-                    padding: "7px 10px",
+                    outline: "none",
+                    border: "none",
                   }}
                 >
-                  Finish Test
-                </button>
-              </Col>
-            </Row>
+                  Continue
+                </Button>
+              </div>
+            </>
+          )}
+          {passage !== undefined && (
+            <>
+              <Row className="verbalRHeader">
+                <Col md={7}>
+                  {timeFF !== undefined && (
+                    <div
+                      style={{
+                        border: "0px solid black",
+                        paddingBottom: "7px",
+                      }}
+                    >
+                      <TestHeaderComp
+                        timer={timeFF}
+                        timeKey="Time"
+                        noTotal={true}
+                        header="Verbal Reasoning"
+                        nextpage={"result"}
+                        start={!testFinshBool}
+                        reset={testFinshBool}
+                        setMd={setMd}
+                      ></TestHeaderComp>
+                    </div>
+                  )}
+                </Col>
 
-            <Row style={{ height: window.screen.height - 300 }}>
-              <Col className="passage" style={{ overflow: "none" }}>
-                <div
-                  style={{
-                    backgroundColor: "#293E6F",
-                    boxShadow: "1px 1px 7px 2px rgba(0, 0, 0, 0.25)",
-                    borderRadius: "14px",
-                    margin: "5px 5px 15px 5px",
-                  }}
-                >
+                <Col md={5}>
+                  <button
+                    type="button"
+                    className="btn btn-success"
+                    onClick={(e) => {
+                      setTestFinishBool(true);
+                      setShow(false);
+                      setMd(true);
+                      navigate("/result");
+                      if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                      } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                      } else if (document.mozCancelFullScreen) {
+                        document.mozCancelFullScreen();
+                      } else if (document.msExitFullscreen) {
+                        document.msExitFullscreen();
+                      }
+                    }}
+                    style={{
+                      float: "right",
+                      backgroundColor: "#081466",
+                      width: "fit-content",
+                      borderRadius: "10px",
+                      marginRight: "30px",
+                      color: "white",
+                      padding: "7px 10px",
+                    }}
+                  >
+                    Finish Test
+                  </button>
+                </Col>
+              </Row>
+
+              <Row style={{ height: window.screen.height - 300 }}>
+                <Col className="passage" style={{ overflow: "none" }}>
                   <div
                     style={{
-                      padding: "15px 10px",
-                      backgroundColor: "#FEFFFF",
+                      backgroundColor: "#293E6F",
                       boxShadow: "1px 1px 7px 2px rgba(0, 0, 0, 0.25)",
                       borderRadius: "14px",
-                      margin: "0 0 0 15px",
+                      margin: "5px 5px 15px 5px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        padding: "15px 10px",
+                        backgroundColor: "#FEFFFF",
+                        boxShadow: "1px 1px 7px 2px rgba(0, 0, 0, 0.25)",
+                        borderRadius: "14px",
+                        margin: "0 0 0 15px",
+                        fontFamily: "Poppins",
+                        fontStyle: "normal",
+                        fontWeight: "normal",
+                        fontSize: "18px",
+                        lineHeight: "27px",
+                        color: "#081466",
+                      }}
+                    >
+                      Read the passage and answer the associated questions
+                    </div>
+                  </div>
+                  <h6
+                    style={{
+                      textAlign: "center",
+                      fontWeight: "bold",
+                      marginTop: "19.5px",
+                      fontSize: "20px",
+                    }}
+                  >
+                    {passage[parano].title}
+                  </h6>
+                  <textarea
+                    style={{
                       fontFamily: "Poppins",
                       fontStyle: "normal",
                       fontWeight: "normal",
-                      fontSize: "18px",
-                      lineHeight: "27px",
-                      color: "#081466",
+                      padding: "0 10px",
+                      fontSize: "17.5px",
+                      width: "100%",
+                      height: "75%",
+                      fontSize: "17.5px",
+                      lineHeight: "22px",
+                      backgroundColor: "#F7F7F7",
+                      contentEditable: false,
+                      outline: "none",
+                      border: "none",
+                      color: "black",
                     }}
-                  >
-                    Read the passage and answer the associated questions
-                  </div>
-                </div>
-                <h6
-                  style={{
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    marginTop: "19.5px",
-                    fontSize: "20px",
-                  }}
-                >
-                  {passage[parano].title}
-                </h6>
-                <textarea
-                  style={{
-                    fontFamily: "Poppins",
-                    fontStyle: "normal",
-                    fontWeight: "normal",
-                    padding: "0 10px",
-                    fontSize: "17.5px",
-                    width: "100%",
-                    height: "75%",
-                    fontSize: "17.5px",
-                    lineHeight: "22px",
-                    backgroundColor: "#F7F7F7",
-                    contentEditable: false,
-                    outline: "none",
-                    border: "none",
-                    color: "black",
-                  }}
-                  disabled
-                  value={passage[parano].para}
-                  className="style-4"
-                />
-              </Col>
-              <Col className="question scrollbar" id="style-4">
-                <div style={{ marginBottom: "10px", padding: "30px" }}>
-                  <form onSubmit={next}>
-                    <h5
-                      style={{
-                        fontWeight: "600",
-                        marginBottom: "30px",
-                        fontSize: "18px",
-                        lineHeight: "27px",
-                        color: "#081466",
-                      }}
-                    >
-                      Question {qsno + 1}
-                    </h5>
-                    <h5
-                      style={{
-                        fontWeight: "normal",
-                        marginBottom: "20px",
-                        fontSize: "18px",
-                        lineHeight: "27px",
-                        color: "#081466",
-                      }}
-                    >
-                      {" "}
-                      {passage[parano].questions[qsno].question}
-                    </h5>
+                    disabled
+                    value={passage[parano].para}
+                    className="style-4"
+                  />
+                </Col>
+                <Col className="question scrollbar" id="style-4">
+                  <div style={{ marginBottom: "10px", padding: "30px" }}>
+                    <form onSubmit={next}>
+                      <h5
+                        style={{
+                          fontWeight: "600",
+                          marginBottom: "30px",
+                          fontSize: "18px",
+                          lineHeight: "27px",
+                          color: "#081466",
+                        }}
+                      >
+                        Question {qsno + 1}
+                      </h5>
+                      <h5
+                        style={{
+                          fontWeight: "normal",
+                          marginBottom: "20px",
+                          fontSize: "18px",
+                          lineHeight: "27px",
+                          color: "#081466",
+                        }}
+                      >
+                        {" "}
+                        {passage[parano].questions[qsno].question}
+                      </h5>
 
-                    {passage[parano].questions[qsno].options.map((opt) => {
-                      return (
-                        <div className="form-check" style={{ margin: "15px 0" }}>
-                          <input
-                            type="radio"
-                            id={opt.id}
-                            name={`question-${qsno}`}
-                            className="form-check-input qsRadio"
-                            value={crypt.encryptVal(opt.marks)}
-                          />
-                          <label
-                            className="form-check-label option textdivOpt"
-                            id="option-one-label"
-                            for={opt.id}
-                            style={{
-                              marginLeft: "15px",
-                              fontWeight: "400",
-                              width: "100%",
-                            }}
+                      {passage[parano].questions[qsno].options.map((opt) => {
+                        return (
+                          <div
+                            className="form-check"
+                            style={{ margin: "15px 0" }}
                           >
-                            {opt.title}
-                          </label>
-                        </div>
-                      );
-                    })}
-                    <button
-                      type="submit"
-                      className="btn"
-                      style={{
-                        backgroundColor: `#10B65C`,
-                        width: `100px`,
-                        marginLeft: "80%",
-                        marginTop: "30px",
-                        height: `40px`,
-                        borderRadius: `14px`,
-                        color: "white",
-                      }}
-                    >
-                      Next
-                    </button>
-                  </form>
-                </div>
-              </Col>
-            </Row>
-          </>
-        )}
-      </> : <MobileWidth />}
+                            <input
+                              type="radio"
+                              id={opt.id}
+                              name={`question-${qsno}`}
+                              className="form-check-input qsRadio"
+                              value={crypt.encryptVal(opt.marks)}
+                            />
+                            <label
+                              className="form-check-label option textdivOpt"
+                              id="option-one-label"
+                              for={opt.id}
+                              style={{
+                                marginLeft: "15px",
+                                fontWeight: "400",
+                                width: "100%",
+                              }}
+                            >
+                              {opt.title}
+                            </label>
+                          </div>
+                        );
+                      })}
+                      <button
+                        type="submit"
+                        className="btn"
+                        style={{
+                          backgroundColor: `#10B65C`,
+                          width: `100px`,
+                          marginLeft: "80%",
+                          marginTop: "30px",
+                          height: `40px`,
+                          borderRadius: `14px`,
+                          color: "white",
+                        }}
+                      >
+                        Next
+                      </button>
+                    </form>
+                  </div>
+                </Col>
+              </Row>
+            </>
+          )}
+        </>
+      ) : (
+        <MobileWidth />
+      )}
     </div>
   );
 }

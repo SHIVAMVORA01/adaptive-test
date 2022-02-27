@@ -140,175 +140,180 @@ function Permissions() {
 
   return (
     <>
-    {isDesktopOrLaptop?<>
-      <Alert
-        msg={successMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
-        type="success"
-      ></Alert>
-      <Alert
-        msg={dangerMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
-        type="danger"
-      ></Alert>
-      {isLoading ? (
-        <Loader />
-      ) : (
+      {isDesktopOrLaptop ? (
         <>
-          <div
-            style={{
-              fontSize: "13.6px",
-              padding: "0 60px",
-              marginBottom: "20px",
-            }}
-          >
-            <Row>
-              <Col md={12}>
-                <button
-                  onClick={() => {
-                    navigate("/admin/home");
-                  }}
-                  type="button"
-                  style={{
-                    marginTop: "10px",
-                    marginBottom: "10px",
-                    border: "none",
-                    outline: "none",
-                    borderRadius: "5px",
-                    fontWeight: "normal",
-                    backgroundColor: "#293e6f",
-                    fontFamily: "Poppins",
-                    padding: "5px 45px",
-                    color: "#FFFFFF",
-                    marginLeft: "5px",
-                  }}
-                >
-                  Back
-                </button>
-                <p
-                  style={{
-                    fontSize: "20px",
-                    fontWeight: "bold",
-                    marginBottom: "10px",
-                    marginTop: "10px",
-                    color: "#293e6f",
-                    textAlign: "center",
-                  }}
-                >
-                  Grant Permissions
-                  <OverlayTrigger
-                    trigger="hover"
-                    placement="bottom"
-                    overlay={popover}
-                  >
-                    <button
-                      style={{
-                        backgroundColor: "white",
-                        outline: "none",
-                        border: "none",
-                        marginLeft: "5px",
-                        padding: "0px",
-                      }}
-                    >
-                      <FiInfo
-                        className="info"
-                        style={{
-                          height: "15px",
-                          width: "15px",
-                          marginTop: "5px",
-                        }}
-                      ></FiInfo>
-                    </button>
-                  </OverlayTrigger>
-                </p>
-
-                <MDBDataTable
-                  className="feedbackTable"
-                  striped
-                  bordered
-                  noBottomColumns
-                  hover
-                  exportToCSV={true}
-                  data={data}
-                  noRecordsFoundLabel={"Allowed to All"}
-                  style={{ marginTop: "5px", fontSize: "13.6px" }}
-                />
+          <Alert
+            msg={successMsg}
+            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+            isAlertMsgLoaded={isAlertMsgLoaded}
+            type="success"
+          ></Alert>
+          <Alert
+            msg={dangerMsg}
+            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+            isAlertMsgLoaded={isAlertMsgLoaded}
+            type="danger"
+          ></Alert>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <>
+              <div
+                style={{
+                  fontSize: "13.6px",
+                  padding: "0 60px",
+                  marginBottom: "20px",
+                }}
+              >
                 <Row>
-                  <Col md={5} style={{ textAlign: "center" }}></Col>
-                  <Col md={7}>
+                  <Col md={12}>
                     <button
+                      onClick={() => {
+                        navigate("/admin/home");
+                      }}
+                      type="button"
                       style={{
-                        margin: "10px auto 30px auto",
+                        marginTop: "10px",
+                        marginBottom: "10px",
                         border: "none",
                         outline: "none",
                         borderRadius: "5px",
                         fontWeight: "normal",
-                        backgroundColor: "#10B65C",
+                        backgroundColor: "#293e6f",
                         fontFamily: "Poppins",
-                        padding: "5px 0px",
+                        padding: "5px 45px",
                         color: "#FFFFFF",
-                        width: "165px",
-                        textAlign: "center",
-                      }}
-                      onClick={(e) => {
-                        setIsloading(true);
-                        let x = $(".checkboxFeedback:checkbox:checked");
-                        let userId = [];
-                        x.map((xx) =>
-                          userId.push(parseInt(x[xx].id.split("checkbox")[1]))
-                        );
-                        if (userId.length === 0) {
-                          setIsloading(false);
-                          setIsAlertMsgLoaded(true);
-                          setDangerMsg("select users to grant permission");
-                        } else {
-                          axiosInstance
-                            .post("api/permission", {
-                              data: { users: userId },
-                            })
-                            .then((res) => {
-                              setIsloading(false);
-                              if (res.data.exists) {
-                                window.location.reload();
-                              } else {
-                                setIsAlertMsgLoaded(true);
-                                setDangerMsg("Error Occured");
-                              }
-                            })
-                            .catch((e) => {
-                              console.log(e);
-                              setIsloading(false);
-                            });
-                        }
+                        marginLeft: "5px",
                       }}
                     >
-                      Grant Permission
+                      Back
                     </button>
+                    <p
+                      style={{
+                        fontSize: "20px",
+                        fontWeight: "bold",
+                        marginBottom: "10px",
+                        marginTop: "10px",
+                        color: "#293e6f",
+                        textAlign: "center",
+                      }}
+                    >
+                      Grant Permissions
+                      <OverlayTrigger
+                        trigger="hover"
+                        placement="bottom"
+                        overlay={popover}
+                      >
+                        <button
+                          style={{
+                            backgroundColor: "white",
+                            outline: "none",
+                            border: "none",
+                            marginLeft: "5px",
+                            padding: "0px",
+                          }}
+                        >
+                          <FiInfo
+                            className="info"
+                            style={{
+                              height: "15px",
+                              width: "15px",
+                              marginTop: "5px",
+                            }}
+                          ></FiInfo>
+                        </button>
+                      </OverlayTrigger>
+                    </p>
+                    <MDBDataTable
+                      className="feedbackTable"
+                      striped
+                      bordered
+                      noBottomColumns
+                      hover
+                      exportToCSV={true}
+                      data={data}
+                      noRecordsFoundLabel={"Allowed to All"}
+                      style={{ marginTop: "5px", fontSize: "13.6px" }}
+                    />
+                    <Row>
+                      <Col md={5} style={{ textAlign: "center" }}></Col>
+                      <Col md={7}>
+                        <button
+                          style={{
+                            margin: "10px auto 30px auto",
+                            border: "none",
+                            outline: "none",
+                            borderRadius: "5px",
+                            fontWeight: "normal",
+                            backgroundColor: "#10B65C",
+                            fontFamily: "Poppins",
+                            padding: "5px 0px",
+                            color: "#FFFFFF",
+                            width: "165px",
+                            textAlign: "center",
+                          }}
+                          onClick={(e) => {
+                            setIsloading(true);
+                            let x = $(".checkboxFeedback:checkbox:checked");
+                            let userId = [];
+                            x.map((xx) =>
+                              userId.push(
+                                parseInt(x[xx].id.split("checkbox")[1])
+                              )
+                            );
+                            if (userId.length === 0) {
+                              setIsloading(false);
+                              setIsAlertMsgLoaded(true);
+                              setDangerMsg("select users to grant permission");
+                            } else {
+                              axiosInstance
+                                .post("api/permission", {
+                                  data: { users: userId },
+                                })
+                                .then((res) => {
+                                  setIsloading(false);
+                                  if (res.data.exists) {
+                                    window.location.reload();
+                                  } else {
+                                    setIsAlertMsgLoaded(true);
+                                    setDangerMsg("Error Occured");
+                                  }
+                                })
+                                .catch((e) => {
+                                  console.log(e);
+                                  setIsloading(false);
+                                });
+                            }
+                          }}
+                        >
+                          Grant Permission
+                        </button>
+                      </Col>
+                    </Row>
+                  </Col>
+
+                  <Col md={12}>
+                    <MDBDataTable
+                      className="feedbackTable2"
+                      striped
+                      bordered
+                      noBottomColumns
+                      hover
+                      exportToCSV={true}
+                      data={data2}
+                      noRecordsFoundLabel={"No Permissions given"}
+                      style={{ marginTop: "5px", fontSize: "13.6px" }}
+                    />
                   </Col>
                 </Row>
-              </Col>
-
-              <Col md={12}>
-                <MDBDataTable
-                  className="feedbackTable2"
-                  striped
-                  bordered
-                  noBottomColumns
-                  hover
-                  exportToCSV={true}
-                  data={data2}
-                  noRecordsFoundLabel={"No Permissions given"}
-                  style={{ marginTop: "5px", fontSize: "13.6px" }}
-                />
-              </Col>
-            </Row>
-          </div>
+              </div>
+            </>
+          )}
         </>
+      ) : (
+        <MobileWidth />
       )}
-</>:<MobileWidth/>}
-          </>
+    </>
   );
 }
 export default Permissions;

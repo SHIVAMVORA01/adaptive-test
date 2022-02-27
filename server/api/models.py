@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.contrib.auth.models import User
 
 class Test(models.Model):
     test_name = models.CharField(max_length=150)
@@ -16,11 +17,11 @@ class Test(models.Model):
         return self.test_name
 
 class MyUser(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE)
+    user = models.OneToOneField(User,on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
-    email = models.EmailField()
-    age = models.IntegerField()
-    gender = models.CharField(max_length=50)
+    email = models.EmailField(blank=True)
+    age = models.IntegerField(blank=True)
+    gender = models.CharField(max_length=50,blank=True)
     mobile = models.IntegerField(blank=True,null=True)
     percent_10_std=models.IntegerField(default=1)
     percent_12_std=models.IntegerField(default=1)
@@ -34,7 +35,7 @@ class MyUser(models.Model):
     change_pass_token = models.CharField(max_length=400,null=True,blank=True)
 
     def __str__(self):
-        return '{0} -> {1}'.format(self.id,self.email)
+        return self.user.username
 
 class Subject(models.Model):
    sub_name = models.CharField(max_length=255)
