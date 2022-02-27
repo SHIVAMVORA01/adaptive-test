@@ -12,26 +12,18 @@ import ConfirmDialogBox from "../../components/ConfirmDialogBox";
 import MobileWidth from "../../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
 import $ from "jquery";
-import { IoMdArrowDropdownCircle } from "react-icons/io";
 import { AiFillMail } from "react-icons/ai";
+import Alert from "../../components/Admin/Alert";
 
 function ViewSchdlTest() {
+  const initialFormData = Object.freeze({
+    subject: "",
+    body: "",
+  });
+  const [formData, updateFormData] = useState(initialFormData);
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1024px)",
   });
-
-  function checkAllSelected(rowLength) {
-    let c = $(".checkboxFeedback:checkbox:checked").length;
-    let areAllSected = parseInt(c) === parseInt(rowLength);
-    document.getElementById("selectAllCheckboc").checked = areAllSected
-      ? true
-      : false;
-  }
-
-  const checkAllHandler = (val) => {
-    let c = $(".checkboxFeedback:checkbox");
-    c.prop("checked", val);
-  };
   const [isLoading, setIsloading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
@@ -40,6 +32,11 @@ function ViewSchdlTest() {
   const [showConfirmDialogBox, setShowConfirmDialogBox] = useState(false);
   const [argConfirmModal, setArgConfirmModal] = useState();
   const [sendMail, setSendMail] = useState(false);
+  const [areAllChecked, setAreAllChecked] = useState(false);
+  const [dangerMsg, setDangerMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   // let addBtn;
   const columns = [
     {
@@ -52,7 +49,6 @@ function ViewSchdlTest() {
           onChange={(e) => {
             checkAllHandler(e.target.checked);
           }}
-          defaultChecked={false}
         />
       ),
       field: "checkBtn",
@@ -117,6 +113,7 @@ function ViewSchdlTest() {
       .get(`/api/admin/resultTest/${location.state.id}`)
       .then((res) => {
         setRows(res.data.studentNameArr);
+        console.log(res.data);
         setTData({
           columns: columns,
           rows: res.data.studentNameArr.map((v) => ({
@@ -127,10 +124,12 @@ function ViewSchdlTest() {
                 defaultChecked={false}
                 style={{ height: "10px", width: "10px" }}
                 type="checkbox"
-                name="checkboxFeedback"
-                className="checkboxFeedback"
-                id={"checkbox" + v.id}
-                onChange={(e) => checkAllSelected(res.data.notallowed.length)}
+                name="checkbox_send_mail"
+                className="checkbox_send_mail"
+                id={"checkbox" + v.uid}
+                onChange={(e) =>
+                  checkAllSelected(res.data.studentNameArr.length)
+                }
               />
             ),
             addBtn: (
@@ -168,10 +167,45 @@ function ViewSchdlTest() {
       });
   }
   function confirm_no() {}
+  const handleChange = (e) => {
+    if (e.target.name !== "") {
+      updateFormData({
+        ...formData,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  function checkAllSelected(rowLength) {
+    let c = $(".checkbox_send_mail:checkbox:checked").length;
+    let areAllSected = parseInt(c) === parseInt(rowLength);
+    setAreAllChecked(areAllSected ? true : false);
+    document.getElementById("selectAllCheckboc").checked = areAllSected
+      ? true
+      : false;
+  }
+  const checkAllHandler = (val) => {
+    let c = $(".checkbox_send_mail:checkbox");
+    c.prop("checked", val);
+    setAreAllChecked(val);
+  };
   return (
+
     <>
       {isDesktopOrLaptop ? (
         <>
+        <Alert
+            msg={successMsg}
+            setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+            isAlertMsgLoaded={isAlertSuccessMsgLoaded}
+            type="success"
+          ></Alert>
+          <Alert
+            msg={dangerMsg}
+            setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+            isAlertMsgLoaded={isAlertDangerMsgLoaded}
+            type="danger"
+          ></Alert>
           {isLoading ? (
             <Loader />
           ) : (
@@ -180,27 +214,62 @@ function ViewSchdlTest() {
                 show={sendMail}
                 onHide={() => setSendMail(false)}
                 aria-labelledby="send_mail"
+                className="send_mail_modal"
                 centered
               >
-                <Modal.Header
-                  style={{
-                    backgroundColor: "#404040",
-                    fontWeight: "300",
-                    color: "white",
-                    fontSize: "14px",
-                    height: "100%",
+                <Form
+                  style={{ fontSize: "12px" }}
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    let x = $(".checkbox_send_mail:checkbox:checked");
+                    let userId = [];
+                    let isAllSelected = 0;
+                    if (!areAllChecked && x.length !== 0) {
+                      x.map((xx) =>
+                        userId.push(parseInt(x[xx].id.split("checkbox")[1]))
+                      );
+                    } else {
+                      isAllSelected = 1;
+                    }
+                    console.log(userId);
+                    console.log(x);
+                    console.log(formData);
+                    axiosInstance
+                      .post("api/send_custom_mail", {
+                        data: {
+                          isAllSelected: isAllSelected,
+                          userId: userId,
+                          subject: formData.subject,
+                          body: formData.body,
+                        },
+                      })
+                      .then((res) => {
+                        setSendMail(false);
+                        setIsAlertSuccessMsgLoaded(true);
+                        setSuccessMsg("Mail Sent Successfully");
+                      })
+                      .catch((e) => {
+                        setIsAlertDangerMsgLoaded(true);
+                        setDangerMsg("Error in sending mail");
+                        console.log(e);
+                      });
                   }}
-                  closeButton
                 >
-                  {" "}
-                  Send Message
-                </Modal.Header>
-                <Modal.Body>
-                  <Form style={{ fontSize: "12px" }}>
-                    <Form.Group
-                      className="mb-3"
-                      controlId="exampleForm.ControlInput1"
-                    >
+                  <Modal.Header
+                    style={{
+                      backgroundColor: "#404040",
+                      fontWeight: "300",
+                      color: "white",
+                      fontSize: "14px",
+                      height: "100%",
+                    }}
+                    closeButton
+                  >
+                    {" "}
+                    Send Message
+                  </Modal.Header>
+                  <Modal.Body>
+                    <Form.Group className="mb-3">
                       <Form.Control
                         style={{
                           fontsize: "12px",
@@ -209,51 +278,41 @@ function ViewSchdlTest() {
                           borderRight: "none",
                         }}
                         type="text"
-                        placeholder="To"
-                      />
-                    </Form.Group>
-                    <Form.Group
-                      className="mb-3"
-                      controlId="exampleForm.ControlInput1"
-                    >
-                      <Form.Control
-                        style={{
-                          fontsize: "12px",
-                          borderTop: "none",
-                          borderLeft: "none",
-                          borderRight: "none",
-                        }}
-                        type="text"
+                        required
+                        name="subject"
+                        onChange={handleChange}
                         placeholder="Subject"
                       />
                     </Form.Group>
-                    <Form.Group
-                      className="mb-3"
-                      controlId="exampleForm.ControlTextarea1"
-                    >
+                    <Form.Group className="mb-3">
                       <Form.Control
-                        style={{ fontsize: "12px", border: "none" }}
+                        style={{ fontsize: "12px" }}
                         as="textarea"
-                        rows={3}
+                        placeholder="Body"
+                        name="body"
+                        onChange={handleChange}
+                        rows={7}
+                        required
                       />
                     </Form.Group>
-                  </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button
-                    style={{
-                      marginBottom: "5px",
-                      backgroundColor: "#1a73e8",
-                      borderRadius: "5px",
-                      border: "none",
-                      fontSize: "12px",
-                      width: "100px",
-                      textAlign: "center",
-                    }}
-                  >
-                    Send
-                  </Button>
-                </Modal.Footer>
+                  </Modal.Body>
+                  <Modal.Footer>
+                    <Button
+                      style={{
+                        marginBottom: "5px",
+                        backgroundColor: "#1a73e8",
+                        borderRadius: "5px",
+                        border: "none",
+                        fontSize: "12px",
+                        width: "100px",
+                        textAlign: "center",
+                      }}
+                      type="submit"
+                    >
+                      Send
+                    </Button>
+                  </Modal.Footer>
+                </Form>
               </Modal>
               <ConfirmDialogBox
                 showConfirmDialogBox={showConfirmDialogBox}
@@ -343,7 +402,6 @@ function ViewSchdlTest() {
                 </button>
 
                 <button
-                  onClick={(e) => setSendMail(true)}
                   style={{
                     border: "none",
                     outline: "none",
@@ -354,6 +412,15 @@ function ViewSchdlTest() {
                     padding: "5px 45px",
                     color: "#FFFFFF",
                     margin: "0 0 0 40px",
+                  }}
+                  onClick={(e) => {
+                    let x = $(".checkbox_send_mail:checkbox:checked");
+                    if (x.length !== 0) {
+                      setSendMail(true);
+                    } else {
+                      setIsAlertDangerMsgLoaded(true);
+                      setDangerMsg("Please select atleast one student to send a mail");
+                    }
                   }}
                 >
                   <AiFillMail style={{ marginRight: "10px" }} />

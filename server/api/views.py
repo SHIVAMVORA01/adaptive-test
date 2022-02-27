@@ -1,3 +1,4 @@
+from posixpath import split
 from django.contrib.auth.hashers import make_password
 import json
 from django.http import HttpResponseBadRequest, HttpResponseForbidden
@@ -25,6 +26,12 @@ from django.template.loader import get_template
 from django.conf import settings
 import uuid
 CFG = {'DB': None}
+import pandas as pd
+
+def predict():
+    regressor = pd.read_pickle(r'server\model.pickle') 
+    result = regressor.predict([[0,0,0,0,0]])
+    return int(result[0])
 
 def constdata(request):
     if request.method == "GET":
@@ -182,6 +189,35 @@ def getuserslist(request):
         return JsonResponse({'exists':1,'allowed':bb,'notallowed':aa},safe=False)
 
 @csrf_exempt
+def send_custom_mail(request):
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == "POST":
+            data=JSONParser().parse(request)['data']
+            
+            userrs=[]
+            if int(data['isAllSelected'])==1:
+                qs=User.objects.filter(is_staff=False)
+                for x in qs:
+                    userrs.append(x.email)
+            else:
+                if len(data['userId'])!=0 and int(data['isAllSelected'])==0:
+                    users = data['userId']
+                    print(users)
+                    for user in users:
+                        x = User.objects.get(id=int(user))
+                        userrs.append(x.email)
+            subject = data["subject"]
+            email_from = settings.EMAIL_HOST_USER
+            recipient_list = userrs
+            msg=EmailMultiAlternatives(subject=subject,from_email=email_from,to=recipient_list)
+            args={}
+            args["body"]=data["body"]
+            html_template=get_template("api/CustomMail.html").render(args)
+            msg.attach_alternative(html_template,"text/html")
+            msg.send()
+            return JsonResponse({'success':True},safe=False)
+
+@csrf_exempt
 def permission(request):
     if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
         if request.method == "POST":
@@ -205,7 +241,7 @@ def permission(request):
             msg=EmailMultiAlternatives(subject=subject,from_email=email_from,to=recipient_list)
             args={}
             args['Start']='{}'.format(converttoist(testx.test_start)[0] )
-            args['End']='{}'.format(converttoist(testx.test_end)[0] )
+            args['End']='{}'.format(converttoist(testx.test_end)[0])
             args['testName']='{}'.format(testx.test_name)
             html_template=get_template("api/Permission.html").render(args)
             msg.attach_alternative(html_template,"text/html")
@@ -455,7 +491,8 @@ def results(request,name):
 def converttoist(datex):
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
-    utc = datetime.datetime.strptime(str(datex).split('.')[0], '%Y-%m-%d %H:%M:%S')
+    datex = str(datex).split('+')[0]
+    utc = datetime.datetime.strptime(datex.split(".")[0], '%Y-%m-%d %H:%M:%S')
     
     # Tell the datetime object that it's in UTC time zone since 
     # datetime objects are 'naive' by default
@@ -552,8 +589,10 @@ def resultTest(request,id):
         cc=[]
         for x in a.data:
             c={}
+            user=User.objects.get(id=x['student'])
             c['id']=x['id']
-            c['name']=User.objects.get(id=x['student']).username
+            c['uid']=user.id
+            c['name']=user.username
             c['sdate']="{0} {1}".format(x['startTime'].split('T')[0],x['startTime'].split('T')[1].split('.')[0])
             c['sdate'] = converttoist(c['sdate'])
 

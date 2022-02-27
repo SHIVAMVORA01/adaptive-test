@@ -23,7 +23,8 @@ function Feedback() {
   const navigate = useNavigate();
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const [isLoading, setIsloading] = useState(true);
   const [areAllChecked, setAreAllChecked] = useState(false);
   const checkAllHandler = (val) => {
@@ -103,7 +104,7 @@ function Feedback() {
       })
       .catch((e) => {
         setIsloading(false);
-        setIsAlertMsgLoaded(true);
+        setIsAlertDangerMsgLoaded(true);
         setDangerMsg("Error Occured");
         console.log(e);
       });
@@ -114,14 +115,14 @@ function Feedback() {
       {isDesktopOrLaptop?<>
         <Alert
         msg={successMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
+        setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+        isAlertMsgLoaded={isAlertSuccessMsgLoaded}
         type="success"
       ></Alert>
       <Alert
         msg={dangerMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
+        setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+        isAlertMsgLoaded={isAlertDangerMsgLoaded}
         type="danger"
       ></Alert>
       {isLoading ? (

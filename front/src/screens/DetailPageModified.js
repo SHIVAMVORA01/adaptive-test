@@ -20,6 +20,7 @@ function DetailPageModified() {
   const screen = new ScreenSizeDetector();
   const [agree, setAgree] = useState(false);
   const [isLoading, setIsloading] = useState(true);
+  const [checkSpeed, setCheckSpeed] = useState();
   const navigate = useNavigate();
   useEffect(() => {
     let userType = localStorage.getItem("admin");
@@ -39,6 +40,26 @@ function DetailPageModified() {
     } else if (isMyTokenExpired) {
       navigate("/logout");
     }
+    var userImageLink =
+      "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20200714180638/CIP_Launch-banner.png";
+    var time_start, end_time;
+    var result;
+    var downloadSize = 5616998;
+    var downloadImgSrc = new Image();
+    downloadImgSrc.onload = function () {
+      end_time = new Date().getTime();
+      displaySpeed();
+    };
+    time_start = new Date().getTime();
+    downloadImgSrc.src = userImageLink;
+    function displaySpeed() {
+      var timeDuration = (end_time - time_start) / 1000;
+      var loadedBits = downloadSize * 0.008;
+      var bps = (loadedBits / timeDuration).toFixed(2);
+      var speedInKbps = (bps / 1024).toFixed(2);
+      var speedInMbps = (speedInKbps / 1024).toFixed(2);
+      setCheckSpeed(speedInMbps);
+    }
     setIsloading(false);
   }, []);
 
@@ -49,6 +70,7 @@ function DetailPageModified() {
     var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
     var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
     var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
+    localStorage.setItem("screenchange", 0);
     localStorage.setItem(
       "test",
       JSON.stringify({
@@ -102,16 +124,16 @@ function DetailPageModified() {
                     </Row>
                     <Row style={{ fontSize: "14px" }}>
                       <p>
-                        <b style={{ color: "#293e6f" }}>Browser: </b>
-                        {browser.name}
+                        <b style={{ color: "#293e6f" }}> Browser: </b>
+                        {browser.name} V{browser.version}
                       </p>
                       <p style={{ color: "#10B65C", textAlign: "center" }}>
                         <TiTick style={{ color: "#10B65C" }}></TiTick>
                         Requirement satisfied
                       </p>
                       <p style={{ paddingTop: "10px" }}>
-                        <b style={{ color: "#293e6f" }}>Version: </b>
-                        {browser.version}
+                        <b style={{ color: "#293e6f" }}> Speed:</b>{" "}
+                        {checkSpeed !== undefined && checkSpeed} mbps
                       </p>
                       <p style={{ color: "#10B65C", textAlign: "center" }}>
                         <TiTick style={{ color: "#10B65C" }}></TiTick>

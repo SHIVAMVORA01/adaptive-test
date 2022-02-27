@@ -31,6 +31,7 @@ function Result() {
   const [optRadar, setOptRadar] = useState({});
   const [show, setShow] = useState(false);
   const [showFeedback, setShowFeedback] = useState(false);
+  const [feedBackOnLogout, setFeedBackOnLogout] = useState(false);
   const [idx, setIdx] = useState();
   const [userDetails, setUserDetails] = useState({});
   const [startTime, setStartTime] = useState("");
@@ -40,7 +41,10 @@ function Result() {
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
   const [feedback_comment, set_feedback_comment] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
+  const [prediction, setPrediction] = useState(false);
+
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
     documentTitle: "detailed_report",
@@ -191,6 +195,7 @@ function Result() {
           setPersonalityData(res.data.personalityData);
           setIdx(res.data.res_id);
           setShowFeedback(res.data.takeFeedback);
+          setPrediction(res.data.prediction);
           // localStorage.setItem('result',total)
         })
         .catch((e) => console.log(e));
@@ -216,6 +221,7 @@ function Result() {
             setUserDetails(res.data.user_detail);
             setStartTime(res.data.startTime);
             setShowFeedback(false);
+            setPrediction(res.data.prediction);
           })
           .catch((e) => console.log(e));
       }
@@ -304,512 +310,547 @@ function Result() {
 
   return (
     <>
-    {isDesktopOrLaptop?<>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div>
-          <Alert
-            msg={successMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
-            type="success"
-          ></Alert>
-          <Alert
-            msg={dangerMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
-            type="danger"
-          ></Alert>
-          <Modal
-            id="feedback"
-            show={showFeedback}
-            onHide={() => setShowFeedback(false)}
-            backdrop="static"
-            keyboard={false}
-            centered
-          >
-            <Modal.Body>
-              <Form
-                style={{ paddingTop: "15px" }}
-                onSubmit={async (e) => {
-                  e.preventDefault();
-
-                  await axiosInstance
-                    .post("api/feedback", {
-                      data: {
-                        rating: feedback_star,
-                        comment: feedback_comment,
-                        username: localStorage.getItem("username"),
-                      },
-                    })
-                    .then((res) => {
-                      if (res.data.success) {
-                        setIsAlertMsgLoaded(true);
-                        setSuccessMsg("Thank you for your feedback");
-                        setShowFeedback(false);
-                      } else {
-                        setDangerMsg("Error Occured");
-                      }
-                    })
-                    .catch((e) => console.log(e));
-                }}
+      {isDesktopOrLaptop ? (
+        <>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <div>
+              <Alert
+                msg={successMsg}
+                setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+                isAlertMsgLoaded={isAlertSuccessMsgLoaded}
+                type="success"
+              ></Alert>
+              <Alert
+                msg={dangerMsg}
+                setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+                isAlertMsgLoaded={isAlertDangerMsgLoaded}
+                type="danger"
+              ></Alert>
+              <Modal
+                id="feedback"
+                show={feedBackOnLogout}
+                onHide={() => setShowFeedback(false)}
+                backdrop="static"
+                keyboard={false}
+                centered
               >
-                <p
-                  style={{
-                    textAlign: "center",
-                    fontSize: "16px",
-                    textAlign: "center",
-                    color: "#081466",
-                  }}
-                >
-                  <b>How do you feel about this portal? </b>
-                </p>
-                <Feedbackstar
-                  fontSizeStar="3vw"
-                  colorStar="#081466"
-                  sendFeedback={(e) => {
-                    set_feedback_star(e);
-                  }}
-                ></Feedbackstar>
-                <p
-                  style={{
-                    textAlign: "center",
-                    fontSize: "16px",
-                    textAlign: "center",
-                    color: "#788094",
-                  }}
-                >
-                  Let us know if you have ideas for new features <br></br>or
-                  improvements below!
-                </p>
-                <Form.Group className="mb-3">
-                  <Form.Label
-                    style={{
-                      fontSize: "14px",
-                      textAlign: "center",
-                      color: "#081466",
+                <Modal.Body>
+                  <Form
+                    style={{ paddingTop: "15px" }}
+                    onSubmit={async (e) => {
+                      e.preventDefault();
+
+                      await axiosInstance
+                        .post("api/feedback", {
+                          data: {
+                            rating: feedback_star,
+                            comment: feedback_comment,
+                            username: localStorage.getItem("username"),
+                          },
+                        })
+                        .then((res) => {
+                          if (res.data.success) {
+                            setIsAlertSuccessMsgLoaded(true);
+                            setSuccessMsg("Thank you for your feedback");
+                            setShowFeedback(false);
+                            navigate("/logout");
+                          } else {
+                            setDangerMsg("Error Occured");
+                          }
+                        })
+                        .catch((e) => console.log(e));
                     }}
                   >
-                    {" "}
-                    <b>Feedback</b>
-                  </Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={5}
-                    onChange={(e) => {
-                      set_feedback_comment(e.target.value);
-                    }}
-                  />
-                </Form.Group>
-                <button
-                  className="btn"
-                  type="submit"
-                  disabled={feedback_star !== 0 ? false : true}
-                  style={{
-                    fontSize: "14px",
-                    textAlign: "center",
-                    backgroundColor: "#10b65c",
-                    color: "white",
-                    marginLeft: "190px",
-                  }}
-                >
-                  {" "}
-                  Submit{" "}
-                </button>
-              </Form>
-            </Modal.Body>
-          </Modal>
-          <Modal
-            id="result_page"
-            show={show}
-            onHide={() => setShow(false)}
-            aria-labelledby="det_report"
-          >
-            <Modal.Header closeButton>
-              <Modal.Title id="det_report">
-                Detailed Report
-                <button
-                  onClick={handlePrint}
-                  style={{
-                    backgroundColor: "white",
-                    marginLeft: "10px",
-                    outline: "none",
-                    border: "0",
-                  }}
-                >
-                  <i className="fa fa-download" aria-hidden="true"></i>
-                </button>
-              </Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {personalityData[0] !== undefined &&
-                userDetails !== undefined &&
-                timeTaken !== undefined &&
-                totalMarksScored !== undefined &&
-                startTime !== undefined && (
-                  <DetailedReportComp
-                    componentRef={componentRef}
-                    SEP={personalityData[0].SEP}
-                    SEFP={personalityData[0].SEFP}
-                    LO={personalityData[0].LO}
-                    HI={personalityData[0].HI}
-                    SE={personalityData[0].SE}
-                    SAP={personalityData[0].SAP}
-                    SAFP={personalityData[0].SAFP}
-                    SA={personalityData[0].SA}
-                    SC={personalityData[0].SC}
-                    SCP={personalityData[0].SCP}
-                    SCFP={personalityData[0].SCFP}
-                    flev={personalityData[0].flev}
-                    SOP={personalityData[0].SOP}
-                    SOFP={personalityData[0].SOFP}
-                    SO={personalityData[0].SO}
-                    Nick={personalityData[0].Nick}
-                    Country={personalityData[0].Country}
-                    SNP={personalityData[0].SNP}
-                    SNFP={personalityData[0].SNFP}
-                    Category={personalityData[0].Category}
-                    SN={personalityData[0].SN}
-                    mrksScoredPercent={mrksScoredPercent}
-                    user_detail={userDetails}
-                    timeTaken={timeTaken}
-                    totalMarksScored={totalMarksScored}
-                    startTime={startTime}
-                  />
-                )}{" "}
-            </Modal.Body>
-          </Modal>
-          <Row>
-            <Col md="12">
-              <div
-                className="rectangle"
-                style={{ textAlign: "center", fontSize: "18px" }}
+                    <p
+                      style={{
+                        textAlign: "center",
+                        fontSize: "16px",
+                        textAlign: "center",
+                        color: "#081466",
+                      }}
+                    >
+                      <b>How do you feel about this portal? </b>
+                    </p>
+                    <Feedbackstar
+                      fontSizeStar="3vw"
+                      colorStar="#081466"
+                      sendFeedback={(e) => {
+                        set_feedback_star(e);
+                      }}
+                    ></Feedbackstar>
+                    <p
+                      style={{
+                        textAlign: "center",
+                        fontSize: "16px",
+                        textAlign: "center",
+                        color: "#788094",
+                      }}
+                    >
+                      Let us know if you have ideas for new features <br></br>or
+                      improvements below!
+                    </p>
+                    <Form.Group className="mb-3">
+                      <Form.Label
+                        style={{
+                          fontSize: "14px",
+                          textAlign: "center",
+                          color: "#081466",
+                        }}
+                      >
+                        {" "}
+                        <b>Feedback</b>
+                      </Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        rows={5}
+                        onChange={(e) => {
+                          set_feedback_comment(e.target.value);
+                        }}
+                      />
+                    </Form.Group>
+                    <button
+                      className="btn"
+                      type="submit"
+                      disabled={feedback_star !== 0 ? false : true}
+                      style={{
+                        fontSize: "14px",
+                        textAlign: "center",
+                        backgroundColor: "#10b65c",
+                        color: "white",
+                        marginLeft: "190px",
+                      }}
+                    >
+                      {" "}
+                      Submit{" "}
+                    </button>
+                  </Form>
+                </Modal.Body>
+              </Modal>
+              <Modal
+                id="result_page"
+                show={show}
+                onHide={() => setShow(false)}
+                aria-labelledby="det_report"
               >
-                {timeTaken !== undefined && (
-                  <TestHeaderComp
-                    style={{ fontSize: "18px" }}
-                    timer={timeTaken}
-                    timeKey="Time Taken"
-                    start={false}
-                    totalKey={"Marks Scored"}
-                    marks={totalMarksScored}
-                    header="Evaluation Report"
-                    totalValue={totalMarksScored}
-                  ></TestHeaderComp>
-                )}
-              </div>
-            </Col>
-          </Row>
-          <p className="Para">Placement Test Analysis</p>
-          <Row style={{ marginTop: "5px" }}>
-            <Col lg="6">
-              <div
-                className="rectangle"
-                style={{ minHeight: "460px", color: "#788094" }}
-              >
-                <Chart
-                  series={[
-                    {
-                      name: "Marks Scored",
-                      type: "column",
-                      data: mrksScored,
-                    },
-                    {
-                      name: "Average",
-                      type: "line",
-                      data: avgMarksArr,
-                    },
-                  ]}
-                  options={opt}
-                  type="line"
-                  height={`400px`}
-                />
-              </div>
-            </Col>
-            <Col lg="6">
-              <div
-                className="rectangle"
-                style={{ minHeight: "460px", color: "#788094" }}
-              >
-                <Chart
-                  series={mrksScoredPercent}
-                  options={opt1}
-                  type="radialBar"
-                  height={`400px`}
-                />
-              </div>
-            </Col>
-          </Row>
-          <Row>
-            <p className="Para">Personality Test Analysis</p>
-            <Col style={{ marginTop: "5px" }}>
-              <div
-                className="rectangle"
-                style={{ minHeight: "460px", backgroundColor: "#FFFFFF" }}
-              >
-                <Row>
-                  <Col md={6}>
-                    <div className="radarCh">
-                      {personalityData[0] && (
-                        <Chart
-                          series={[
-                            {
-                              name: "Score",
-                              data: [
-                                personalityData[0].SEP,
-                                personalityData[0].SAP,
-                                personalityData[0].SCP,
-                                personalityData[0].SNP,
-                                personalityData[0].SOP,
-                              ],
-                            },
-                          ]}
-                          options={optRadar}
-                          type="radar"
-                          height={`540px`}
-                        />
-                      )}
-                    </div>
-                  </Col>
-                  <Col md={6}>
-                    {personalityData[0] !== undefined && (
-                      <div>
-                        <h3 className="factor_5_modal">Extraversion</h3>
-
-                        <h5 className="factor_5_modal_result">
-                          {" "}
-                          {personalityData[0].SE < personalityData[0].LO && (
-                            <p>
-                              {" "}
-                              Your score on Extraversion is low, indicating you
-                              are introverted, reserved, and quiet. You enjoy
-                              solitude and solitary activities. Your socializing
-                              tends to be restricted to a few close friends.{" "}
-                            </p>
+                <Modal.Header closeButton>
+                  <Modal.Title id="det_report">
+                    Detailed Report
+                    <button
+                      onClick={handlePrint}
+                      style={{
+                        backgroundColor: "white",
+                        marginLeft: "10px",
+                        outline: "none",
+                        border: "0",
+                      }}
+                    >
+                      <i className="fa fa-download" aria-hidden="true"></i>
+                    </button>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {personalityData[0] !== undefined &&
+                    userDetails !== undefined &&
+                    timeTaken !== undefined &&
+                    totalMarksScored !== undefined &&
+                    startTime !== undefined && (
+                      <DetailedReportComp
+                        prediction={prediction}
+                        componentRef={componentRef}
+                        SEP={personalityData[0].SEP}
+                        SEFP={personalityData[0].SEFP}
+                        LO={personalityData[0].LO}
+                        HI={personalityData[0].HI}
+                        SE={personalityData[0].SE}
+                        SAP={personalityData[0].SAP}
+                        SAFP={personalityData[0].SAFP}
+                        SA={personalityData[0].SA}
+                        SC={personalityData[0].SC}
+                        SCP={personalityData[0].SCP}
+                        SCFP={personalityData[0].SCFP}
+                        flev={personalityData[0].flev}
+                        SOP={personalityData[0].SOP}
+                        SOFP={personalityData[0].SOFP}
+                        SO={personalityData[0].SO}
+                        Nick={personalityData[0].Nick}
+                        Country={personalityData[0].Country}
+                        SNP={personalityData[0].SNP}
+                        SNFP={personalityData[0].SNFP}
+                        Category={personalityData[0].Category}
+                        SN={personalityData[0].SN}
+                        mrksScoredPercent={mrksScoredPercent}
+                        user_detail={userDetails}
+                        timeTaken={timeTaken}
+                        totalMarksScored={totalMarksScored}
+                        startTime={startTime}
+                      />
+                    )}{" "}
+                </Modal.Body>
+              </Modal>
+              <Row>
+                <Col md="12">
+                  <div
+                    className="rectangle"
+                    style={{ textAlign: "center", fontSize: "18px" }}
+                  >
+                    {timeTaken !== undefined && (
+                      <TestHeaderComp
+                        style={{ fontSize: "18px" }}
+                        timer={timeTaken}
+                        timeKey="Time Taken"
+                        start={false}
+                        totalKey={"Marks Scored"}
+                        marks={totalMarksScored}
+                        header="Evaluation Report"
+                        totalValue={totalMarksScored}
+                      ></TestHeaderComp>
+                    )}
+                  </div>
+                </Col>
+              </Row>
+              <p className="Para">Placement Test Analysis</p>
+              <Row style={{ marginTop: "5px" }}>
+                <Col lg="6">
+                  <div
+                    className="rectangle"
+                    style={{ minHeight: "460px", color: "#788094" }}
+                  >
+                    <Chart
+                      series={[
+                        {
+                          name: "Marks Scored",
+                          type: "column",
+                          data: mrksScored,
+                        },
+                        {
+                          name: "Average",
+                          type: "line",
+                          data: avgMarksArr,
+                        },
+                      ]}
+                      options={opt}
+                      type="line"
+                      height={`400px`}
+                    />
+                  </div>
+                </Col>
+                <Col lg="6">
+                  <div
+                    className="rectangle"
+                    style={{ minHeight: "460px", color: "#788094" }}
+                  >
+                    <Chart
+                      series={mrksScoredPercent}
+                      options={opt1}
+                      type="radialBar"
+                      height={`400px`}
+                    />
+                  </div>
+                </Col>
+              </Row>
+              <Row>
+                <p className="Para">Personality Test Analysis</p>
+                <Col style={{ marginTop: "5px" }}>
+                  <div
+                    className="rectangle"
+                    style={{ minHeight: "460px", backgroundColor: "#FFFFFF" }}
+                  >
+                    <Row>
+                      <Col md={6}>
+                        <div className="radarCh">
+                          {personalityData[0] && (
+                            <Chart
+                              series={[
+                                {
+                                  name: "Score",
+                                  data: [
+                                    personalityData[0].SEP,
+                                    personalityData[0].SAP,
+                                    personalityData[0].SCP,
+                                    personalityData[0].SNP,
+                                    personalityData[0].SOP,
+                                  ],
+                                },
+                              ]}
+                              options={optRadar}
+                              type="radar"
+                              height={`540px`}
+                            />
                           )}
-                          {personalityData[0].SE >= personalityData[0].LO &&
-                            personalityData[0].SE <= personalityData[0].HI && (
-                              <>
-                                <br />{" "}
+                        </div>
+                      </Col>
+                      <Col md={6}>
+                        {personalityData[0] !== undefined && (
+                          <div>
+                            <h3 className="factor_5_modal">Extraversion</h3>
+
+                            <h5 className="factor_5_modal_result">
+                              {" "}
+                              {personalityData[0].SE <
+                                personalityData[0].LO && (
                                 <p>
                                   {" "}
-                                  <em>
-                                    {" "}
-                                    Your score on Extraversion is average,
-                                    indicating you are neither a subdued loner
-                                    nor a jovial chatterbox. You enjoy time with
-                                    others but also time alone.{" "}
-                                  </em>{" "}
+                                  Your score on Extraversion is low, indicating
+                                  you are introverted, reserved, and quiet. You
+                                  enjoy solitude and solitary activities. Your
+                                  socializing tends to be restricted to a few
+                                  close friends.{" "}
                                 </p>
-                              </>
-                            )}
-                          {personalityData[0].SE > personalityData[0].HI && (
-                            <>
-                              <br />{" "}
-                              <p>
-                                {" "}
-                                <em>
+                              )}
+                              {personalityData[0].SE >= personalityData[0].LO &&
+                                personalityData[0].SE <=
+                                  personalityData[0].HI && (
+                                  <>
+                                    <br />{" "}
+                                    <p>
+                                      {" "}
+                                      <em>
+                                        {" "}
+                                        Your score on Extraversion is average,
+                                        indicating you are neither a subdued
+                                        loner nor a jovial chatterbox. You enjoy
+                                        time with others but also time alone.{" "}
+                                      </em>{" "}
+                                    </p>
+                                  </>
+                                )}
+                              {personalityData[0].SE >
+                                personalityData[0].HI && (
+                                <>
+                                  <br />{" "}
+                                  <p>
+                                    {" "}
+                                    <em>
+                                      {" "}
+                                      Your score on Extraversion is high,
+                                      indicating you are sociable, outgoing,
+                                      energetic, and lively. You prefer to be
+                                      around people much of the time.{" "}
+                                    </em>{" "}
+                                  </p>
+                                </>
+                              )}
+                            </h5>
+
+                            <h3 className="factor_5_modal">Agreeableness</h3>
+
+                            <h5 className="factor_5_modal_result">
+                              {" "}
+                              {personalityData[0].SA <
+                                personalityData[0].LO && (
+                                <p>
                                   {" "}
-                                  Your score on Extraversion is high, indicating
-                                  you are sociable, outgoing, energetic, and
-                                  lively. You prefer to be around people much of
-                                  the time.{" "}
-                                </em>{" "}
-                              </p>
-                            </>
-                          )}
-                        </h5>
+                                  Your score on Agreeableness is low, indicating
+                                  less concern with others' needs than with your
+                                  own. People see you as tough, critical, and
+                                  uncompromising.{" "}
+                                </p>
+                              )}
+                              {personalityData[0].SA >= personalityData[0].LO &&
+                                personalityData[0].SA <=
+                                  personalityData[0].HI && (
+                                  <p>
+                                    {" "}
+                                    Your level of Agreeableness is average,
+                                    indicating some concern with others' Needs,
+                                    but, generally, unwillingness to sacrifice
+                                    yourself for others.{" "}
+                                  </p>
+                                )}
+                              {personalityData[0].SA >
+                                personalityData[0].HI && (
+                                <p>
+                                  {" "}
+                                  Your high level of Agreeableness indicates a
+                                  strong interest in others' needs and
+                                  well-being. You are pleasant, sympathetic, and
+                                  cooperative.{" "}
+                                </p>
+                              )}
+                            </h5>
 
-                        <h3 className="factor_5_modal">Agreeableness</h3>
-
-                        <h5 className="factor_5_modal_result">
-                          {" "}
-                          {personalityData[0].SA < personalityData[0].LO && (
-                            <p>
+                            <h3 className="factor_5_modal">
+                              Conscientiousness
+                            </h3>
+                            <h5 className="factor_5_modal_result">
                               {" "}
-                              Your score on Agreeableness is low, indicating
-                              less concern with others' needs than with your
-                              own. People see you as tough, critical, and
-                              uncompromising.{" "}
-                            </p>
-                          )}
-                          {personalityData[0].SA >= personalityData[0].LO &&
-                            personalityData[0].SA <= personalityData[0].HI && (
-                              <p>
-                                {" "}
-                                Your level of Agreeableness is average,
-                                indicating some concern with others' Needs, but,
-                                generally, unwillingness to sacrifice yourself
-                                for others.{" "}
-                              </p>
-                            )}
-                          {personalityData[0].SA > personalityData[0].HI && (
-                            <p>
+                              {personalityData[0].SC <
+                                personalityData[0].LO && (
+                                <p>
+                                  Your score on Conscientiousness is low,
+                                  indicating you like to live for the moment and
+                                  do what feels good now. Your work tends to be
+                                  careless and disorganized.
+                                </p>
+                              )}
+                              {personalityData[0].SC >= personalityData[0].LO &&
+                                personalityData[0].SC <=
+                                  personalityData[0].HI && (
+                                  <p>
+                                    Your score on Conscientiousness is average.
+                                    This means you are reasonably reliable,
+                                    organized, and self-controlled.
+                                  </p>
+                                )}
+                              {personalityData[0].SC >
+                                personalityData[0].HI && (
+                                <p>
+                                  Your score on Conscientiousness is high. This
+                                  means you set clear goals and pursue them with
+                                  determination. People regard you as reliable
+                                  and hard-working.
+                                </p>
+                              )}
+                            </h5>
+
+                            <h3 className="factor_5_modal">Neuroticism</h3>
+                            <h5 className="factor_5_modal_result">
                               {" "}
-                              Your high level of Agreeableness indicates a
-                              strong interest in others' needs and well-being.
-                              You are pleasant, sympathetic, and cooperative.{" "}
-                            </p>
-                          )}
-                        </h5>
+                              {personalityData[0].SN <
+                                personalityData[0].LO && (
+                                <p>
+                                  Your score on Neuroticism is low, indicating
+                                  that you are exceptionally calm, composed and
+                                  unflappable. You do not react with intense
+                                  emotions, even to situations that most people
+                                  would describe as stressful.
+                                </p>
+                              )}
+                              {personalityData[0].SN >= personalityData[0].LO &&
+                                personalityData[0].SN <=
+                                  personalityData[0].HI && (
+                                  <p>
+                                    Your score on Neuroticism is average,
+                                    indicating that your level of emotional
+                                    reactivity is typical of the general
+                                    population. Stressful and frustrating
+                                    situations are somewhat upsetting to you,
+                                    but you are generally able to get over these
+                                    feelings and cope with these situations.
+                                  </p>
+                                )}
+                              {personalityData[0].SN >
+                                personalityData[0].HI && (
+                                <p>
+                                  Your score on Neuroticism is high, indicating
+                                  that you are easily upset, even by what most
+                                  people consider the normal demands of living.
+                                  People consider you to be sensitive and
+                                  emotional.
+                                </p>
+                              )}
+                            </h5>
 
-                        <h3 className="factor_5_modal">Conscientiousness</h3>
-                        <h5 className="factor_5_modal_result">
-                          {" "}
-                          {personalityData[0].SC < personalityData[0].LO && (
-                            <p>
-                              Your score on Conscientiousness is low, indicating
-                              you like to live for the moment and do what feels
-                              good now. Your work tends to be careless and
-                              disorganized.
-                            </p>
-                          )}
-                          {personalityData[0].SC >= personalityData[0].LO &&
-                            personalityData[0].SC <= personalityData[0].HI && (
-                              <p>
-                                Your score on Conscientiousness is average. This
-                                means you are reasonably reliable, organized,
-                                and self-controlled.
-                              </p>
-                            )}
-                          {personalityData[0].SC > personalityData[0].HI && (
-                            <p>
-                              Your score on Conscientiousness is high. This
-                              means you set clear goals and pursue them with
-                              determination. People regard you as reliable and
-                              hard-working.
-                            </p>
-                          )}
-                        </h5>
+                            <h3 className="factor_5_modal">Openness</h3>
+                            <h5 className="factor_5_modal_result">
+                              {personalityData[0].SO <
+                                personalityData[0].LO && (
+                                <p>
+                                  Your score on Openness to Experience is low,
+                                  indicating you like to think in plain and
+                                  simple terms. Others describe you as
+                                  down-to-earth, practical, and conservative.
+                                </p>
+                              )}
 
-                        <h3 className="factor_5_modal">Neuroticism</h3>
-                        <h5 className="factor_5_modal_result">
-                          {" "}
-                          {personalityData[0].SN < personalityData[0].LO && (
-                            <p>
-                              Your score on Neuroticism is low, indicating that
-                              you are exceptionally calm, composed and
-                              unflappable. You do not react with intense
-                              emotions, even to situations that most people
-                              would describe as stressful.
-                            </p>
-                          )}
-                          {personalityData[0].SN >= personalityData[0].LO &&
-                            personalityData[0].SN <= personalityData[0].HI && (
-                              <p>
-                                Your score on Neuroticism is average, indicating
-                                that your level of emotional reactivity is
-                                typical of the general population. Stressful and
-                                frustrating situations are somewhat upsetting to
-                                you, but you are generally able to get over
-                                these feelings and cope with these situations.
-                              </p>
-                            )}
-                          {personalityData[0].SN > personalityData[0].HI && (
-                            <p>
-                              Your score on Neuroticism is high, indicating that
-                              you are easily upset, even by what most people
-                              consider the normal demands of living. People
-                              consider you to be sensitive and emotional.
-                            </p>
-                          )}
-                        </h5>
+                              {personalityData[0].SO >= personalityData[0].LO &&
+                                personalityData[0].SO <=
+                                  personalityData[0].HI && (
+                                  <p>
+                                    Your score on Openness to Experience is
+                                    average, indicating you enjoy tradition but
+                                    are willing to try new things. Your thinking
+                                    is neither simple nor complex. To others you
+                                    appear to be a well-educated person but not
+                                    an intellectual.{" "}
+                                  </p>
+                                )}
 
-                        <h3 className="factor_5_modal">Openness</h3>
-                        <h5 className="factor_5_modal_result">
-                          {personalityData[0].SO < personalityData[0].LO && (
-                            <p>
-                              Your score on Openness to Experience is low,
-                              indicating you like to think in plain and simple
-                              terms. Others describe you as down-to-earth,
-                              practical, and conservative.
-                            </p>
-                          )}
-
-                          {personalityData[0].SO >= personalityData[0].LO &&
-                            personalityData[0].SO <= personalityData[0].HI && (
-                              <p>
-                                Your score on Openness to Experience is average,
-                                indicating you enjoy tradition but are willing
-                                to try new things. Your thinking is neither
-                                simple nor complex. To others you appear to be a
-                                well-educated person but not an intellectual.{" "}
-                              </p>
-                            )}
-
-                          {personalityData[0].SO > personalityData[0].HI && (
-                            <p>
-                              Your score on Openness to Experience is high,
-                              indicating you enjoy novelty, variety, and change.
-                              You are curious, imaginative, and creative.
-                            </p>
-                          )}
-                        </h5>
-                      </div>
-                    )}
-                  </Col>
-                </Row>
-              </div>
-            </Col>
-          </Row>
-          {localStorage.getItem("admin") === "admin" && idx !== undefined && (
-            <button
-              type="button"
-              className="btn"
-              onClick={async (e) => {
-                localStorage.removeItem("submittedFeedback");
-                localStorage.removeItem("testId");
-                localStorage.removeItem("result");
-                await axiosInstance
-                  .delete(`api/delres/${idx}`)
-                  .then((res) => {
-                    navigate("/admin/scheduledTest");
-                  })
-                  .catch((e) => console.log(e));
-              }}
-              style={{
-                marginTop: "20px",
-                backgroundColor: "red",
-                color: "white",
-                border: "none",
-              }}
-            >
-              Back
-            </button>
+                              {personalityData[0].SO >
+                                personalityData[0].HI && (
+                                <p>
+                                  Your score on Openness to Experience is high,
+                                  indicating you enjoy novelty, variety, and
+                                  change. You are curious, imaginative, and
+                                  creative.
+                                </p>
+                              )}
+                            </h5>
+                          </div>
+                        )}
+                      </Col>
+                    </Row>
+                  </div>
+                </Col>
+              </Row>
+              {localStorage.getItem("admin") === "admin" && idx !== undefined && (
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={async (e) => {
+                    localStorage.removeItem("submittedFeedback");
+                    localStorage.removeItem("testId");
+                    localStorage.removeItem("result");
+                    await axiosInstance
+                      .delete(`api/delres/${idx}`)
+                      .then((res) => {
+                        navigate("/admin/scheduledTest");
+                      })
+                      .catch((e) => console.log(e));
+                  }}
+                  style={{
+                    marginTop: "20px",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                  }}
+                >
+                  Back
+                </button>
+              )}
+              {localStorage.getItem("admin") === "user" && (
+                <button
+                  type="button"
+                  className="btn"
+                  onClick={(e) => {
+                    if (showFeedback) {
+                      setFeedBackOnLogout(true);
+                    } else {
+                      navigate("/logout");
+                    }
+                  }}
+                  style={{
+                    marginTop: "20px",
+                    backgroundColor: "red",
+                    color: "white",
+                    border: "none",
+                  }}
+                >
+                  Logout
+                </button>
+              )}
+              <button
+                type="button"
+                className="btn"
+                onClick={(e) => setShow(true)}
+                style={{
+                  marginTop: "20px",
+                  marginLeft: "5px",
+                  backgroundColor: "#10b65c",
+                  color: "white",
+                  border: "none",
+                }}
+              >
+                View Detailed Report
+              </button>
+            </div>
           )}
-          {localStorage.getItem("admin") === "user" && (
-            <button
-              type="button"
-              className="btn"
-              onClick={(e) => navigate("/logout")}
-              style={{
-                marginTop: "20px",
-                backgroundColor: "red",
-                color: "white",
-                border: "none",
-              }}
-            >
-              Logout
-            </button>
-          )}
-          <button
-            type="button"
-            className="btn"
-            onClick={(e) => setShow(true)}
-            style={{
-              marginTop: "20px",
-              marginLeft: "5px",
-              backgroundColor: "#10b65c",
-              color: "white",
-              border: "none",
-            }}
-          >
-            View Detailed Report
-          </button>
-        </div>
+        </>
+      ) : (
+        <MobileWidth />
       )}
-    </>:<MobileWidth/>}
     </>
   );
 }

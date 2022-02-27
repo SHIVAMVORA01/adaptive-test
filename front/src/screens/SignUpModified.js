@@ -38,7 +38,8 @@ function SignUpModified() {
   const [formData, updateFormData] = useState(initialFormData);
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);  
   const filterOptions = createFilterOptions(colleges);
   const filterOptions2 = createFilterOptions(departments);
   useEffect(() => {
@@ -47,7 +48,7 @@ function SignUpModified() {
         .get("api/newuser", { params: { email: location.state.data.email } })
         .then((res) => {
           if (res.data.exists) {
-            setIsAlertMsgLoaded(true);
+            setIsAlertDangerMsgLoaded(true);
             setDangerMsg("User is already registered");
             navigate("/login");
           } else {
@@ -82,7 +83,7 @@ function SignUpModified() {
         .then((res) => {
           setIsloading(true);
           if (res.data.exists) {
-            setIsAlertMsgLoaded(true);
+            setIsAlertDangerMsgLoaded(true);
             setDangerMsg("The user is already registered");
           }
           navigate("/login");
@@ -91,7 +92,7 @@ function SignUpModified() {
           console.log(e);
         });
     } else {
-      setIsAlertMsgLoaded(true);
+      setIsAlertDangerMsgLoaded(true);
       setDangerMsg("Password and confirm password do not match");
     }
   };
@@ -111,14 +112,14 @@ function SignUpModified() {
         <>
           <Alert
             msg={successMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
+            setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+            isAlertMsgLoaded={isAlertSuccessMsgLoaded}
             type="success"
           ></Alert>
           <Alert
             msg={dangerMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
+            setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+            isAlertMsgLoaded={isAlertDangerMsgLoaded}
             type="danger"
           ></Alert>
           {isLoading ? (

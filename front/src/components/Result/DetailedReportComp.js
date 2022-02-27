@@ -36,6 +36,7 @@ function DetailedReportComp({
   totalMarksScored,
   startTime,
   componentRef,
+  prediction,
 }) {
   function sum() {
     let sum = 0;
@@ -586,6 +587,76 @@ function DetailedReportComp({
                 )}
               </p>
             </div>
+          </Row>
+          <div
+            style={{
+              width: "95%",
+              height: "33px",
+              backgroundColor: "#293E6F",
+              color: "white",
+              marginLeft: "20px",
+              marginTop: "10px",
+            }}
+          >
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "400",
+                paddingTop: "5px",
+              }}
+            >
+              Employment Index
+            </p>
+          </div>
+          <Row>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "400",
+                paddingTop: "35px",
+                fontSize: "36px",
+                color: "Black",
+                fontWeight: "600",
+              }}
+            >
+              {" "}
+              {prediction !== undefined && prediction === 1
+                ? "Pass"
+                : "Fail"}{" "}
+            </p>
+            <p
+              style={{
+                textAlign: "center",
+                fontWeight: "normal",
+                paddingTop: "5px",
+                fontSize: "15px",
+                color: "#293E6F",
+                fontWeight: "600",
+              }}
+            >
+              {" "}
+              Employment Score{" "}
+            </p>
+            <p
+              style={{
+                fontSize: "13.6px",
+                paddingRight: "40px",
+                paddingLeft: "40px",
+              }}
+            >
+              The employment score is a measure of your ability to work based on
+              the score of skills considered in this test. It indicates whether
+              you are ready for the placements or you still need to improve your
+              skills. Getting high score on this test indicates that you are
+              ready for the placements and not that you will surely get a
+              placement in the future, because there are various other factors
+              which are not considered in this. Consider this as your practice,
+              you can improve your skills and get a higher score. Assessment is
+              a continuous process which does not end with just an evaluation.
+              In fact this is just the beginning. You need to work hard to
+              succeed in tests and interviews of companies and finally do
+              wonders at the job.
+            </p>
           </Row>
         </Col>
       </Row>

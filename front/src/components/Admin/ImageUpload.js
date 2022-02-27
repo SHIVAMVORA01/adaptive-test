@@ -12,7 +12,8 @@ export default function ImageUpload() {
   const [selectedFile, setSelectedFile] = useState();
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const handleFileInputChange = (e) => {
     const file = e.target.files[0];
     previewFile(file);
@@ -49,7 +50,7 @@ export default function ImageUpload() {
       });
       setFileInputState("");
       setPreviewSource("");
-      setIsAlertMsgLoaded(true);
+      setIsAlertSuccessMsgLoaded(true);
       setSuccessMsg("Image uploaded successfully");
       window.location.reload();
     } catch (err) {
@@ -62,14 +63,14 @@ export default function ImageUpload() {
       <h1 className="title">Upload an Image</h1>
       <Alert
         msg={successMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
+        setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+        isAlertMsgLoaded={isAlertSuccessMsgLoaded}
         type="success"
       ></Alert>
       <Alert
         msg={dangerMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
+        setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+        isAlertMsgLoaded={isAlertDangerMsgLoaded}
         type="danger"
       ></Alert>
       <form onSubmit={handleSubmitFile} className="form">

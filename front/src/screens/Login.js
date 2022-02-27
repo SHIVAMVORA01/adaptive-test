@@ -30,7 +30,8 @@ function Login() {
   const [show, setShow] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const [myid, setMyId] = useState(-1);
   const columnsP = [
     {
@@ -205,7 +206,7 @@ function Login() {
                             navigate("/result");
                           } else {
                             setMd(true);
-                            setIsAlertMsgLoaded(true);
+                            setIsAlertDangerMsgLoaded(true);
                             setDangerMsg(
                               "Test is ongoing on a different device"
                             );
@@ -226,18 +227,18 @@ function Login() {
                   }
                 } else {
                   setIsloading(false);
-                  setIsAlertMsgLoaded(true);
+                  setIsAlertDangerMsgLoaded(true);
                   setDangerMsg("You are not allowed to Login yet.Please wait!");
                 }
               });
           } else {
             setIsloading(false);
-            setIsAlertMsgLoaded(true);
+            setIsAlertDangerMsgLoaded(true);
             setDangerMsg("You Are not allowed To attempt this Test");
           }
         } else {
           setIsloading(false);
-          setIsAlertMsgLoaded(true);
+          setIsAlertDangerMsgLoaded(true);
           setDangerMsg("Invalid username or password");
         }
       });
@@ -248,7 +249,7 @@ function Login() {
   };
   const error = (res) => {
     if (res.error === "idpiframe_initialization_failed") return;
-    setIsAlertMsgLoaded(true);
+    setIsAlertDangerMsgLoaded(true);
     setDangerMsg("Attempt to log in failed");
   };
 
@@ -258,14 +259,14 @@ function Login() {
         <>
           <Alert
             msg={successMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
+            setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+            isAlertMsgLoaded={isAlertSuccessMsgLoaded}
             type="success"
           ></Alert>
           <Alert
             msg={dangerMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
+            setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+            isAlertMsgLoaded={isAlertDangerMsgLoaded}
             type="danger"
           ></Alert>
           {isLoading ? (
@@ -337,7 +338,7 @@ function Login() {
                           if (res.data.exists) {
                             setShow(false);
                           } else {
-                            setIsAlertMsgLoaded(true);
+                            setIsAlertDangerMsgLoaded(true);
                             setDangerMsg("An Error occured");
                           }
                         })
@@ -376,363 +377,361 @@ function Login() {
                   </Form>
                 </Modal.Body>
               </Modal>
-              <div>
-                <Row style={{ height: "100%", margin: "0px" }}>
-                  <Col
-                    lg={8}
-                    style={{ backgroundColor: "white", padding: "0px" }}
-                  >
-                    <div className="all_content" style={{ margin: "0px 50px" }}>
-                      <h5
-                        style={{
-                          fontStyle: " normal",
-                          fontWeight: "600",
-                          fontSize: "20px",
-                          lineHeight: "16px",
-                          textAlign: "center",
-                          marginTop: "70px",
-                          fontFamily: "Poppins",
-                          fontColor: "#788094",
-                        }}
-                      >
-                        Placement Test Portal
-                      </h5>
-                      <p
-                        style={{
-                          fontFamily: "Poppins",
-                          fontSize: "13px",
-                          fontStyle: "normal",
-                          fontWeight: "400",
-                          lineHeight: "31px",
-                          color: "#293e6f",
-                          marginTop: "20px",
-                          marginLeft: "auto",
-                          marginRight: "auto",
-                        }}
-                      >
-                        This proctored placement test portal is designed and
-                        developed by the students for the students. It offers
-                        behavioral analysis, personalized recommendations, and
-                        intelligent practice. Log in to get started on your path
-                        to a successful career.
-                      </p>
-                      <h5
-                        style={{
-                          textAlign: "center",
-                          marginTop: "30px",
-                          color: "#293e6f",
-                          fontSize: "18px",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Test Schedule
-                      </h5>
-                      <Row
-                        className="tb_margin"
-                        style={{ margin: "20px 35px 20px 35px" }}
-                      >
-                        <Col style={{ marginRight: "0%", padding: "0px" }}>
-                          {" "}
-                          <div
-                            style={{
-                              background: "#FFFFFF",
-                              border: "2px solid #E5E5E5",
-                              boxSizing: "border-box",
-                              borderRadius: "14px",
-                            }}
-                          >
-                            <h6
-                              style={{
-                                paddingTop: "10px",
-                                color: "#293e6f",
-                                textAlign: "center",
-                                fontSize: "16px",
-                                fontWeight: "400",
-                              }}
-                            >
-                              Ongoing Test
-                            </h6>
-                            <MDBDataTable
-                              striped
-                              bordered
-                              noBottomColumns
-                              hover
-                              searching={false}
-                              displayEntries={false}
-                              entries={1}
-                              pagesAmount={1}
-                              paging={false}
-                              noRecordsFoundLabel={"No Ongoing Test"}
-                              data={dataPresent}
-                            />
-                          </div>
-                        </Col>
-                      </Row>
-                      <Row
-                        className="tb_margin"
-                        style={{ margin: "20px 35px 20px 35px" }}
-                      >
-                        <Col style={{ marginRight: "0%", padding: "0px" }}>
-                          <div
-                            style={{
-                              background: "#FFFFFF",
-                              border: "2px solid #E5E5E5",
-                              boxSizing: "border-box",
-                              borderRadius: "14px",
-                            }}
-                          >
-                            <h6
-                              style={{
-                                paddingTop: "10px",
-                                color: "#293e6f",
-                                textAlign: "center",
-                                fontSize: "16px",
-                                fontWeight: "400",
-                              }}
-                            >
-                              Upcoming Test
-                            </h6>
-                            <MDBDataTable
-                              striped
-                              bordered
-                              noBottomColumns
-                              hover
-                              searching={false}
-                              displayEntries={false}
-                              entries={4}
-                              pagesAmount={1}
-                              paging={false}
-                              noRecordsFoundLabel={"No Upcoming Test"}
-                              data={dataUpcoming}
-                            />
-                          </div>
-                        </Col>
-                      </Row>
-                    </div>
-                  </Col>
-                  <Col
-                    lg={4}
-                    className="Background"
-                    style={{ padding: "3% 0 5% 0" }}
-                  >
-                    <Container
-                      className="sign_in"
+              <Row style={{ height: "100%", margin: "0px" }}>
+                <Col
+                  lg={8}
+                  style={{ backgroundColor: "white", padding: "0px" }}
+                >
+                  <div className="all_content" style={{ margin: "0px 50px" }}>
+                    <h5
                       style={{
-                        width: "352px",
-                        height: "87%",
-                        boxShadow: "1.5px 1.5px 7px 3px rgba(0,0,0,0.2)",
-                        backgroundColor: "white",
+                        fontStyle: " normal",
+                        fontWeight: "600",
+                        fontSize: "20px",
+                        lineHeight: "16px",
+                        textAlign: "center",
+                        marginTop: "70px",
+                        fontFamily: "Poppins",
+                        fontColor: "#788094",
                       }}
                     >
-                      <div>
-                        <h3
+                      Placement Test Portal
+                    </h5>
+                    <p
+                      style={{
+                        fontFamily: "Poppins",
+                        fontSize: "13px",
+                        fontStyle: "normal",
+                        fontWeight: "400",
+                        lineHeight: "31px",
+                        color: "#293e6f",
+                        marginTop: "20px",
+                        marginLeft: "auto",
+                        marginRight: "auto",
+                      }}
+                    >
+                      This proctored placement test portal is designed and
+                      developed by the students for the students. It offers
+                      behavioral analysis, personalized recommendations, and
+                      intelligent practice. Log in to get started on your path
+                      to a successful career.
+                    </p>
+                    <h5
+                      style={{
+                        textAlign: "center",
+                        marginTop: "30px",
+                        color: "#293e6f",
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      Test Schedule
+                    </h5>
+                    <Row
+                      className="tb_margin"
+                      style={{ margin: "20px 35px 20px 35px" }}
+                    >
+                      <Col style={{ marginRight: "0%", padding: "0px" }}>
+                        {" "}
+                        <div
                           style={{
-                            margin: "0 auto",
-                            padding: "4% 0",
-                            textAlign: "center",
-                            fontSize: "20px",
-                            lineHeight: "54px",
-                            fontWeight: "600",
-                            fontFamily: "Poppins",
-                            color: "#293E6F",
+                            background: "#FFFFFF",
+                            border: "2px solid #E5E5E5",
+                            boxSizing: "border-box",
+                            borderRadius: "14px",
                           }}
                         >
-                          Sign In
-                        </h3>
-                        <Form onSubmit={(e) => handleSubmit(e)}>
-                          <Form.Group>
-                            <Form.Label
-                              style={{
-                                marginTop: "3%",
-                                fontSize: "13px",
-                                fontWeight: "bold",
-                              }}
-                              className="customBoldFont inputLabel"
-                            >
-                              Email Id
-                            </Form.Label>
-                            <Form.Control
-                              className="inputField"
-                              onChange={handleChange}
-                              name="username"
-                              type="text"
-                              placeholder="alan@gmail.com"
-                              style={{
-                                width: "100%",
-                                borderTopStyle: "none",
-                                borderLeftStyle: "none",
-                                borderRightStyle: "none",
-                                fontSize: "13px",
-                              }}
-                              required
-                            />
-                          </Form.Group>
-                          <Form.Group className="mt-3 mb-2">
-                            <Form.Label
-                              className="customBoldFont inputLabel"
-                              style={{
-                                marginTop: "3%",
-                                fontSize: "13px",
-                                fontWeight: "bold",
-                              }}
-                            >
-                              Password
-                            </Form.Label>
-                            <Form.Control
-                              className="inputField"
-                              onChange={handleChange}
-                              id="password-field"
-                              name="password"
-                              type="password"
-                              placeholder="Password"
-                              style={{
-                                width: "100%",
-                                borderTopStyle: "none",
-                                borderLeftStyle: "none",
-                                borderRightStyle: "none",
-                                fontSize: "13px",
-                              }}
-                              required
-                            />
-                            <span
-                              toggle="#password-field"
-                              className="fa fa-fw fa-eye field-icon toggle-password"
-                              onClick={(e) => showHide(e)}
-                              style={{ marginTop: "-24px", color: "black" }}
-                            ></span>
-                            <label
-                              onClick={() => setShow(true)}
-                              style={{
-                                cursor: "pointer",
-                                fontFamily: "Poppins",
-                                color: "rgb(3, 155, 229)",
-                                fontWeight: "500",
-                                marginLeft: "210px",
-                                marginTop: "5%",
-                                fontSize: "10px",
-                              }}
-                            >
-                              Forgot Password?{" "}
-                            </label>
-                          </Form.Group>
-                          <div
+                          <h6
                             style={{
-                              display: "flex",
-                              justifyContent: "center",
-                            }}
-                          >
-                            <button
-                              style={{
-                                backgroundColor: "#10B65C",
-                                width: "100%",
-                                border: "none",
-                                margin: "5% 0",
-                              }}
-                              type="submit"
-                              className="btn btn-primary"
-                            >
-                              Login
-                            </button>
-                          </div>
-                          <div
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              flexDirection: "row",
-                            }}
-                          >
-                            <span
-                              style={{
-                                borderBottom: "1px solid rgb(224, 224, 224)",
-                                flexGrow: 1,
-                                display: "flex",
-                              }}
-                            />
-                            <span
-                              style={{
-                                margin: "3% 6px",
-                                color: "rgb(119, 119, 119)",
-                                fontSize: "14px",
-                              }}
-                            >
-                              OR
-                            </span>
-                            <span
-                              style={{
-                                borderBottom: "1px solid rgb(224, 224, 224)",
-                                flexGrow: 1,
-                                display: "flex",
-                              }}
-                            />
-                          </div>
-                          <div
-                            style={{
+                              paddingTop: "10px",
+                              color: "#293e6f",
                               textAlign: "center",
-                              fontSize: "13px",
-                              color: "#464646",
+                              fontSize: "16px",
+                              fontWeight: "400",
                             }}
                           >
-                            Not Registered? Sign up now{" "}
-                          </div>
-                          <Row
+                            Ongoing Test
+                          </h6>
+                          <MDBDataTable
+                            striped
+                            bordered
+                            noBottomColumns
+                            hover
+                            searching={false}
+                            displayEntries={false}
+                            entries={1}
+                            pagesAmount={1}
+                            paging={false}
+                            noRecordsFoundLabel={"No Ongoing Test"}
+                            data={dataPresent}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                    <Row
+                      className="tb_margin"
+                      style={{ margin: "20px 35px 20px 35px" }}
+                    >
+                      <Col style={{ marginRight: "0%", padding: "0px" }}>
+                        <div
+                          style={{
+                            background: "#FFFFFF",
+                            border: "2px solid #E5E5E5",
+                            boxSizing: "border-box",
+                            borderRadius: "14px",
+                          }}
+                        >
+                          <h6
                             style={{
-                              margin: "3% 0 3% 43%",
+                              paddingTop: "10px",
+                              color: "#293e6f",
+                              textAlign: "center",
+                              fontSize: "16px",
+                              fontWeight: "400",
                             }}
                           >
-                            <GoogleLogin
-                              render={(renderProps) => (
-                                <button
-                                  style={{
-                                    width: "45px",
-                                    height: "45px",
-                                    backgroundColor: "rgb(255, 255, 255)",
-                                    color: "rgba(0, 0, 0, 0.54)",
-                                    boxShadow:
-                                      "rgb(0 0 0 / 24%) 0px 2px 2px 0px, rgb(0 0 0 / 24%) 0px 0px 1px 0px",
-                                    padding: "0px 0 2px 2px",
-                                    borderRadius: "50px",
-                                    border: "1px solid transparent",
-                                  }}
-                                  onClick={renderProps.onClick}
-                                  disabled={renderProps.disabled}
-                                >
-                                  <FcGoogle
-                                    style={{
-                                      height: "30px",
-                                      width: "30px",
-                                      marginLeft: "5px",
-                                    }}
-                                  />
-                                </button>
-                              )}
-                              clientId={clientId}
-                              buttonText="Google"
-                              onSuccess={responseGoogle}
-                              onFailure={error}
-                              cookiePolicy={"single_host_origin"}
-                            />
-                          </Row>
-                        </Form>
-                      </div>
-                    </Container>
-                    <div style={{ display: "flex", justifyContent: "center" }}>
-                      <button
-                        onClick={() => navigate("/Home")}
+                            Upcoming Test
+                          </h6>
+                          <MDBDataTable
+                            striped
+                            bordered
+                            noBottomColumns
+                            hover
+                            searching={false}
+                            displayEntries={false}
+                            entries={4}
+                            pagesAmount={1}
+                            paging={false}
+                            noRecordsFoundLabel={"No Upcoming Test"}
+                            data={dataUpcoming}
+                          />
+                        </div>
+                      </Col>
+                    </Row>
+                  </div>
+                </Col>
+                <Col
+                  lg={4}
+                  className="Background"
+                  style={{ padding: "3% 0 6% 0", height: "100%" }}
+                >
+                  <Container
+                    className="sign_in"
+                    style={{
+                      width: "352px",
+                      height: "500px",
+                      boxShadow: "1.5px 1.5px 7px 3px rgba(0,0,0,0.2)",
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <div>
+                      <h3
                         style={{
-                          backgroundColor: "#081466",
-                          width: "40%",
-                          border: "none",
-                          marginTop: "6%",
+                          margin: "0 auto",
+                          padding: "4% 0",
+                          textAlign: "center",
+                          fontSize: "20px",
+                          lineHeight: "54px",
+                          fontWeight: "600",
+                          fontFamily: "Poppins",
+                          color: "#293E6F",
                         }}
-                        type="submit"
-                        className="btn btn-primary"
                       >
-                        Back to home
-                      </button>
+                        Sign In
+                      </h3>
+                      <Form onSubmit={(e) => handleSubmit(e)}>
+                        <Form.Group>
+                          <Form.Label
+                            style={{
+                              marginTop: "3%",
+                              fontSize: "13px",
+                              fontWeight: "bold",
+                            }}
+                            className="customBoldFont inputLabel"
+                          >
+                            Email Id
+                          </Form.Label>
+                          <Form.Control
+                            className="inputField"
+                            onChange={handleChange}
+                            name="username"
+                            type="text"
+                            placeholder="alan@gmail.com"
+                            style={{
+                              width: "100%",
+                              borderTopStyle: "none",
+                              borderLeftStyle: "none",
+                              borderRightStyle: "none",
+                              fontSize: "13px",
+                            }}
+                            required
+                          />
+                        </Form.Group>
+                        <Form.Group className="mt-3 mb-2">
+                          <Form.Label
+                            className="customBoldFont inputLabel"
+                            style={{
+                              marginTop: "3%",
+                              fontSize: "13px",
+                              fontWeight: "bold",
+                            }}
+                          >
+                            Password
+                          </Form.Label>
+                          <Form.Control
+                            className="inputField"
+                            onChange={handleChange}
+                            id="password-field"
+                            name="password"
+                            type="password"
+                            placeholder="Password"
+                            style={{
+                              width: "100%",
+                              borderTopStyle: "none",
+                              borderLeftStyle: "none",
+                              borderRightStyle: "none",
+                              fontSize: "13px",
+                            }}
+                            required
+                          />
+                          <span
+                            toggle="#password-field"
+                            className="fa fa-fw fa-eye field-icon toggle-password"
+                            onClick={(e) => showHide(e)}
+                            style={{ marginTop: "-24px", color: "black" }}
+                          ></span>
+                          <label
+                            onClick={() => setShow(true)}
+                            style={{
+                              cursor: "pointer",
+                              fontFamily: "Poppins",
+                              color: "rgb(3, 155, 229)",
+                              fontWeight: "500",
+                              marginLeft: "210px",
+                              marginTop: "5%",
+                              fontSize: "10px",
+                            }}
+                          >
+                            Forgot Password?{" "}
+                          </label>
+                        </Form.Group>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "center",
+                          }}
+                        >
+                          <button
+                            style={{
+                              backgroundColor: "#10B65C",
+                              width: "100%",
+                              border: "none",
+                              margin: "5% 0",
+                            }}
+                            type="submit"
+                            className="btn btn-primary"
+                          >
+                            Login
+                          </button>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            flexDirection: "row",
+                          }}
+                        >
+                          <span
+                            style={{
+                              borderBottom: "1px solid rgb(224, 224, 224)",
+                              flexGrow: 1,
+                              display: "flex",
+                            }}
+                          />
+                          <span
+                            style={{
+                              margin: "3% 6px",
+                              color: "rgb(119, 119, 119)",
+                              fontSize: "14px",
+                            }}
+                          >
+                            OR
+                          </span>
+                          <span
+                            style={{
+                              borderBottom: "1px solid rgb(224, 224, 224)",
+                              flexGrow: 1,
+                              display: "flex",
+                            }}
+                          />
+                        </div>
+                        <div
+                          style={{
+                            textAlign: "center",
+                            fontSize: "13px",
+                            color: "#464646",
+                          }}
+                        >
+                          Not Registered? Sign up now{" "}
+                        </div>
+                        <Row
+                          style={{
+                            margin: "3% 0 3% 43%",
+                          }}
+                        >
+                          <GoogleLogin
+                            render={(renderProps) => (
+                              <button
+                                style={{
+                                  width: "45px",
+                                  height: "45px",
+                                  backgroundColor: "rgb(255, 255, 255)",
+                                  color: "rgba(0, 0, 0, 0.54)",
+                                  boxShadow:
+                                    "rgb(0 0 0 / 24%) 0px 2px 2px 0px, rgb(0 0 0 / 24%) 0px 0px 1px 0px",
+                                  padding: "0px 0 2px 2px",
+                                  borderRadius: "50px",
+                                  border: "1px solid transparent",
+                                }}
+                                onClick={renderProps.onClick}
+                                disabled={renderProps.disabled}
+                              >
+                                <FcGoogle
+                                  style={{
+                                    height: "30px",
+                                    width: "30px",
+                                    marginLeft: "5px",
+                                  }}
+                                />
+                              </button>
+                            )}
+                            clientId={clientId}
+                            buttonText="Google"
+                            onSuccess={responseGoogle}
+                            onFailure={error}
+                            cookiePolicy={"single_host_origin"}
+                          />
+                        </Row>
+                      </Form>
                     </div>
-                  </Col>
-                </Row>
-              </div>
+                  </Container>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <button
+                      onClick={() => navigate("/Home")}
+                      style={{
+                        backgroundColor: "#081466",
+                        width: "40%",
+                        border: "none",
+                        marginTop: "6%",
+                      }}
+                      type="submit"
+                      className="btn btn-primary"
+                    >
+                      Back to home
+                    </button>
+                  </div>
+                </Col>
+              </Row>
             </>
           )}
         </>

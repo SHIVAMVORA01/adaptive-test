@@ -53,7 +53,8 @@ function SetQuestion() {
   const [selectedFile, setSelectedFile] = useState();
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const [imgDB, setImgDb] = useState("");
   const [delImage, setDelImage] = useState(false);
   const [showConfirmDialogBox, setShowConfirmDialogBox] = useState(false);
@@ -220,7 +221,7 @@ function SetQuestion() {
       };
       reader.onerror = () => {
         console.error("AHHHHHHHH!!");
-        setIsAlertMsgLoaded(true);
+        setIsAlertDangerMsgLoaded(true);
         setDangerMsg("something went wrong!");
       };
     } else if (delImage) {
@@ -243,7 +244,7 @@ function SetQuestion() {
         })
         .catch((e) => {
           console.log(e);
-          setIsAlertMsgLoaded(true);
+          setIsAlertDangerMsgLoaded(true);
           setDangerMsg("something went wrong!,Try Again");
         });
     } catch (e) {}
@@ -503,14 +504,14 @@ function SetQuestion() {
       {isDesktopOrLaptop?<>
         <Alert
         msg={successMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
+        setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+        isAlertMsgLoaded={isAlertSuccessMsgLoaded}
         type="success"
       ></Alert>
       <Alert
         msg={dangerMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
+        setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+        isAlertMsgLoaded={isAlertDangerMsgLoaded}
         type="danger"
       ></Alert>
       <ConfirmDialogBox

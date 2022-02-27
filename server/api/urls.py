@@ -33,5 +33,6 @@ urlpatterns = [
    path('api/delres/<int:id>',views.deleteres),
    path('api/getuserslist',views.getuserslist),
    path('api/permission',views.permission),
+   path('api/send_custom_mail',views.send_custom_mail),
    re_path(r'/?',views.error_404)
 ]

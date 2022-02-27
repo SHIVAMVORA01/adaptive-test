@@ -58,7 +58,7 @@ function BulletChart({ secId, score = 30 }) {
           { name: sectionArr[secId][3], y: 100 },
         ]}
         width={800}
-      />{console.log(sectionArr)}
+      />
     </div>
   );
 }

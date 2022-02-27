@@ -25,7 +25,8 @@ function NewTest() {
   const [tests, setTests] = useState([]);
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const [aptDic, setAptDic] = useState({ time: "00:00:20", totalQs: 1 });
   const [CFDic, setCFDic] = useState({ time: "00:00:20", totalQs: 1 });
   const [DDic, setDDic] = useState({ time: "00:00:20", totalQs: 1 });
@@ -168,12 +169,12 @@ function NewTest() {
           });
       } else {
         setIsloading(false);
-        setIsAlertMsgLoaded(true);
+        setIsAlertDangerMsgLoaded(true);
         setDangerMsg(objClash.msg);
       }
     } else {
       setIsloading(false);
-      setIsAlertMsgLoaded(true);
+      setIsAlertDangerMsgLoaded(true);
       setDangerMsg("End time must be greater than start time");
     }
   }
@@ -331,14 +332,14 @@ function NewTest() {
     {isDesktopOrLaptop?<>
       <Alert
         msg={successMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
+        setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+        isAlertMsgLoaded={isAlertSuccessMsgLoaded}
         type="success"
       ></Alert>
       <Alert
         msg={dangerMsg}
-        setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-        isAlertMsgLoaded={isAlertMsgLoaded}
+        setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+        isAlertMsgLoaded={isAlertDangerMsgLoaded}
         type="danger"
       ></Alert>
       {isLoading ? (
@@ -676,7 +677,7 @@ function NewTest() {
                                         totalQs: CurrentDic.totalQs,
                                       });
                                     } else {
-                                      setIsAlertMsgLoaded(true);
+                                      setIsAlertDangerMsgLoaded(true);
                                       setDangerMsg(
                                         "Minimum should be 20 seconds"
                                       );
@@ -795,7 +796,7 @@ function NewTest() {
                                   totalQs: CurrentDic.totalQs,
                                 });
                               } else {
-                                setIsAlertMsgLoaded(true);
+                                setIsAlertDangerMsgLoaded(true);
                                 setDangerMsg(
                                   "Minimum time should be greater than 20 seconds"
                                 );

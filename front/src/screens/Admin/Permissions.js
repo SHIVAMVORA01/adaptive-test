@@ -36,7 +36,8 @@ function Permissions() {
   const [data2, setTData2] = useState({ columns: [], rows: [] });
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const [isLoading, setIsloading] = useState(true);
 
   function checkAllSelected(rowLength) {
@@ -128,7 +129,7 @@ function Permissions() {
               rows: res.data.allowed,
             });
           } else {
-            setIsAlertMsgLoaded(true);
+            setIsAlertDangerMsgLoaded(true);
             setDangerMsg("There are no ongoing tests");
             navigate("/admin/home");
           }
@@ -144,14 +145,14 @@ function Permissions() {
         <>
           <Alert
             msg={successMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
+            setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+            isAlertMsgLoaded={isAlertSuccessMsgLoaded}
             type="success"
           ></Alert>
           <Alert
             msg={dangerMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
+            setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+            isAlertMsgLoaded={isAlertDangerMsgLoaded}
             type="danger"
           ></Alert>
           {isLoading ? (
@@ -263,7 +264,7 @@ function Permissions() {
                             );
                             if (userId.length === 0) {
                               setIsloading(false);
-                              setIsAlertMsgLoaded(true);
+                              setIsAlertDangerMsgLoaded(true);
                               setDangerMsg("select users to grant permission");
                             } else {
                               axiosInstance
@@ -275,7 +276,7 @@ function Permissions() {
                                   if (res.data.exists) {
                                     window.location.reload();
                                   } else {
-                                    setIsAlertMsgLoaded(true);
+                                    setIsAlertDangerMsgLoaded(true);
                                     setDangerMsg("Error Occured");
                                   }
                                 })

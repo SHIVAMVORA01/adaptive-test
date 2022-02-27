@@ -97,6 +97,9 @@ function CustomTimer({
     if (reset) {
       handleReset();
     }
+    return () => {
+      setTimer();
+    };
   }, [start, reset]);
 
   return (
@@ -105,5 +108,4 @@ function CustomTimer({
     </>
   );
 }
-
 export default CustomTimer;

@@ -41,6 +41,25 @@ function TestScreen() {
   const [isLoading, setIsloading] = useState(true);
 
   useEffect(() => {
+    function fullscreenc() {
+      var full_screen_element = document.fullscreenElement;
+
+      if (full_screen_element === null) {
+        setShow(true);
+        isReload(true);
+      }
+    }
+    function visibilityc() {
+      if (document.hidden) {
+        windowAway();
+      }
+    }
+    function contextm(event) {
+      event.preventDefault();
+    }
+    window.addEventListener("contextmenu", contextm);
+    window.addEventListener("fullscreenchange", fullscreenc);
+    window.addEventListener("visibilitychange", visibilityc);
     if (!localStorage.getItem("test")) {
       let az = ProtectUrl.protect();
       if (az !== "") {
@@ -58,13 +77,16 @@ function TestScreen() {
       channel.postMessage("another-tab");
       // note that listener is added after posting the message
 
-      channel.addEventListener("message", (msg) => {
-        if (msg.data === "another-tab") {
-          // message received from 2nd tab
-          // alert('Cannot open multiple instances');
-          // navigate('/error')
+      function messagec(msg) {
+        {
+          if (msg.data === "another-tab") {
+            // message received from 2nd tab
+            // alert('Cannot open multiple instances');
+            // navigate('/error')
+          }
         }
-      });
+      }
+      channel.addEventListener("message", messagec);
 
       if (test) {
         if (test["question"].length !== 0) {
@@ -192,6 +214,11 @@ function TestScreen() {
       }
     }
     setIsloading(false);
+    return () => {
+      window.removeEventListener("fullscreenchange", fullscreenc);
+      window.removeEventListener("visibilitychange", visibilityc);
+      window.removeEventListener("contextmenu", contextm);
+    };
   }, []);
   function GoInFullscreen(element) {
     if (document.fullscreenElement === null) {
@@ -204,23 +231,11 @@ function TestScreen() {
       element.classList.add(`style-4`);
     }
   }
-  document.addEventListener("fullscreenchange", function () {
-    var full_screen_element = document.fullscreenElement;
-
-    if (full_screen_element === null) {
-      setShow(true);
-      isReload(true);
-    }
-  });
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) {
-      windowAway();
-    }
-  });
   function windowAway() {
-    var ccount = countWindowAway + 1;
-    setCountWindowAway(countWindowAway + 1);
-    if (ccount < 3) {
+    var ccount = parseInt(localStorage.getItem("screenchange"));
+    setCountWindowAway(ccount + 1);
+    if (ccount + 1 < 3) {
+      localStorage.setItem("screenchange", ccount + 1);
       setCountWindowAwayModal(true);
     } else {
       navigate("/result");
@@ -446,6 +461,7 @@ function TestScreen() {
                                     width: "95%",
                                     border: "1px #8A3C5B",
                                     borderRadius: "8px",
+                                    textAlign: "center",
                                     margin: "10px 10px 10px 25px",
                                   }}
                                 >
@@ -453,28 +469,28 @@ function TestScreen() {
                                     style={{
                                       height: "30px",
                                       width: "30px",
-                                      margin: "10px 500px 0px",
+                                      textAlign: "center",
+                                      margin: "20px 0",
                                       color: "#842029",
                                     }}
                                   />
                                   <p
                                     style={{
                                       color: "#842029",
-                                      margin: "10px 0px 0px 470px",
+                                      textAlign: "center",
                                     }}
                                   >
-                                    <p>
-                                      <b>
-                                        {countWindowAway === 1 ? "1st" : "Last"}{" "}
-                                        Warning
-                                      </b>
-                                    </p>
+                                    <b>
+                                      {countWindowAway === 1 ? "1st" : "Last"}{" "}
+                                      Warning
+                                    </b>
                                   </p>
                                   <p
                                     style={{
                                       color: "#842029",
                                       fontWeight: "normal",
                                       fontSize: "14px",
+                                      margin: "0 10px 10px 10px",
                                       textAlign: "center",
                                     }}
                                   >
@@ -486,10 +502,10 @@ function TestScreen() {
                                     onClick={(e) => handleCloseSChange(e)}
                                     style={{
                                       backgroundColor: "#842029",
-                                      margin: "0px 0px 20px 470px",
                                       color: "white",
                                       outline: "none",
                                       border: "none",
+                                      margin: "10px 0",
                                     }}
                                   >
                                     Continue

@@ -13,3 +13,8 @@
   border: 2px solid #eff2f7;
   transform: rotate(0.22deg);
 }
+
+.send_mail_modal .btn-close {
+  background-color: aliceblue !important;
+  border-radius: 30px !important;
+}

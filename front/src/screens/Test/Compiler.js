@@ -27,7 +27,8 @@ export default function Compiler() {
   const [current_qs, set_current_qs] = useState(1);
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const [language_id, setLanguage_id] = useState();
   const [language_id_question_1, setLanguage_id_question_1] = useState();
   const [language_id_question_2, setLanguage_id_question_2] = useState();
@@ -153,6 +154,26 @@ export default function Compiler() {
   const [isValidPath, setIsValidPath] = useState(false);
 
   useEffect(() => {
+    function fullscreenc() {
+      var full_screen_element = document.fullscreenElement;
+
+      if (full_screen_element === null) {
+        setShow(true);
+        setMd(false);
+        isReload(true);
+      }
+    }
+    function visibilityc() {
+      if (document.hidden) {
+        windowAway();
+      }
+    }
+    function contextm(event) {
+      event.preventDefault();
+    }
+    window.addEventListener("contextmenu", contextm);
+    window.addEventListener("fullscreenchange", fullscreenc);
+    window.addEventListener("visibilitychange", visibilityc);
     let flag = true;
     if (!(localStorage.getItem("test2") && !localStorage.getItem("test4"))) {
       if (!localStorage.getItem("test4")) {
@@ -338,6 +359,11 @@ export default function Compiler() {
         }
       }
     }
+    return () => {
+      window.removeEventListener("contextmenu", contextm);
+      window.removeEventListener("fullscreenchange", fullscreenc);
+      window.removeEventListener("visibilitychange", visibilityc);
+    };
   }, []);
   function converttime(timex) {
     let secs = 0;
@@ -644,7 +670,7 @@ export default function Compiler() {
             }
           }
         } else {
-          setIsAlertMsgLoaded(true);
+          setIsAlertDangerMsgLoaded(true);
           setDangerMsg("Something went wrong. Please contact administartor");
         }
       }
@@ -888,7 +914,7 @@ export default function Compiler() {
             flag = true;
           }
         } else {
-          setIsAlertMsgLoaded(true);
+          setIsAlertDangerMsgLoaded(true);
           setDangerMsg("Error Occured. Token doesn't exist");
           break;
         }
@@ -1208,7 +1234,7 @@ export default function Compiler() {
           localStorage.setItem("test4", JSON.stringify(test));
         }
       } else {
-        setIsAlertMsgLoaded(true);
+        setIsAlertDangerMsgLoaded(true);
         setDangerMsg("Please contact the admin");
       }
     }
@@ -1381,28 +1407,16 @@ export default function Compiler() {
       element.classList.add(`style-4`);
     }
   }
-  document.addEventListener("fullscreenchange", function () {
-    var full_screen_element = document.fullscreenElement;
 
-    if (full_screen_element === null) {
-      setShow(true);
-      setMd(false);
-      isReload(true);
-    }
-  });
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) {
-      windowAway();
-    }
-  });
   function handleCloseSChange(e) {
     setCountWindowAwayModal(false);
     GoInFullscreen(document.querySelector("#element"));
   }
   function windowAway() {
-    var ccount = countWindowAway + 1;
-    setCountWindowAway(countWindowAway + 1);
-    if (ccount < 3) {
+    var ccount = parseInt(localStorage.getItem("screenchange"));
+    setCountWindowAway(ccount + 1);
+    if (ccount + 1 < 3) {
+      localStorage.setItem("screenchange", ccount + 1);
       setCountWindowAwayModal(true);
     } else {
       navigate("/result");
@@ -1415,14 +1429,14 @@ export default function Compiler() {
         <>
           <Alert
             msg={successMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
+            setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+            isAlertMsgLoaded={isAlertSuccessMsgLoaded}
             type="success"
           ></Alert>
           <Alert
             msg={dangerMsg}
-            setIsAlertMsgLoaded={setIsAlertMsgLoaded}
-            isAlertMsgLoaded={isAlertMsgLoaded}
+            setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+            isAlertMsgLoaded={isAlertDangerMsgLoaded}
             type="danger"
           ></Alert>
           <Modal
@@ -1470,6 +1484,7 @@ export default function Compiler() {
                   width: "95%",
                   border: "1px #8A3C5B",
                   borderRadius: "8px",
+                  textAlign: "center",
                   margin: "10px 10px 10px 25px",
                 }}
               >
@@ -1477,20 +1492,25 @@ export default function Compiler() {
                   style={{
                     height: "30px",
                     width: "30px",
-                    margin: "10px 50% 0px",
+                    textAlign: "center",
+                    margin: "20px 0",
                     color: "#842029",
                   }}
                 />
-                <p style={{ color: "#842029", margin: "10px 0px 0px 47.8%" }}>
-                  <p>
-                    <b>{countWindowAway === 1 ? "1st" : "Last"} Warning</b>
-                  </p>
+                <p
+                  style={{
+                    color: "#842029",
+                    textAlign: "center",
+                  }}
+                >
+                  <b>{countWindowAway === 1 ? "1st" : "Last"} Warning</b>
                 </p>
                 <p
                   style={{
                     color: "#842029",
                     fontWeight: "normal",
                     fontSize: "14px",
+                    margin: "0 10px 10px 10px",
                     textAlign: "center",
                   }}
                 >
@@ -1501,7 +1521,7 @@ export default function Compiler() {
                   onClick={(e) => handleCloseSChange(e)}
                   style={{
                     backgroundColor: "#842029",
-                    margin: "0px 0px 20px 47.7%",
+                    margin: "10px 0",
                     color: "white",
                     outline: "none",
                     border: "none",

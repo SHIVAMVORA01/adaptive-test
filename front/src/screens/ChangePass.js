@@ -5,6 +5,7 @@ import { Container, Form } from "react-bootstrap";
 import $ from "jquery";
 import MobileWidth from "../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
+import Alert from "./../components/Admin/Alert";
 
 function ChangePass() {
   const isDesktopOrLaptop = useMediaQuery({
@@ -20,7 +21,8 @@ function ChangePass() {
   const [formData, updateFormData] = useState(initialFormData);
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
+  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
 
   useEffect(() => {
     axiosInstance
@@ -51,7 +53,7 @@ function ChangePass() {
           if (res.data.exists) {
             navigate("/login");
           } else {
-            setIsAlertMsgLoaded(true);
+            setIsAlertDangerMsgLoaded(true);
             setDangerMsg("Something went wrong");
           }
         })
@@ -59,7 +61,7 @@ function ChangePass() {
           console.log(e);
         });
     } else {
-      setIsAlertMsgLoaded(true);
+      setIsAlertDangerMsgLoaded(true);
       setDangerMsg("Password and confirm password do not match");
     }
   };
@@ -84,6 +86,18 @@ function ChangePass() {
     <div>
       {isDesktopOrLaptop ? (
         <>
+        <Alert
+            msg={successMsg}
+            setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+            isAlertMsgLoaded={isAlertSuccessMsgLoaded}
+            type="success"
+          ></Alert>
+          <Alert
+            msg={dangerMsg}
+            setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+            isAlertMsgLoaded={isAlertDangerMsgLoaded}
+            type="danger"
+          ></Alert>
           <Container
             style={{
               width: "635px",
