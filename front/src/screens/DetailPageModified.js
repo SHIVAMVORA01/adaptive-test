@@ -3,26 +3,53 @@ import { Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { isExpired } from "react-jwt";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
-import "../css/LoginScreen.css";
 import Loader from "../components/Loader";
 import MobileWidth from "../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
 import { TiTick } from "react-icons/ti";
+import { CgDanger } from "react-icons/cg";
+import ScreenSizeDetector from "screen-size-detector";
+import { addListener, removeListener, launch } from "devtools-detector";
+import "../css/LoginScreen.css";
 
 function DetailPageModified() {
+  const imageAddr =
+    "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20200714180638/CIP_Launch-banner.png";
+  const downloadSize = 50000; //bytes
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1024px)",
   });
-  var isNode = require("detect-node");
   const { detect } = require("detect-browser");
   const browser = detect();
-  const ScreenSizeDetector = require("screen-size-detector");
   const screen = new ScreenSizeDetector();
+  const [screen_height, set_screen_height] = useState();
+  const [screen_width, set_screen_width] = useState();
+  screen.setMainCallback("widthchange", () => set_screen_width(screen.width));
+  screen.setMainCallback("heightchange", () =>
+    set_screen_height(screen.height)
+  );
+
   const [agree, setAgree] = useState(false);
   const [isLoading, setIsloading] = useState(true);
   const [checkSpeed, setCheckSpeed] = useState();
+  const [isDevToolsOpen, setIsDevToolsOpen] = useState();
+  const [isFullScreenEnabled, setIsFullScreenEnabled] = useState();
   const navigate = useNavigate();
+  const isOpen = (isDevOpen) =>
+    isDevOpen ? setIsDevToolsOpen(true) : setIsDevToolsOpen(false);
+
   useEffect(() => {
+    // var privateLocalStorage = window.localStorage;
+    // delete window.localStorage;
+    // console.log(privateLocalStorage);
+    //  console.log(window.localStorage);
+
+    addListener(isOpen);
+    launch();
+
+    set_screen_height(screen.height);
+    set_screen_width(screen.width);
+    setIsFullScreenEnabled(document.fullscreenEnabled);
     let userType = localStorage.getItem("admin");
     let path = ProtectUrl.protect();
     const token = localStorage.getItem("access_token");
@@ -40,36 +67,37 @@ function DetailPageModified() {
     } else if (isMyTokenExpired) {
       navigate("/logout");
     }
-    var userImageLink =
-      "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20200714180638/CIP_Launch-banner.png";
-    var time_start, end_time;
-    var result;
-    var downloadSize = 5616998;
-    var downloadImgSrc = new Image();
+    let time_start, end_time;
+    let downloadImgSrc = new Image();
     downloadImgSrc.onload = function () {
       end_time = new Date().getTime();
       displaySpeed();
     };
     time_start = new Date().getTime();
-    downloadImgSrc.src = userImageLink;
+    downloadImgSrc.src = imageAddr;
     function displaySpeed() {
-      var timeDuration = (end_time - time_start) / 1000;
-      var loadedBits = downloadSize * 0.008;
-      var bps = (loadedBits / timeDuration).toFixed(2);
-      var speedInKbps = (bps / 1024).toFixed(2);
-      var speedInMbps = (speedInKbps / 1024).toFixed(2);
-      setCheckSpeed(speedInMbps);
+      let duration = (end_time - time_start) / 1000;
+      let bitsLoaded = downloadSize * 8;
+      let speedBps = (bitsLoaded / duration).toFixed(2);
+      let speedKbps = (speedBps / 1024).toFixed(2);
+      let speedMbps = (speedKbps / 1024).toFixed(2);
+      setCheckSpeed(speedMbps);
     }
     setIsloading(false);
+    return () => {
+      removeListener(isOpen);
+      set_screen_width();
+      set_screen_height();
+    };
   }, []);
 
   const handleSubmit = (e) => {
     setIsloading(true);
     e.preventDefault();
-    var ob = new Date();
-    var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
-    var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
-    var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
+    let ob = new Date();
+    let h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
+    let m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
+    let s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
     localStorage.setItem("screenchange", 0);
     localStorage.setItem(
       "test",
@@ -98,13 +126,12 @@ function DetailPageModified() {
             <Loader />
           ) : (
             <Row>
-              <Col md={4} style={{ padding: "0", margin: "0" }}>
+              <Col md={3} style={{ padding: "0", margin: "0" }}>
                 <div
                   className="rectangleInstuc"
                   style={{
-                    height: "630px",
                     padding: "15px 35px 30px 35px",
-                    margin: "0 40px",
+                    margin: "0 10px",
                   }}
                 >
                   <Row>
@@ -149,26 +176,43 @@ function DetailPageModified() {
                       </p>
                       <p style={{ paddingTop: "10px" }}>
                         <b style={{ color: "#293e6f" }}>Screensize: </b>
-                        {screen.width}px by {screen.height}px{" "}
+                        {screen_width !== undefined && screen_width}px by{" "}
+                        {screen_height !== undefined && screen_height}px{" "}
                       </p>
                       <p style={{ color: "#10B65C", textAlign: "center" }}>
                         <TiTick style={{ color: "#10B65C" }}></TiTick>
                         Requirement satisfied
                       </p>
                       <p style={{ paddingTop: "10px" }}>
-                        <b style={{ color: "#293e6f" }}>Javascript: </b>
-                        {isNode ? "Node.js" : "Enabled"}
-                        {!isNode ? "" : "Disabled"}
+                        <b style={{ color: "#293e6f" }}>FullScreen Mode: </b>
+                        {isFullScreenEnabled ? "Enabled" : "Disabled"}
+                      </p>
+                      <p style={{ color: "#10B65C", textAlign: "center" }}>
+                        <TiTick style={{ color: "#10B65C" }}></TiTick>
+                        Requirement satisfied
+                      </p>
+                      <p style={{ paddingTop: "10px" }}>
+                        <b style={{ color: "#293e6f" }}>Devtools: </b>
+                        {isDevToolsOpen ? "Opened" : "Closed"}
                       </p>
                       <p
                         style={{
-                          color: "#10B65C",
+                          color: isDevToolsOpen ? "red" : "#10B65C",
                           textAlign: "center",
                           marginBottom: "20px",
                         }}
                       >
-                        <TiTick style={{ color: "#10B65C" }}></TiTick>
-                        Requirement satisfied
+                        {isDevToolsOpen ? (
+                          <>
+                            <CgDanger style={{ color: "red" }}></CgDanger>
+                            Requirement not satisfied
+                          </>
+                        ) : (
+                          <>
+                            <TiTick style={{ color: "#10B65C" }}></TiTick>
+                            Requirement satisfied
+                          </>
+                        )}
                       </p>
                     </Row>
                     <div
@@ -195,13 +239,13 @@ function DetailPageModified() {
                   </Row>
                 </div>
               </Col>
-              <Col md={8} style={{ padding: "0", margin: "0" }}>
+              <Col md={9} style={{ padding: "0", margin: "0" }}>
                 <div
                   className="rectangleInstuc"
                   style={{
-                    minHeight: "550px",
+                    minHeight: "100%",
                     padding: "5px 35px 30px 35px",
-                    margin: "0 40px",
+                    margin: "0 30px",
                   }}
                 >
                   <Row style={{ textAlign: "center", margin: "30px 0px" }}>
@@ -304,7 +348,9 @@ function DetailPageModified() {
                         </Col>
                       </Row>
                       <button
-                        disabled={!agree}
+                        disabled={
+                          !(agree && !isDevToolsOpen && isFullScreenEnabled)
+                        }
                         onClick={(e) => {
                           handleSubmit(e);
                         }}

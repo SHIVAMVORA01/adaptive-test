@@ -621,8 +621,8 @@ function DetailedReportComp({
             >
               {" "}
               {prediction !== undefined && prediction === 1
-                ? "Pass"
-                : "Fail"}{" "}
+                ? "Good to go"
+                : "Need to work on the skills"}{" "}
             </p>
             <p
               style={{
@@ -635,7 +635,7 @@ function DetailedReportComp({
               }}
             >
               {" "}
-              Employment Score{" "}
+              Readiness for placements{" "}
             </p>
             <p
               style={{
@@ -644,7 +644,7 @@ function DetailedReportComp({
                 paddingLeft: "40px",
               }}
             >
-              The employment score is a measure of your ability to work based on
+              The employment index is a measure of your ability to work based on
               the score of skills considered in this test. It indicates whether
               you are ready for the placements or you still need to improve your
               skills. Getting high score on this test indicates that you are

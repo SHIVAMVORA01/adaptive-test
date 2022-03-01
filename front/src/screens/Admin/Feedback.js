@@ -112,142 +112,149 @@ function Feedback() {
 
   return (
     <div>
-      {isDesktopOrLaptop?<>
-        <Alert
-        msg={successMsg}
-        setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
-        isAlertMsgLoaded={isAlertSuccessMsgLoaded}
-        type="success"
-      ></Alert>
-      <Alert
-        msg={dangerMsg}
-        setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
-        isAlertMsgLoaded={isAlertDangerMsgLoaded}
-        type="danger"
-      ></Alert>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <div style={{ fontSize: "13.6px", padding: "0 60px" }}>
-          <button
-            onClick={() => {
-              navigate("/admin/home");
-            }}
-            type="button"
-            style={{
-              marginTop: "10px",
-              marginBottom: "30px",
-              border: "none",
-              outline: "none",
-              borderRadius: "5px",
-              fontWeight: "normal",
-              backgroundColor: "#293e6f",
-              fontFamily: "Poppins",
-              padding: "5px 45px",
-              color: "#FFFFFF",
-              marginLeft: "5px",
-            }}
-          >
-            Back
-          </button>
-          <p
-            style={{
-              fontSize: "20px",
-              fontWeight: "bold",
-              marginBottom: "10px",
-              marginTop: "10px",
-              color: "#293e6f",
-              textAlign: "center",
-            }}
-          >
-            Take Feedbacks
-            <OverlayTrigger
-              trigger="hover"
-              placement="bottom"
-              overlay={popover}
-            >
+      {isDesktopOrLaptop ? (
+        <>
+          <Alert
+            msg={successMsg}
+            setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
+            isAlertMsgLoaded={isAlertSuccessMsgLoaded}
+            type="success"
+          ></Alert>
+          <Alert
+            msg={dangerMsg}
+            setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
+            isAlertMsgLoaded={isAlertDangerMsgLoaded}
+            type="danger"
+          ></Alert>
+          {isLoading ? (
+            <Loader />
+          ) : (
+            <div style={{ fontSize: "13.6px", padding: "0 60px" }}>
               <button
-                style={{
-                  backgroundColor: "white",
-                  outline: "none",
-                  border: "none",
-                  marginLeft: "5px",
-                  padding: "0px",
+                onClick={() => {
+                  navigate("/admin/home");
                 }}
-              >
-                <FiInfo
-                  className="info"
-                  style={{
-                    height: "15px",
-                    width: "15px",
-                    marginTop: "5px",
-                  }}
-                />
-              </button>
-            </OverlayTrigger>
-          </p>
-          <MDBDataTable
-            className="feedbackTable"
-            striped
-            bordered
-            noBottomColumns
-            hover
-            exportToCSV={true}
-            data={data}
-            noRecordsFoundLabel={"No Feedbacks"}
-            style={{ marginTop: "5px", fontSize: "13.6px" }}
-          />
-          <Row>
-            <Col md={5} style={{ textAlign: "center" }}></Col>
-            <Col md={7}>
-              <button
+                type="button"
                 style={{
-                  margin: "10px auto 30px auto",
+                  marginTop: "10px",
+                  marginBottom: "30px",
                   border: "none",
                   outline: "none",
                   borderRadius: "5px",
                   fontWeight: "normal",
-                  backgroundColor: "#10B65C",
+                  backgroundColor: "#293e6f",
                   fontFamily: "Poppins",
-                  padding: "5px 0px",
+                  padding: "5px 45px",
                   color: "#FFFFFF",
-                  width: "165px",
-                  textAlign: "center",
+                  marginLeft: "5px",
                 }}
-                type="button"
-                onClick={(e) => {
-                  let x = $(".checkboxFeedback:checkbox:checked");
-                  let userId = [];
-                  let isAllSelected = 0;
-                  if (!areAllChecked && x.length !== 0) {
-                    x.map((xx) =>
-                      userId.push(parseInt(x[xx].id.split("checkbox")[1]))
-                    );
-                  } else {
-                    if (!(x.length === 0)) {
-                      isAllSelected = 1;
-                    }
-                  }
-                  axiosInstance
-                    .post("api/takeFeedback", {
-                      data: { isAllSelected: isAllSelected, userId: userId },
-                    })
-                    .then((res) => {
-                      window.location.reload();
-                    })
-                    .catch((e) => {
-                      console.log(e);
-                    });
+              >
+                Back
+              </button>
+              <p
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  marginBottom: "10px",
+                  marginTop: "10px",
+                  color: "#293e6f",
+                  textAlign: "center",
                 }}
               >
                 Take Feedbacks
-              </button>
-            </Col>
-          </Row>
-        </div>
+                <OverlayTrigger
+                  trigger="hover"
+                  placement="bottom"
+                  overlay={popover}
+                >
+                  <button
+                    style={{
+                      backgroundColor: "white",
+                      outline: "none",
+                      border: "none",
+                      marginLeft: "5px",
+                      padding: "0px",
+                    }}
+                  >
+                    <FiInfo
+                      className="info"
+                      style={{
+                        height: "15px",
+                        width: "15px",
+                        marginTop: "5px",
+                      }}
+                    />
+                  </button>
+                </OverlayTrigger>
+              </p>
+              <MDBDataTable
+                className="feedbackTable"
+                striped
+                bordered
+                noBottomColumns
+                hover
+                exportToCSV={true}
+                data={data}
+                noRecordsFoundLabel={"No Feedbacks"}
+                style={{ marginTop: "5px", fontSize: "13.6px" }}
+              />
+              <Row>
+                <Col md={5} style={{ textAlign: "center" }}></Col>
+                <Col md={7}>
+                  <button
+                    style={{
+                      margin: "10px auto 30px auto",
+                      border: "none",
+                      outline: "none",
+                      borderRadius: "5px",
+                      fontWeight: "normal",
+                      backgroundColor: "#10B65C",
+                      fontFamily: "Poppins",
+                      padding: "5px 0px",
+                      color: "#FFFFFF",
+                      width: "165px",
+                      textAlign: "center",
+                    }}
+                    type="button"
+                    onClick={(e) => {
+                      let x = $(".checkboxFeedback:checkbox:checked");
+                      let userId = [];
+                      let isAllSelected = 0;
+                      if (!areAllChecked && x.length !== 0) {
+                        x.map((xx) =>
+                          userId.push(parseInt(x[xx].id.split("checkbox")[1]))
+                        );
+                      } else {
+                        if (!(x.length === 0)) {
+                          isAllSelected = 1;
+                        }
+                      }
+                      axiosInstance
+                        .post("api/takeFeedback", {
+                          data: {
+                            isAllSelected: isAllSelected,
+                            userId: userId,
+                          },
+                        })
+                        .then((res) => {
+                          window.location.reload();
+                        })
+                        .catch((e) => {
+                          console.log(e);
+                        });
+                    }}
+                  >
+                    Take Feedbacks
+                  </button>
+                </Col>
+              </Row>
+            </div>
+          )}
+        </>
+      ) : (
+        <MobileWidth />
       )}
-</>:<MobileWidth/>}
-          </div>
+    </div>
   );
 }
 

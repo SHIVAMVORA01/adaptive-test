@@ -193,19 +193,12 @@ def send_custom_mail(request):
     if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
         if request.method == "POST":
             data=JSONParser().parse(request)['data']
-            
             userrs=[]
-            if int(data['isAllSelected'])==1:
-                qs=User.objects.filter(is_staff=False)
-                for x in qs:
+            if len(data['userId'])!=0:
+                users = data['userId']
+                for user in users:
+                    x = User.objects.get(id=int(user))
                     userrs.append(x.email)
-            else:
-                if len(data['userId'])!=0 and int(data['isAllSelected'])==0:
-                    users = data['userId']
-                    print(users)
-                    for user in users:
-                        x = User.objects.get(id=int(user))
-                        userrs.append(x.email)
             subject = data["subject"]
             email_from = settings.EMAIL_HOST_USER
             recipient_list = userrs

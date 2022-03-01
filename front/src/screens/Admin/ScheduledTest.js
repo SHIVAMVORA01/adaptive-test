@@ -34,8 +34,7 @@ function ScheduledTest() {
 
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
-  const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
-  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
+  const [isAlertMsgLoaded, setIsAlertMsgLoaded] = useState(false);
   const [isLoading, setIsloading] = useState(true);
   const [stests, setSTests] = useState([]);
   const [utests, setUTests] = useState([]);
@@ -170,13 +169,13 @@ function ScheduledTest() {
             });
         } else {
           setIsloading(false);
-          setIsAlertDangerMsgLoaded(true);
+          setIsAlertMsgLoaded(true);
           setDangerMsg("Test cannot be saved");
         }
       }
     } else {
       setIsloading(false);
-      setIsAlertDangerMsgLoaded(true);
+      setIsAlertMsgLoaded(true);
       valueStart > cDate
         ? setDangerMsg("Start date cannot be greater than current date")
         : setDangerMsg("End date cannot be less than start date");
@@ -297,14 +296,14 @@ function ScheduledTest() {
             <>
               <Alert
                 msg={successMsg}
-                setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
-                isAlertMsgLoaded={isAlertSuccessMsgLoaded}
+                setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+                isAlertMsgLoaded={isAlertMsgLoaded}
                 type="success"
               ></Alert>
               <Alert
                 msg={dangerMsg}
-                setIsAlertMsgLoaded={setIsAlertDangerMsgLoaded}
-                isAlertMsgLoaded={isAlertDangerMsgLoaded}
+                setIsAlertMsgLoaded={setIsAlertMsgLoaded}
+                isAlertMsgLoaded={isAlertMsgLoaded}
                 type="danger"
               ></Alert>
               <div className="SchdlTest">

@@ -86,7 +86,7 @@ function ChangePass() {
     <div>
       {isDesktopOrLaptop ? (
         <>
-        <Alert
+          <Alert
             msg={successMsg}
             setIsAlertMsgLoaded={setIsAlertSuccessMsgLoaded}
             isAlertMsgLoaded={isAlertSuccessMsgLoaded}

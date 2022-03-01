@@ -17,6 +17,7 @@ import "../../css/Permissions.css";
 import { FiInfo } from "react-icons/fi";
 import MobileWidth from "../../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
+import ConfirmDialogBox from "../../components/ConfirmDialogBox";
 
 function Permissions() {
   const isDesktopOrLaptop = useMediaQuery({
@@ -39,6 +40,11 @@ function Permissions() {
   const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
   const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const [isLoading, setIsloading] = useState(true);
+  const [showConfirmDialogBox, setShowConfirmDialogBox] = useState(false);
+  const [argConfirmModal, setArgConfirmModal] = useState();
+  const [confirm_yes_func, set_confirm_yes_func] = useState();
+  const [confirm_no_func, set_confirm_no_func] = useState();
+  const [confirm_dialog_msg, set_confirm_dialog_msg] = useState("");
 
   function checkAllSelected(rowLength) {
     let c = $(".checkboxFeedback:checkbox:checked").length;
@@ -129,15 +135,19 @@ function Permissions() {
               rows: res.data.allowed,
             });
           } else {
-            setIsAlertDangerMsgLoaded(true);
-            setDangerMsg("There are no ongoing tests");
-            navigate("/admin/home");
+            set_confirm_yes_func(() => onYes);
+            set_confirm_no_func(() => {});
+            set_confirm_dialog_msg("There are no ongoing tests");
+            setShowConfirmDialogBox(true);
           }
         })
         .catch((e) => console.log(e));
     data();
     setIsloading(false);
   }, []);
+  function onYes() {
+    navigate("/admin/home");
+  }
 
   return (
     <>
@@ -155,6 +165,7 @@ function Permissions() {
             isAlertMsgLoaded={isAlertDangerMsgLoaded}
             type="danger"
           ></Alert>
+
           {isLoading ? (
             <Loader />
           ) : (
@@ -166,6 +177,16 @@ function Permissions() {
                   marginBottom: "20px",
                 }}
               >
+                <ConfirmDialogBox
+                  showConfirmDialogBox={showConfirmDialogBox}
+                  setShowConfirmDialogBox={setShowConfirmDialogBox}
+                  title={"No Ongoing tests"}
+                  confirm_no={confirm_no_func}
+                  confirm_yes={confirm_yes_func}
+                  arg={argConfirmModal}
+                  msg={confirm_dialog_msg}
+                  onlyOk={true}
+                />
                 <Row>
                   <Col md={12}>
                     <button
