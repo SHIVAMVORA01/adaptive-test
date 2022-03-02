@@ -59,8 +59,10 @@ function CompScreen() {
     window.addEventListener("fullscreenchange", fullscreenc);
     window.addEventListener("visibilitychange", visibilityc);
     let flag = true;
-    if (!(localStorage.getItem("test6") && !localStorage.getItem("test3"))) {
-      if (!localStorage.getItem("test3")) {
+    if (
+      !(sessionStorage.getItem("test6") && !sessionStorage.getItem("test3"))
+    ) {
+      if (!sessionStorage.getItem("test3")) {
         let az = ProtectUrl.protect();
         if (az !== "") navigate(az);
         navigate(-1);
@@ -75,10 +77,10 @@ function CompScreen() {
         setMd(false);
         isReload(true);
       }
-      if (!localStorage.getItem("test3")) {
-        let user = localStorage.getItem("username");
-        if (localStorage.getItem("test6")) {
-          let ax = JSON.parse(localStorage.getItem("test6"));
+      if (!sessionStorage.getItem("test3")) {
+        let user = sessionStorage.getItem("username");
+        if (sessionStorage.getItem("test6")) {
+          let ax = JSON.parse(sessionStorage.getItem("test6"));
           let ar = ax["marks"];
           let total = 0;
           axiosInstance
@@ -86,15 +88,15 @@ function CompScreen() {
               data: {
                 username: user,
                 marks: ar,
-                testId: localStorage.getItem("testId"),
+                testId: sessionStorage.getItem("testId"),
                 check_result: 0,
-                name: localStorage.getItem("name"),
-                age: localStorage.getItem("age"),
-                gender: localStorage.getItem("gender"),
+                name: sessionStorage.getItem("name"),
+                age: sessionStorage.getItem("age"),
+                gender: sessionStorage.getItem("gender"),
               },
             })
             .then((res) => {
-              localStorage.removeItem("test6");
+              sessionStorage.removeItem("test6");
             })
             .catch((e) => console.log(e));
         }
@@ -102,7 +104,7 @@ function CompScreen() {
         let hh = txx.hh;
         let mm = txx.mm;
         let ss = txx.ss;
-        localStorage.setItem(
+        sessionStorage.setItem(
           "test3",
           JSON.stringify({
             username: user,
@@ -115,22 +117,22 @@ function CompScreen() {
           })
         );
       }
-      var test = JSON.parse(localStorage.getItem("test3"));
-      const token = localStorage.getItem("access_token");
+      var test = JSON.parse(sessionStorage.getItem("test3"));
+      const token = sessionStorage.getItem("access_token");
       const isMyTokenExpired = isExpired(token);
 
       if (isMyTokenExpired) {
         navigate("/login");
         return;
       } else {
-        if (localStorage.getItem("result")) {
+        if (sessionStorage.getItem("result")) {
           navigate("/result");
         } else {
           if (
             parseInt(test["parano"]) === -1 &&
             parseInt(test["qsno"]) === -1
           ) {
-            let xx = localStorage.getItem("testId");
+            let xx = sessionStorage.getItem("testId");
             const data = async () => {
               await axiosInstance
                 .get(`api/para/${xx}`)
@@ -171,7 +173,7 @@ function CompScreen() {
                   test["count"] = 0;
                   test["testtime"] = aa;
                   test["maxMarks"] = Maxar;
-                  localStorage.setItem("test3", JSON.stringify(test));
+                  sessionStorage.setItem("test3", JSON.stringify(test));
                   setAns(ar);
                   setPassage(res.data.data);
                 })
@@ -235,10 +237,10 @@ function CompScreen() {
     GoInFullscreen(document.querySelector("#element"));
   }
   function windowAway() {
-    var ccount = parseInt(localStorage.getItem("screenchange"));
+    var ccount = parseInt(sessionStorage.getItem("screenchange"));
     setCountWindowAway(ccount + 1);
     if (ccount + 1 < 3) {
-      localStorage.setItem("screenchange", ccount + 1);
+      sessionStorage.setItem("screenchange", ccount + 1);
       setCountWindowAwayModal(true);
     } else {
       navigate("/result");
@@ -247,7 +249,7 @@ function CompScreen() {
 
   function next(e) {
     e.preventDefault();
-    var test = JSON.parse(localStorage.getItem("test3"));
+    var test = JSON.parse(sessionStorage.getItem("test3"));
     let radio = document.getElementsByName(`question-${qsno}`);
     let flag = 0;
     for (let i = 0; i < radio.length; i++) {
@@ -257,7 +259,7 @@ function CompScreen() {
         test["marks"] = ar;
         test["gotMarks"] = ar;
         test["count"] = count + 1;
-        localStorage.setItem("test3", JSON.stringify(test));
+        sessionStorage.setItem("test3", JSON.stringify(test));
         flag = 1;
       }
     }
@@ -267,17 +269,17 @@ function CompScreen() {
       test["marks"] = ar;
       test["gotMarks"] = ar;
       test["count"] = count + 1;
-      localStorage.setItem("test3", JSON.stringify(test));
+      sessionStorage.setItem("test3", JSON.stringify(test));
     }
     if (passage[parano].questions.length > qsno + 1) {
       test["qsno"] = qsno + 1;
-      localStorage.setItem("test3", JSON.stringify(test));
+      sessionStorage.setItem("test3", JSON.stringify(test));
       setQsNo(qsno + 1);
     } else {
       if (passage.length > parano + 1) {
         test["qsno"] = 0;
         test["parano"] = parano + 1;
-        localStorage.setItem("test3", JSON.stringify(test));
+        sessionStorage.setItem("test3", JSON.stringify(test));
         setParano(parano + 1);
         setQsNo(0);
       } else {
@@ -455,7 +457,7 @@ function CompScreen() {
                 </Col>
               </Row>
 
-              <Row style={{ height: window.screen.height - 300 }}>
+              <Row style={{ height: "700px" }}>
                 <Col className="passage" style={{ overflow: "none" }}>
                   <div
                     style={{
@@ -501,7 +503,7 @@ function CompScreen() {
                       padding: "0 10px",
                       fontSize: "17.5px",
                       width: "100%",
-                      height: "75%",
+                      height: "400px",
                       fontSize: "17.5px",
                       lineHeight: "22px",
                       backgroundColor: "#F7F7F7",

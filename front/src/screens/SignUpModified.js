@@ -8,6 +8,7 @@ import createFilterOptions from "react-select-fast-filter-options";
 import Select from "react-select";
 import { useMediaQuery } from "react-responsive";
 import MobileWidth from "../components/MobileWidth";
+import getGraduationYears from "../components/TestScreeen/graduationYears";
 
 function SignUpModified() {
   const isDesktopOrLaptop = useMediaQuery({
@@ -39,7 +40,7 @@ function SignUpModified() {
   const [successMsg, setSuccessMsg] = useState("");
   const [dangerMsg, setDangerMsg] = useState("");
   const [isAlertDangerMsgLoaded, setIsAlertDangerMsgLoaded] = useState(false);
-  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);  
+  const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const filterOptions = createFilterOptions(colleges);
   const filterOptions2 = createFilterOptions(departments);
   useEffect(() => {
@@ -292,14 +293,19 @@ function SignUpModified() {
                     </Form.Group>
                     <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                       <Form.Label> Year of graduation </Form.Label>
-                      <Form.Control
-                        type="number"
-                        type="text"
-                        placeholder="graduation"
+                      <Form.Select
                         onChange={handleChange}
                         name="graduationYear"
                         required
-                      />
+                      >
+                        {getGraduationYears().map((year, index) => {
+                          return (
+                            <option key={index} value={year}>
+                              {year}
+                            </option>
+                          );
+                        })}
+                      </Form.Select>
                     </Form.Group>
                     <Form.Group className="mb-3" style={{ marginTop: "25px" }}>
                       <Form.Label> Average C.G.P.A </Form.Label>

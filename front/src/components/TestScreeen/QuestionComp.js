@@ -20,16 +20,6 @@ function QuestionComp({
     <div id="quesComp" style={{ padding: "10px 20px" }}>
       {qsno <= ans.length && (
         <>
-          {!isPersonality && (
-            <Row>
-              <Col>
-                <div style={{ float: "right", fontWeight: "500" }}>
-                  Difficulty Level :{" "}
-                  {level === 2 ? "Medium" : level === 3 ? "Hard" : "Easy"}
-                </div>
-              </Col>
-            </Row>
-          )}
           <Row>
             <Col>
               <div style={{ padding: "10px 0 20px 0", fontWeight: "600" }}>
@@ -57,7 +47,7 @@ function QuestionComp({
               </div>
             </Col>
           </Row>
-          <div style={{ padding: "15px 0 10px 0" }}>
+          <Row style={{ padding: "15px 0 10px 0" }}>
             {!isPersonality &&
               options.map((option, index) => {
                 return (
@@ -214,7 +204,7 @@ function QuestionComp({
             >
               Next Question
             </button>
-          </div>
+          </Row>
         </>
       )}
     </div>

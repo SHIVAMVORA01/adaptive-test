@@ -72,17 +72,17 @@ function Login() {
     },
   ];
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
     const isMyTokenExpired = isExpired(token);
 
     if (!isMyTokenExpired) {
-      if (localStorage.getItem("result")) {
+      if (sessionStorage.getItem("result")) {
         setMd(true);
         navigate("/result");
       } else {
         setMd(true);
-        let typeUser = localStorage.getItem("admin");
-        let username = localStorage.getItem("username");
+        let typeUser = sessionStorage.getItem("admin");
+        let username = sessionStorage.getItem("username");
         if (typeUser === "admin" && username !== null) {
           let pathTo = ProtectUrl.protect();
           navigate(pathTo === "" ? "/admin/home" : pathTo);
@@ -181,24 +181,24 @@ function Login() {
                 axiosInstance.defaults.headers["Authorization"] = acc_token;
                 let xx = myid;
                 if (xx !== -1 || adminn) {
-                  localStorage.setItem("testId", xx); //imp
-                  localStorage.setItem("admin", "user");
+                  sessionStorage.setItem("testId", xx); //imp
+                  sessionStorage.setItem("admin", "user");
                   var ob = new Date();
                   var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
                   var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
                   var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
-                  localStorage.setItem("access_token", res.data.access);
-                  localStorage.setItem("username", formData.username);
-                  localStorage.setItem("refresh_token", res.data.refresh);
+                  sessionStorage.setItem("access_token", res.data.access);
+                  sessionStorage.setItem("username", formData.username);
+                  sessionStorage.setItem("refresh_token", res.data.refresh);
                   const datax = async () =>
                     axiosInstance
                       .post(`api/results/${formData.username}`, {
                         data: { testId: xx },
                       })
                       .then((res) => {
-                        localStorage.setItem("name", res.data.name);
-                        localStorage.setItem("age", res.data.age);
-                        localStorage.setItem("gender", res.data.gender);
+                        sessionStorage.setItem("name", res.data.name);
+                        sessionStorage.setItem("age", res.data.age);
+                        sessionStorage.setItem("gender", res.data.gender);
                         setIsloading(false);
                         if (res.data.resultExists) {
                           if (res.data.end) {
@@ -218,8 +218,8 @@ function Login() {
                         }
                       });
                   if (adminn) {
-                    localStorage.setItem("admin", "admin");
-                    localStorage.removeItem("testId");
+                    sessionStorage.setItem("admin", "admin");
+                    sessionStorage.removeItem("testId");
                     setMd(true);
                     navigate("/admin/home");
                   } else {
@@ -234,7 +234,7 @@ function Login() {
           } else {
             setIsloading(false);
             setIsAlertDangerMsgLoaded(true);
-            setDangerMsg("You Are not allowed To attempt this Test");
+            setDangerMsg("You are not allowed To attempt this test");
           }
         } else {
           setIsloading(false);
@@ -337,6 +337,8 @@ function Login() {
                         .then((res) => {
                           if (res.data.exists) {
                             setShow(false);
+                            setIsAlertSuccessMsgLoaded(true);
+                            setSuccessMsg("Mail sent successfully");
                           } else {
                             setIsAlertDangerMsgLoaded(true);
                             setDangerMsg("An Error occured");

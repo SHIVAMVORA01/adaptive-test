@@ -3,7 +3,11 @@ import { Col, Row } from "react-bootstrap";
 
 function QuestionNavigatorComp({ attempted }) {
   return (
-    <div id="style-4" className="questionNavComp" style={{maxHeight:window.screen.height-300}}>
+    <div
+      id="style-4"
+      className="questionNavComp"
+      style={{ maxHeight: window.screen.height - 300 }}
+    >
       <Row>
         <Col>
           <div
@@ -23,23 +27,21 @@ function QuestionNavigatorComp({ attempted }) {
       )}
       {attempted.length !== 0 && (
         <Row>
-          <Row style={{ paddingTop: "20px" }}>
-            {attempted.map((x, index) => {
-              return (
-                <Col key={index} md="4" sm="6">
-                  {" "}
-                  <div
-                    style={{
-                      backgroundColor: x !== -1 ? "#081466" : "#D3D3D3",
-                    }}
-                    className="navigatorBox"
-                  >
-                    {index + 1}
-                  </div>
-                </Col>
-              );
-            })}
-          </Row>
+          {attempted.map((x, index) => {
+            return (
+              <Col key={index} md="4" sm="6">
+                {" "}
+                <div
+                  style={{
+                    backgroundColor: x !== -1 ? "#081466" : "#D3D3D3",
+                  }}
+                  className="navigatorBox"
+                >
+                  {index + 1}
+                </div>
+              </Col>
+            );
+          })}
         </Row>
       )}
     </div>

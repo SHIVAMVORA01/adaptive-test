@@ -588,10 +588,11 @@ def resultTest(request,id):
             c['name']=user.username
             c['sdate']="{0} {1}".format(x['startTime'].split('T')[0],x['startTime'].split('T')[1].split('.')[0])
             c['sdate'] = converttoist(c['sdate'])
-
-            c['edate']="{0} {1}".format(x['endTime'].split('T')[0],x['endTime'].split('T')[1].split('.')[0])
-            c['edate'] = converttoist(c['edate'])
-            
+            if(x['endTime']):
+                c['edate']="{0} {1}".format(x['endTime'].split('T')[0],x['endTime'].split('T')[1].split('.')[0])
+                c['edate'] = converttoist(c['edate'])
+            else:
+                c['edate']='ongoing'
             c['apt'] = x['marks']['ap']
             c['fund'] = x['marks']['cf']
             c['code'] = x['marks']['c']

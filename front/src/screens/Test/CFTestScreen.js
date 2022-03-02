@@ -66,8 +66,8 @@ function CFTestScreen() {
     window.addEventListener("fullscreenchange", fullscreenc);
     window.addEventListener("visibilitychange", visibilityc);
     let flag = true;
-    if (!(localStorage.getItem("test") && !localStorage.getItem("test2"))) {
-      if (!localStorage.getItem("test2")) {
+    if (!(sessionStorage.getItem("test") && !sessionStorage.getItem("test2"))) {
+      if (!sessionStorage.getItem("test2")) {
         let az = ProtectUrl.protect();
         if (az !== "") navigate(az);
         navigate(-1);
@@ -82,10 +82,10 @@ function CFTestScreen() {
         setMd(false);
         isReload(true);
       }
-      if (!localStorage.getItem("test2")) {
-        let user = localStorage.getItem("username");
-        if (localStorage.getItem("test")) {
-          let ax = JSON.parse(localStorage.getItem("test"));
+      if (!sessionStorage.getItem("test2")) {
+        let user = sessionStorage.getItem("username");
+        if (sessionStorage.getItem("test")) {
+          let ax = JSON.parse(sessionStorage.getItem("test"));
           let ar = ax["marks"];
           let maxMarks = ax["maxMarks"];
           let gotMarks = ax["marks"];
@@ -99,13 +99,13 @@ function CFTestScreen() {
                 username: user,
                 marks: total,
                 maxMarks: maxMarks,
-                testId: localStorage.getItem("testId"),
+                testId: sessionStorage.getItem("testId"),
                 gotMarks: gotMarks,
                 check_result: 0,
               },
             })
             .then((res) => {
-              localStorage.removeItem("test");
+              sessionStorage.removeItem("test");
             })
             .catch((e) => console.log(e));
         }
@@ -113,7 +113,7 @@ function CFTestScreen() {
         let hh = txx.hh;
         let mm = txx.mm;
         let ss = txx.ss;
-        localStorage.setItem(
+        sessionStorage.setItem(
           "test2",
           JSON.stringify({
             username: user,
@@ -126,11 +126,11 @@ function CFTestScreen() {
           })
         );
       }
-      var test = JSON.parse(localStorage.getItem("test2"));
-      const token = localStorage.getItem("access_token");
+      var test = JSON.parse(sessionStorage.getItem("test2"));
+      const token = sessionStorage.getItem("access_token");
       const isMyTokenExpired = isExpired(token);
       const channel = new BroadcastChannel("tab");
-      const items = { ...localStorage };
+      const items = { ...sessionStorage };
       channel.postMessage("another-tab");
       // note that listener is added after posting the message
 
@@ -156,10 +156,10 @@ function CFTestScreen() {
         navigate("/login");
         return;
       } else {
-        if (localStorage.getItem("result")) {
+        if (sessionStorage.getItem("result")) {
           navigate("/result");
         } else {
-          let xx = localStorage.getItem("testId");
+          let xx = sessionStorage.getItem("testId");
           const getData = async () =>
             await axiosInstance
               .get(`api/subs/2/${xx}`)
@@ -183,7 +183,7 @@ function CFTestScreen() {
                     setAns(ar);
                     test["marks"] = ar;
                     test["maxMarks"] = [2];
-                    localStorage.setItem("test2", JSON.stringify(test));
+                    sessionStorage.setItem("test2", JSON.stringify(test));
                   } else {
                     var qss = test["question"];
                     var x = res.data.easy;
@@ -260,8 +260,8 @@ function CFTestScreen() {
                     setTimeFF(tf - hourDiff);
                   }
                 } else {
-                  localStorage.removeItem("test2");
-                  navigate("/admin/compiler");
+                  sessionStorage.removeItem("test2");
+                  navigate("/coding");
                 }
               })
               .catch((e) => {
@@ -290,10 +290,10 @@ function CFTestScreen() {
   }
 
   function windowAway() {
-    var ccount = parseInt(localStorage.getItem("screenchange"));
+    var ccount = parseInt(sessionStorage.getItem("screenchange"));
     setCountWindowAway(ccount + 1);
     if (ccount + 1 < 3) {
-      localStorage.setItem("screenchange", ccount + 1);
+      sessionStorage.setItem("screenchange", ccount + 1);
       setCountWindowAwayModal(true);
     } else {
       navigate("/result");
@@ -323,7 +323,7 @@ function CFTestScreen() {
     var x;
     ans[qsno] = parseInt(myans);
     setAns(ans);
-    var test = JSON.parse(localStorage.getItem("test2"));
+    var test = JSON.parse(sessionStorage.getItem("test2"));
     if (myans > 0) {
       if (current < 3) {
         setCurrent(current + 1);
@@ -368,12 +368,12 @@ function CFTestScreen() {
     }
     test["marks"] = ans;
     if (ans.length - 1 === qsno) {
-      navigate("/admin/compiler");
-      localStorage.setItem("test2", JSON.stringify(test));
+      navigate("/coding");
+      sessionStorage.setItem("test2", JSON.stringify(test));
     } else {
       setQsno(qsno + 1);
       test["currentQsNo"] = test["currentQsNo"] + 1;
-      localStorage.setItem("test2", JSON.stringify(test));
+      sessionStorage.setItem("test2", JSON.stringify(test));
       e.target.reset();
       checkBoxToggle(e);
     }

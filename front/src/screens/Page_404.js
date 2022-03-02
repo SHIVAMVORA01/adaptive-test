@@ -9,12 +9,12 @@ import AdminProtectUrl from "../components/Admin/AdminProtectUrl";
 function Page_404() {
   const navigate = useNavigate();
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
     const isMyTokenExpired = isExpired(token);
     if (!isMyTokenExpired) {
       let xx = ProtectUrl.protect();
       let yy = AdminProtectUrl.protect();
-      let typeUser = localStorage.getItem("username");
+      let typeUser = sessionStorage.getItem("username");
       if (xx !== "" || yy !== "") {
         if (typeUser === "admin") {
           navigate(yy);

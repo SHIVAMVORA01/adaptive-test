@@ -237,20 +237,20 @@ function ScheduledTest() {
 
   function startTest(tid) {
     setIsloading(true);
-    localStorage.setItem("testId", tid);
+    sessionStorage.setItem("testId", tid);
     var ob = new Date();
     var h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
     var m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
     var s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
-    var usern = localStorage.getItem("username");
-    localStorage.setItem("screenchange", 0);
+    var usern = sessionStorage.getItem("username");
+    sessionStorage.setItem("screenchange", 0);
     const data = async () =>
       axiosInstance
         .post(`api/results/${usern}`, {
           data: { testId: tid },
         })
         .then((res) => {
-          localStorage.setItem(
+          sessionStorage.setItem(
             "test",
             JSON.stringify({
               username: usern,
@@ -263,12 +263,12 @@ function ScheduledTest() {
             })
           );
           axiosInstance.defaults.headers["Authorization"] =
-            "JWT " + localStorage.getItem("access_token");
-          localStorage.setItem("name", usern);
-          localStorage.setItem("gender", "Male");
-          localStorage.setItem("age", 30);
+            "JWT " + sessionStorage.getItem("access_token");
+          sessionStorage.setItem("name", usern);
+          sessionStorage.setItem("gender", "Male");
+          sessionStorage.setItem("age", 30);
           setIsloading(false);
-          navigate("/testScreen");
+          navigate("/aptitude");
         })
         .catch((e) => {
           setIsloading(false);

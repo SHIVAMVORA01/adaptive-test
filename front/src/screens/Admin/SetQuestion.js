@@ -68,7 +68,7 @@ function SetQuestion() {
     document.getElementById(location.state.type).selected = "selected";
     var divHeight = document.querySelector("#SETQS").clientHeight;
     setWindowHeight(divHeight);
-    localStorage.removeItem("isNewTestReload");
+    sessionStorage.removeItem("isNewTestReload");
     var temp = location.state.navArr;
     setNavArray(temp);
     if (parseInt(location.state.sid) === 5) {

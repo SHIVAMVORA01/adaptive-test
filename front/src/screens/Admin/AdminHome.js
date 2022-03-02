@@ -30,8 +30,8 @@ function AdminHome() {
     query: "(min-width: 1024px)",
   });
   useEffect(() => {
-    if (localStorage.getItem("isNewTestReload") !== undefined) {
-      localStorage.removeItem("isNewTestReload");
+    if (sessionStorage.getItem("isNewTestReload") !== undefined) {
+      sessionStorage.removeItem("isNewTestReload");
     }
   }, []);
   const navigate = useNavigate();
@@ -367,7 +367,7 @@ function AdminHome() {
                 }}
               >
                 {" "}
-                Welcome,<b> {localStorage.getItem("username")}</b>
+                Welcome,<b> {sessionStorage.getItem("username")}</b>
               </p>
               <p
                 className="AdWell"

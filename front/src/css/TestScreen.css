@@ -15,6 +15,7 @@
 }
 .QuestionComp {
   height: 100%;
+  min-height: 700px !important;
   width: 100%;
   padding-top: 10px;
   background-color: #f8f9fa !important;
@@ -41,7 +42,8 @@
 .navigatorBox {
   height: 35px;
   width: 35px;
-  margin-left: 32px;
+  margin-left: auto;
+  margin-right: auto;
   margin-top: 25px;
   color: white;
   text-align: center;
@@ -65,13 +67,14 @@ input:focus {
   cursor: pointer;
 }
 .nextQsBtn {
-  width: 235px;
+  width: 165px;
   background-color: #10b65c;
   margin-top: 40px;
-  margin-left: 360px;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }
 
-.navBrand {
+.App .navBrandMain {
   display: flex !important;
   align-items: center !important;
   margin-left: 40px !important;
@@ -128,18 +131,18 @@ input:focus {
 }
 
 @media screen and (max-width: 1198px) {
-  .navBrand {
+  .App.navBrandMain {
     display: flex !important;
     align-items: center !important;
     margin-left: 0px !important;
   }
-  .logoImage {
+  .App.navBrandMain.logoImage {
     display: none !important;
   }
-  .navbar {
+  .navBrandMain {
     padding: 0px !important;
   }
-  .logoTitle {
+  .App.navBrandMain.logoTitle {
     border-left: none;
     padding-left: 0px;
     margin-left: 10px;
@@ -152,10 +155,10 @@ input:focus {
     margin-left: 0px !important;
     padding-left: 15px !important;
   }
-  .djsce {
+  .App.navBrandMain.djsce {
     font-size: 15px;
   }
-  .it {
+  .App.navBrandMain.it {
     font-size: 15px;
   }
 }

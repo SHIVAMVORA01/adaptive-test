@@ -62,11 +62,14 @@ function DetailedReportComp({
           paddingBottom: "0px",
           marginBottom: "0px",
           height: "100%",
+          width: "100%",
+          textAlign: "center",
+          paddingLeft: "21%",
+          paddingRight: "auto",
         }}
-        expand="xl"
       >
         <Navbar.Brand>
-          <Row style={{ marginLeft: "120px" }}>
+          <Row>
             <Col>
               {" "}
               <img
@@ -81,7 +84,6 @@ function DetailedReportComp({
               {" "}
               <div
                 style={{
-                  margin: "0 20px",
                   alignItems: "center",
                   paddingTop: "10px",
                 }}

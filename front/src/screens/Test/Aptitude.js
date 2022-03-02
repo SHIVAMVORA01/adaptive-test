@@ -1,23 +1,22 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import axiosInstance from "../../axios";
 import TestHeaderComp from "../../components/TestScreeen/TestHeaderComp";
 import QuestionComp from "../../components/TestScreeen/QuestionComp";
 import { Col, Modal, Button, Row } from "react-bootstrap";
 import QuestionNavigatorComp from "../../components/TestScreeen/QuestionNavigatorComp";
 import "../../css/TestScreen.css";
 import { useNavigate } from "react-router";
+import { isExpired } from "react-jwt";
 import $ from "jquery";
-import { isExpired, decodeToken } from "react-jwt";
 import CustomTimer from "../Admin/CustomTimer";
-import getCurrentTime from "../../components/TestScreeen/dateCalc";
-import axiosInstance from "../../axios";
 import crypt from "../../components/TestScreeen/crypt";
 import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
+import Loader from "../../components/Loader";
 import MobileWidth from "../../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
 import { AiFillWarning } from "react-icons/ai";
 
-function DTestScreen() {
+function Aptitude() {
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1024px)",
   });
@@ -30,19 +29,16 @@ function DTestScreen() {
   const [ans, setAns] = useState([]);
   const [qsno, setQsno] = useState(0);
   const navigate = useNavigate();
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
   const [reload, isReload] = useState(false);
-  const handleClose = () => {
-    setShow(false);
-    setMd(true);
-  };
+  const handleClose = () => setShow(false);
   const [countWindowAway, setCountWindowAway] = useState(0);
   const [countWindowAwayModal, setCountWindowAwayModal] = useState(false);
   const [testFinshBool, setTestFinishBool] = useState(false);
   const [time, setTime] = useState();
-  const [md, setMd] = useState(false);
   const [newScreen, setNewScreen] = useState(false);
   const [timeFF, setTimeFF] = useState();
+  const [isLoading, setIsloading] = useState(true);
 
   useEffect(() => {
     function fullscreenc() {
@@ -50,7 +46,6 @@ function DTestScreen() {
 
       if (full_screen_element === null) {
         setShow(true);
-        setMd(false);
         isReload(true);
       }
     }
@@ -65,71 +60,20 @@ function DTestScreen() {
     window.addEventListener("contextmenu", contextm);
     window.addEventListener("fullscreenchange", fullscreenc);
     window.addEventListener("visibilitychange", visibilityc);
-    let flag = true;
-    if (
-      !(sessionStorage.getItem("test4") && !sessionStorage.getItem("test5"))
-    ) {
-      if (!sessionStorage.getItem("test5")) {
-        let az = ProtectUrl.protect();
-        if (az !== "") navigate(az);
+    if (!sessionStorage.getItem("test")) {
+      let az = ProtectUrl.protect();
+      if (az !== "") {
+        navigate(az);
+      } else {
         navigate(-1);
-        flag = false;
       }
-    }
-    if (flag) {
-      var full_screen_element = document.fullscreenElement;
-
-      if (full_screen_element === null) {
-        setShow(true);
-        setMd(false);
-        isReload(true);
-      }
-      if (!sessionStorage.getItem("test5")) {
-        let user = sessionStorage.getItem("username");
-        if (sessionStorage.getItem("test4")) {
-          let ax = JSON.parse(sessionStorage.getItem("test4"));
-          let ar = ax["marks"];
-          let maxMarks = ax["maxMarks"];
-          let gotMarks = ax["marks"];
-          let total = ax["total_q_marks"];
-          axiosInstance
-            .post("api/marks/3", {
-              data: {
-                username: user,
-                marks: total,
-                maxMarks: maxMarks,
-                testId: sessionStorage.getItem("testId"),
-                gotMarks: gotMarks,
-                check_result: 0,
-              },
-            })
-            .then((res) => {
-              sessionStorage.removeItem("test4");
-            })
-            .catch((e) => console.log(e));
-        }
-        let txx = getCurrentTime();
-        let hh = txx.hh;
-        let mm = txx.mm;
-        let ss = txx.ss;
-        sessionStorage.setItem(
-          "test5",
-          JSON.stringify({
-            username: user,
-            STime: Date(),
-            FSTimer: "10",
-            question: [],
-            strtTime: +hh + ":" + mm + ":" + ss,
-            marks: [],
-            currentQsNo: 1,
-          })
-        );
-      }
-      var test = JSON.parse(sessionStorage.getItem("test5"));
+    } else {
+      var test = JSON.parse(sessionStorage.getItem("test"));
       const token = sessionStorage.getItem("access_token");
       const isMyTokenExpired = isExpired(token);
       const channel = new BroadcastChannel("tab");
       const items = { ...sessionStorage };
+
       channel.postMessage("another-tab");
       // note that listener is added after posting the message
 
@@ -148,7 +92,6 @@ function DTestScreen() {
         if (test["question"].length !== 0) {
           console.info("This page is reloaded");
           isReload(true);
-          setShow(true);
         }
       }
       if (isMyTokenExpired) {
@@ -161,7 +104,7 @@ function DTestScreen() {
           let xx = sessionStorage.getItem("testId");
           const getData = async () =>
             await axiosInstance
-              .get(`api/subs/3/${xx}`)
+              .get(`api/subs/1/${xx}`)
               .then((res) => {
                 let a = converttime(res.data.time);
                 var tf = a;
@@ -182,7 +125,7 @@ function DTestScreen() {
                     setAns(ar);
                     test["marks"] = ar;
                     test["maxMarks"] = [2];
-                    sessionStorage.setItem("test5", JSON.stringify(test));
+                    sessionStorage.setItem("test", JSON.stringify(test));
                   } else {
                     var qss = test["question"];
                     var x = res.data.easy;
@@ -259,7 +202,8 @@ function DTestScreen() {
                     setTimeFF(tf - hourDiff);
                   }
                 } else {
-                  navigate("/personality");
+                  sessionStorage.removeItem("test");
+                  navigate("/computer");
                 }
               })
               .catch((e) => {
@@ -269,10 +213,11 @@ function DTestScreen() {
         }
       }
     }
+    setIsloading(false);
     return () => {
-      window.removeEventListener("contextmenu", contextm);
       window.removeEventListener("fullscreenchange", fullscreenc);
       window.removeEventListener("visibilitychange", visibilityc);
+      window.removeEventListener("contextmenu", contextm);
     };
   }, []);
   function GoInFullscreen(element) {
@@ -286,7 +231,6 @@ function DTestScreen() {
       element.classList.add(`style-4`);
     }
   }
-
   function windowAway() {
     var ccount = parseInt(sessionStorage.getItem("screenchange"));
     setCountWindowAway(ccount + 1);
@@ -321,7 +265,8 @@ function DTestScreen() {
     var x;
     ans[qsno] = parseInt(myans);
     setAns(ans);
-    var test = JSON.parse(sessionStorage.getItem("test5"));
+    var test = JSON.parse(sessionStorage.getItem("test"));
+
     if (myans > 0) {
       if (current < 3) {
         setCurrent(current + 1);
@@ -366,12 +311,12 @@ function DTestScreen() {
     }
     test["marks"] = ans;
     if (ans.length - 1 === qsno) {
-      navigate("/personality");
-      sessionStorage.setItem("test5", JSON.stringify(test));
+      navigate("/computer");
+      sessionStorage.setItem("test", JSON.stringify(test));
     } else {
       setQsno(qsno + 1);
       test["currentQsNo"] = test["currentQsNo"] + 1;
-      sessionStorage.setItem("test5", JSON.stringify(test));
+      sessionStorage.setItem("test", JSON.stringify(test));
       e.target.reset();
       checkBoxToggle(e);
     }
@@ -389,203 +334,213 @@ function DTestScreen() {
     e.preventDefault();
   }
   return (
-    <div>
+    <>
       {isDesktopOrLaptop ? (
         <>
-          <Modal
-            show={show}
-            onHide={handleClose}
-            backdrop="static"
-            keyboard={false}
-          >
-            <Modal.Header>
-              <Modal.Title>Enter FullScreeen</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {reload ? (
-                <CustomTimer
-                  msg={`Please Enter Full Screen or Test will get auto submitted in`}
-                  onlyS={true}
-                  reset={md}
-                  time={10}
-                  start={show}
-                  setMd={setMd}
-                  nextpage={"result"}
-                ></CustomTimer>
-              ) : (
-                "Please enter Full Screen mode"
-              )}
-            </Modal.Body>
-            <Modal.Footer>
-              <Button
-                variant="primary"
-                onClick={(e) => {
-                  handleClose(e);
-                  GoInFullscreen(document.querySelector("#element"));
-                }}
-              >
-                Enter Full Screeen
-              </Button>
-            </Modal.Footer>
-          </Modal>
-          {
+          {isLoading ? (
+            <Loader />
+          ) : (
             <div>
-              <div>
-                <Row>
-                  <Col md="9">
-                    <div className="TestHeaderComp">
-                      {timeFF !== undefined && (
-                        <TestHeaderComp
-                          timer={timeFF}
-                          start={!testFinshBool}
-                          reset={testFinshBool}
-                          timeKey="Time"
-                          totalKey="Total"
-                          totalValue={ans.length}
-                          header="Domain"
-                          nextpage={"admin/personality"}
-                          setMd={setMd}
-                        ></TestHeaderComp>
-                      )}
-                    </div>
-                  </Col>
-                  <Col md="3">
-                    <button
-                      onClick={(e) => {
-                        setTestFinishBool(true);
-                        setShow(false);
-                        setMd(true);
-                        navigate("/result");
-                        if (document.exitFullscreen) {
-                          document.exitFullscreen();
-                        } else if (document.webkitExitFullscreen) {
-                          document.webkitExitFullscreen();
-                        } else if (document.mozCancelFullScreen) {
-                          document.mozCancelFullScreen();
-                        } else if (document.msExitFullscreen) {
-                          document.msExitFullscreen();
-                        }
-                      }}
-                      style={{
-                        backgroundColor: "#081466",
-                        fontWeight: "500",
-                        textAlign: "center",
-                        width: "100%",
-                        height: "60px",
-                        borderRadius: "14px",
-                        color: "white",
-                        boxShadow:
-                          "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
-                      }}
-                    >
-                      FINISH TEST
-                    </button>
-                  </Col>
-                </Row>
-                <Row style={{ marginTop: "15px" }}>
-                  <Col md="9">
-                    <div
-                      className="QuestionComp"
-                      style={{ minHeight: "50px", backgroundColor: "black" }}
-                    >
-                      <form onSubmit={click}>
-                        {qs !== undefined &&
-                          qsno !== undefined &&
-                          qs[qsno] !== undefined &&
-                          !countWindowAwayModal && (
-                            <QuestionComp
-                              ans={ans}
-                              qsno={qsno}
-                              level={current}
-                              question={qs[qsno].ques}
-                              checkBoxToggle={checkBoxToggle}
-                              options={qs[qsno].options}
-                              qsimg={qs[qsno].img}
-                            ></QuestionComp>
+              <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+              >
+                <Modal.Header>
+                  <Modal.Title>Enter FullScreeen</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {reload ? (
+                    <CustomTimer
+                      msg={`Please Enter Full Screen or Test will get auto submitted in`}
+                      onlyS={true}
+                      reset={testFinshBool}
+                      time={10}
+                      start={show}
+                      nextpage={"result"}
+                    ></CustomTimer>
+                  ) : (
+                    "Please enter Full Screen mode"
+                  )}
+                </Modal.Body>
+                <Modal.Footer>
+                  <Button
+                    variant="primary"
+                    onClick={(e) => {
+                      handleClose(e);
+                      GoInFullscreen(document.querySelector("#element"));
+                    }}
+                  >
+                    Enter Full Screeen
+                  </Button>
+                </Modal.Footer>
+              </Modal>
+              {
+                <div>
+                  <div>
+                    <Row>
+                      <Col md="9">
+                        <div className="TestHeaderComp">
+                          {timeFF !== undefined && (
+                            <TestHeaderComp
+                              timer={timeFF}
+                              start={!testFinshBool}
+                              reset={testFinshBool}
+                              timeKey="Time"
+                              totalKey="Total"
+                              totalValue={ans.length}
+                              header="Aptitude"
+                              nextpage={"admin/computer"}
+                            ></TestHeaderComp>
                           )}
-                        {countWindowAwayModal && (
-                          <>
-                            <div
-                              style={{
-                                backgroundColor: "#F8D7DA",
-                                height: "fit-content",
-                                width: "95%",
-                                border: "1px #8A3C5B",
-                                borderRadius: "8px",
-                                textAlign: "center",
-                                margin: "10px 10px 10px 25px",
-                              }}
-                            >
-                              <AiFillWarning
-                                style={{
-                                  height: "30px",
-                                  width: "30px",
-                                  textAlign: "center",
-                                  margin: "20px 0",
-                                  color: "#842029",
-                                }}
-                              />
-                              <p
-                                style={{
-                                  color: "#842029",
-                                  textAlign: "center",
-                                }}
-                              >
-                                <b>
-                                  {countWindowAway === 1 ? "1st" : "Last"}{" "}
-                                  Warning
-                                </b>
-                              </p>
-                              <p
-                                style={{
-                                  color: "#842029",
-                                  fontWeight: "normal",
-                                  fontSize: "14px",
-                                  margin: "0 10px 10px 10px",
-                                  textAlign: "center",
-                                }}
-                              >
-                                The screen has been changed.Test will get auto
-                                submitted if you try to change screen again{" "}
-                              </p>
-                              <Button
-                                onClick={(e) => handleCloseSChange(e)}
-                                style={{
-                                  backgroundColor: "#842029",
-                                  margin: "10px 0",
-                                  color: "white",
-                                  outline: "none",
-                                  border: "none",
-                                }}
-                              >
-                                Continue
-                              </Button>
-                            </div>
-                          </>
-                        )}
-                      </form>
-                    </div>
-                  </Col>
-                  <Col md="3">
-                    <div
-                      className="QuestionNavigatorComp"
-                      style={{ minHeight: "550px", backgroundColor: "black" }}
-                    >
-                      <QuestionNavigatorComp
-                        attempted={ans}
-                      ></QuestionNavigatorComp>
-                    </div>
-                  </Col>
-                </Row>
-              </div>
+                        </div>
+                      </Col>
+                      <Col md="3">
+                        <button
+                          onClick={(e) => {
+                            setTestFinishBool(true);
+                            setShow(false);
+                            navigate("/result");
+                            if (document.exitFullscreen) {
+                              document.exitFullscreen();
+                            } else if (document.webkitExitFullscreen) {
+                              document.webkitExitFullscreen();
+                            } else if (document.mozCancelFullScreen) {
+                              document.mozCancelFullScreen();
+                            } else if (document.msExitFullscreen) {
+                              document.msExitFullscreen();
+                            }
+                          }}
+                          style={{
+                            backgroundColor: "#081466",
+                            fontWeight: "500",
+                            textAlign: "center",
+                            width: "100%",
+                            height: "60px",
+                            borderRadius: "14px",
+                            color: "white",
+                            boxShadow:
+                              "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+                          }}
+                        >
+                          FINISH TEST
+                        </button>
+                      </Col>
+                    </Row>
+                    <Row style={{ marginTop: "15px" }}>
+                      <Col md="9">
+                        <div
+                          className="QuestionComp"
+                          style={{
+                            minHeight: "50px",
+                            backgroundColor: "black",
+                          }}
+                        >
+                          <form onSubmit={click}>
+                            {qs !== undefined &&
+                              qsno !== undefined &&
+                              qs[qsno] !== undefined &&
+                              !countWindowAwayModal && (
+                                <QuestionComp
+                                  checkBoxToggle={checkBoxToggle}
+                                  ans={ans}
+                                  qsno={qsno}
+                                  level={current}
+                                  question={qs[qsno].ques}
+                                  options={qs[qsno].options}
+                                  qsimg={qs[qsno].img}
+                                ></QuestionComp>
+                              )}
+                            {countWindowAwayModal && (
+                              <>
+                                <div
+                                  style={{
+                                    backgroundColor: "#F8D7DA",
+                                    height: "fit-content",
+                                    width: "95%",
+                                    border: "1px #8A3C5B",
+                                    borderRadius: "8px",
+                                    textAlign: "center",
+                                    margin: "10px 10px 10px 25px",
+                                  }}
+                                >
+                                  <AiFillWarning
+                                    style={{
+                                      height: "30px",
+                                      width: "30px",
+                                      textAlign: "center",
+                                      margin: "20px 0",
+                                      color: "#842029",
+                                    }}
+                                  />
+                                  <p
+                                    style={{
+                                      color: "#842029",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    <b>
+                                      {countWindowAway === 1 ? "1st" : "Last"}{" "}
+                                      Warning
+                                    </b>
+                                  </p>
+                                  <p
+                                    style={{
+                                      color: "#842029",
+                                      fontWeight: "normal",
+                                      fontSize: "14px",
+                                      margin: "0 10px 10px 10px",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    The screen has been changed.Test will get
+                                    auto submitted if you try to change screen
+                                    again{" "}
+                                  </p>
+                                  <Button
+                                    onClick={(e) => handleCloseSChange(e)}
+                                    style={{
+                                      backgroundColor: "#842029",
+                                      color: "white",
+                                      outline: "none",
+                                      border: "none",
+                                      margin: "10px 0",
+                                    }}
+                                  >
+                                    Continue
+                                  </Button>
+                                </div>
+                              </>
+                            )}
+                          </form>
+                        </div>
+                      </Col>
+                      <Col md="3">
+                        <div
+                          className="QuestionNavigatorComp"
+                          style={{
+                            minHeight: "550px",
+                            backgroundColor: "black",
+                          }}
+                        >
+                          <QuestionNavigatorComp
+                            attempted={ans}
+                          ></QuestionNavigatorComp>
+                        </div>
+                      </Col>
+                    </Row>
+                  </div>
+                </div>
+              }
             </div>
-          }
+          )}
         </>
       ) : (
         <MobileWidth />
       )}
-    </div>
+    </>
   );
 }
 
-export default DTestScreen;
+export default Aptitude;

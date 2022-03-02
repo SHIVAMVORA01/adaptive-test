@@ -5,10 +5,10 @@ import { isExpired, decodeToken } from "react-jwt";
 import axiosInstance from "../axios";
 
 const PrivateRoute = () => {
-  const token = localStorage.getItem("access_token");
+  const token = sessionStorage.getItem("access_token");
   const isMyTokenExpired = isExpired(token);
-  const userType = localStorage.getItem("admin");
-  const refreshToken = localStorage.getItem("refresh_token");
+  const userType = sessionStorage.getItem("admin");
+  const refreshToken = sessionStorage.getItem("refresh_token");
   const isRefreshExpired = isExpired(refreshToken);
   if (userType === "admin" && !isMyTokenExpired && !isRefreshExpired) {
     if (AdminProtectUrl.protect() === "") {
@@ -27,8 +27,8 @@ const PrivateRoute = () => {
         axiosInstance
           .post("/token/refresh/", { refresh: refreshToken })
           .then((response) => {
-            localStorage.setItem("access_token", response.data.access);
-            localStorage.setItem("refresh_token", response.data.refresh);
+            sessionStorage.setItem("access_token", response.data.access);
+            sessionStorage.setItem("refresh_token", response.data.refresh);
             axiosInstance.defaults.headers["Authorization"] =
               "JWT " + response.data.access;
           })

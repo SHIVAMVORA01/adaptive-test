@@ -51,12 +51,12 @@ function Result() {
   });
 
   useEffect(() => {
-    var t = localStorage.getItem("test");
-    var t2 = localStorage.getItem("test2");
-    var t3 = localStorage.getItem("test3");
-    var t4 = localStorage.getItem("test4");
-    var t5 = localStorage.getItem("test5");
-    var t6 = localStorage.getItem("test6");
+    var t = sessionStorage.getItem("test");
+    var t2 = sessionStorage.getItem("test2");
+    var t3 = sessionStorage.getItem("test3");
+    var t4 = sessionStorage.getItem("test4");
+    var t5 = sessionStorage.getItem("test5");
+    var t6 = sessionStorage.getItem("test6");
 
     setOptRadar({
       dataLabels: {
@@ -154,11 +154,11 @@ function Result() {
           marks: total,
           maxMarks: maxMarks,
           gotMarks: gotMarks,
-          testId: localStorage.getItem("testId"),
+          testId: sessionStorage.getItem("testId"),
           check_result: 1,
-          name: localStorage.getItem("name"),
-          age: localStorage.getItem("age"),
-          gender: localStorage.getItem("gender"),
+          name: sessionStorage.getItem("name"),
+          age: sessionStorage.getItem("age"),
+          gender: sessionStorage.getItem("gender"),
         };
       } else {
         let ax = JSON.parse(current);
@@ -167,11 +167,11 @@ function Result() {
         data = {
           username: user,
           marks: total,
-          testId: localStorage.getItem("testId"),
+          testId: sessionStorage.getItem("testId"),
           check_result: 1,
-          name: localStorage.getItem("name"),
-          age: localStorage.getItem("age"),
-          gender: localStorage.getItem("gender"),
+          name: sessionStorage.getItem("name"),
+          age: sessionStorage.getItem("age"),
+          gender: sessionStorage.getItem("gender"),
         };
       }
       setIsloading(true);
@@ -181,11 +181,11 @@ function Result() {
         })
         .then((res) => {
           setIsloading(false);
-          localStorage.setItem("result", true);
+          sessionStorage.setItem("result", true);
           if (tNo !== 1) {
-            localStorage.removeItem(`test${tNo}`);
+            sessionStorage.removeItem(`test${tNo}`);
           } else {
-            localStorage.removeItem("test");
+            sessionStorage.removeItem("test");
           }
           setMrksScored(res.data.mrksScored);
           setAvgMarksArr(res.data.avgMarksArr);
@@ -196,17 +196,17 @@ function Result() {
           setIdx(res.data.res_id);
           setShowFeedback(res.data.takeFeedback);
           setPrediction(res.data.prediction);
-          // localStorage.setItem('result',total)
+          // sessionStorage.setItem('result',total)
         })
         .catch((e) => console.log(e));
     } else {
-      var user = localStorage.getItem("username");
+      var user = sessionStorage.getItem("username");
       if (user) {
         setIsloading(true);
         axiosInstance
           .get(`api/results/${user}`, {
             params: {
-              testId: localStorage.getItem("testId"),
+              testId: sessionStorage.getItem("testId"),
             },
           })
           .then((res) => {
@@ -227,7 +227,7 @@ function Result() {
       }
     }
 
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
     const isMyTokenExpired = isExpired(token);
     if (isMyTokenExpired) {
       navigate("/login");
@@ -347,7 +347,7 @@ function Result() {
                           data: {
                             rating: feedback_star,
                             comment: feedback_comment,
-                            username: localStorage.getItem("username"),
+                            username: sessionStorage.getItem("username"),
                           },
                         })
                         .then((res) => {
@@ -785,32 +785,33 @@ function Result() {
                   </div>
                 </Col>
               </Row>
-              {localStorage.getItem("admin") === "admin" && idx !== undefined && (
-                <button
-                  type="button"
-                  className="btn"
-                  onClick={async (e) => {
-                    localStorage.removeItem("submittedFeedback");
-                    localStorage.removeItem("testId");
-                    localStorage.removeItem("result");
-                    await axiosInstance
-                      .delete(`api/delres/${idx}`)
-                      .then((res) => {
-                        navigate("/admin/scheduledTest");
-                      })
-                      .catch((e) => console.log(e));
-                  }}
-                  style={{
-                    marginTop: "20px",
-                    backgroundColor: "red",
-                    color: "white",
-                    border: "none",
-                  }}
-                >
-                  Back
-                </button>
-              )}
-              {localStorage.getItem("admin") === "user" && (
+              {sessionStorage.getItem("admin") === "admin" &&
+                idx !== undefined && (
+                  <button
+                    type="button"
+                    className="btn"
+                    onClick={async (e) => {
+                      sessionStorage.removeItem("submittedFeedback");
+                      sessionStorage.removeItem("testId");
+                      sessionStorage.removeItem("result");
+                      await axiosInstance
+                        .delete(`api/delres/${idx}`)
+                        .then((res) => {
+                          navigate("/admin/scheduledTest");
+                        })
+                        .catch((e) => console.log(e));
+                    }}
+                    style={{
+                      marginTop: "20px",
+                      backgroundColor: "red",
+                      color: "white",
+                      border: "none",
+                    }}
+                  >
+                    Back
+                  </button>
+                )}
+              {sessionStorage.getItem("admin") === "user" && (
                 <button
                   type="button"
                   className="btn"

@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import { useNavigate } from "react-router";
 import "../../css/AdminHomeScreen.css";
 import $ from "jquery";
-import sidFunc from "./sidFunc";
+import sidFunc from "../../components/Admin/sidFunc";
 import DateTimePicker from "react-datetime-picker";
 import axiosInstance from "../../axios";
 import Loader from "../../components/Loader";
@@ -55,11 +55,11 @@ function NewTest() {
         .get(`api/subs`)
         .then((res) => {
           var ssid;
-          if (localStorage.getItem("isNewTestReload") !== null) {
+          if (sessionStorage.getItem("isNewTestReload") !== null) {
             ssid = 0;
             setSid(ssid + 1);
           } else {
-            localStorage.setItem("isNewTestReload", false);
+            sessionStorage.setItem("isNewTestReload", false);
             ssid = location.state.sid;
             setSid(ssid + 1);
           }

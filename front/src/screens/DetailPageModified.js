@@ -9,13 +9,13 @@ import { useMediaQuery } from "react-responsive";
 import { TiTick } from "react-icons/ti";
 import { CgDanger } from "react-icons/cg";
 import ScreenSizeDetector from "screen-size-detector";
-import { addListener, removeListener, launch } from "devtools-detector";
+import { addListener, removeListener, launch, stop } from "devtools-detector";
 import "../css/LoginScreen.css";
 
 function DetailPageModified() {
   const imageAddr =
     "https://media.geeksforgeeks.org/wp-content/cdn-uploads/20200714180638/CIP_Launch-banner.png";
-  const downloadSize = 50000; //bytes
+  const downloadSize = 81200; //bytes
   const isDesktopOrLaptop = useMediaQuery({
     query: "(min-width: 1024px)",
   });
@@ -39,23 +39,17 @@ function DetailPageModified() {
     isDevOpen ? setIsDevToolsOpen(true) : setIsDevToolsOpen(false);
 
   useEffect(() => {
-    // var privateLocalStorage = window.localStorage;
-    // delete window.localStorage;
-    // console.log(privateLocalStorage);
-    //  console.log(window.localStorage);
-
     addListener(isOpen);
     launch();
-
     set_screen_height(screen.height);
     set_screen_width(screen.width);
     setIsFullScreenEnabled(document.fullscreenEnabled);
-    let userType = localStorage.getItem("admin");
+    let userType = sessionStorage.getItem("admin");
     let path = ProtectUrl.protect();
-    const token = localStorage.getItem("access_token");
+    const token = sessionStorage.getItem("access_token");
     const isMyTokenExpired = isExpired(token);
     if (!isMyTokenExpired) {
-      if (localStorage.getItem("result")) {
+      if (sessionStorage.getItem("result")) {
         navigate("/result");
       } else {
         if (userType === "user" && path !== "") {
@@ -85,6 +79,7 @@ function DetailPageModified() {
     }
     setIsloading(false);
     return () => {
+      stop();
       removeListener(isOpen);
       set_screen_width();
       set_screen_height();
@@ -98,11 +93,11 @@ function DetailPageModified() {
     let h = (ob.getHours() < 10 ? "0" : "") + ob.getHours();
     let m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
     let s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
-    localStorage.setItem("screenchange", 0);
-    localStorage.setItem(
+    sessionStorage.setItem("screenchange", 0);
+    sessionStorage.setItem(
       "test",
       JSON.stringify({
-        username: localStorage.getItem("username"),
+        username: sessionStorage.getItem("username"),
         STime: Date(),
         strtTime: +h + ":" + m + ":" + s,
         FSTimer: "10",
@@ -112,7 +107,7 @@ function DetailPageModified() {
       })
     );
     setIsloading(false);
-    navigate("/testScreen");
+    navigate("/aptitude");
   };
 
   const checkboxHandler = () => {
@@ -126,7 +121,7 @@ function DetailPageModified() {
             <Loader />
           ) : (
             <Row>
-              <Col md={3} style={{ padding: "0", margin: "0" }}>
+              <Col md={3} style={{ padding: "0", margin: "0", height: "100%" }}>
                 <div
                   className="rectangleInstuc"
                   style={{
@@ -175,7 +170,7 @@ function DetailPageModified() {
                         Requirement satisfied
                       </p>
                       <p style={{ paddingTop: "10px" }}>
-                        <b style={{ color: "#293e6f" }}>Screensize: </b>
+                        <b style={{ color: "#293e6f" }}>Screen Size: </b>
                         {screen_width !== undefined && screen_width}px by{" "}
                         {screen_height !== undefined && screen_height}px{" "}
                       </p>
@@ -184,12 +179,23 @@ function DetailPageModified() {
                         Requirement satisfied
                       </p>
                       <p style={{ paddingTop: "10px" }}>
-                        <b style={{ color: "#293e6f" }}>FullScreen Mode: </b>
+                        <b style={{ color: "#293e6f" }}>Full Screen Mode: </b>
                         {isFullScreenEnabled ? "Enabled" : "Disabled"}
                       </p>
                       <p style={{ color: "#10B65C", textAlign: "center" }}>
-                        <TiTick style={{ color: "#10B65C" }}></TiTick>
-                        Requirement satisfied
+                        {isFullScreenEnabled ? (
+                          <>
+                            <TiTick style={{ color: "#10B65C" }} />
+                            Requirement satisfied
+                          </>
+                        ) : (
+                          <>
+                            <CgDanger
+                              style={{ color: "red", marginRight: "2px" }}
+                            ></CgDanger>
+                            Requirement not satisfied
+                          </>
+                        )}
                       </p>
                       <p style={{ paddingTop: "10px" }}>
                         <b style={{ color: "#293e6f" }}>Devtools: </b>
@@ -204,7 +210,9 @@ function DetailPageModified() {
                       >
                         {isDevToolsOpen ? (
                           <>
-                            <CgDanger style={{ color: "red" }}></CgDanger>
+                            <CgDanger
+                              style={{ color: "red", marginRight: "2px" }}
+                            ></CgDanger>
                             Requirement not satisfied
                           </>
                         ) : (
@@ -218,22 +226,24 @@ function DetailPageModified() {
                     <div
                       style={{
                         backgroundColor: "#D1E7DD",
-                        height: "90px",
                         width: "95%",
                         borderRadius: "8px",
                       }}
                     >
                       <p
                         style={{
-                          color: "#10B65C",
-                          textAlign: "justified",
-                          fontSize: "12px",
-                          marginTop: "16px",
+                          color: !(!isDevToolsOpen && isFullScreenEnabled)
+                            ? "red"
+                            : "#10B65C",
+                          textAlign: "center",
+                          fontSize: "14px",
+                          paddingTop: "15px",
                         }}
                       >
                         {" "}
-                        You are all set to give the assessment. Read and Agree
-                        to the instruction given to begin the assessment.{" "}
+                        {!(!isDevToolsOpen && isFullScreenEnabled)
+                          ? "Please satisfy the given requirements"
+                          : "You are all set to give the assessment."}
                       </p>
                     </div>
                   </Row>
@@ -244,16 +254,16 @@ function DetailPageModified() {
                   className="rectangleInstuc"
                   style={{
                     minHeight: "100%",
-                    padding: "5px 35px 30px 35px",
+                    padding: "5px 35px 20px 35px",
                     margin: "0 30px",
                   }}
                 >
-                  <Row style={{ textAlign: "center", margin: "30px 0px" }}>
+                  <Row style={{ textAlign: "center", margin: "30px 0" }}>
                     <Col>
                       <div
                         style={{
                           textAlign: "center",
-                          fontSize: "18px",
+                          fontSize: "19px",
                           color: "#293e6f",
                           fontWeight: "bold",
                         }}
@@ -268,8 +278,8 @@ function DetailPageModified() {
                         style={{
                           marginRight: "30px",
                           marginLeft: "30px",
-                          fontSize: "14px",
-                          lineHeight: "1.5",
+                          fontSize: "15px",
+                          lineHeight: "2",
                         }}
                       >
                         <ol>
@@ -325,7 +335,7 @@ function DetailPageModified() {
                           </li>
                         </ol>
                       </Row>
-                      <Row style={{ marginTop: "25px" }}>
+                      <Row>
                         <Col>
                           <input
                             style={{ marginLeft: "30px" }}
@@ -335,7 +345,7 @@ function DetailPageModified() {
                           />
                           <label
                             style={{
-                              marginLeft: "25px",
+                              marginLeft: "15px",
                               marginBottom: "15px",
                               fontSize: "14px",
                             }}
@@ -347,26 +357,29 @@ function DetailPageModified() {
                           </label>
                         </Col>
                       </Row>
-                      <button
-                        disabled={
-                          !(agree && !isDevToolsOpen && isFullScreenEnabled)
-                        }
-                        onClick={(e) => {
-                          handleSubmit(e);
-                        }}
-                        style={{
-                          backgroundColor: "#10B65C",
-                          width: "120px",
-                          border: "none",
-                          marginTop: "20px",
-                          marginLeft: "310px",
-                          fontSize: "14px",
-                        }}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Start Test
-                      </button>
+                      <Row>
+                        <button
+                          disabled={
+                            !(agree && !isDevToolsOpen && isFullScreenEnabled)
+                          }
+                          onClick={(e) => {
+                            handleSubmit(e);
+                          }}
+                          style={{
+                            backgroundColor: "#10B65C",
+                            width: "120px",
+                            border: "none",
+                            marginTop: "20px",
+                            marginLeft: "auto",
+                            marginRight: "auto",
+                            fontSize: "14px",
+                          }}
+                          type="button"
+                          className="btn btn-primary"
+                        >
+                          Start Test
+                        </button>
+                      </Row>
                     </Col>
                   </Row>
                 </div>

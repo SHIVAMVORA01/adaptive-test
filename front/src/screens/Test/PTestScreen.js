@@ -64,8 +64,10 @@ function PTestScreen() {
     window.addEventListener("fullscreenchange", fullscreenc);
     window.addEventListener("visibilitychange", visibilityc);
     let flag = true;
-    if (!(localStorage.getItem("test5") && !localStorage.getItem("test6"))) {
-      if (!localStorage.getItem("test6")) {
+    if (
+      !(sessionStorage.getItem("test5") && !sessionStorage.getItem("test6"))
+    ) {
+      if (!sessionStorage.getItem("test6")) {
         let az = ProtectUrl.protect();
         if (az !== "") navigate(az);
         navigate(-1);
@@ -80,9 +82,9 @@ function PTestScreen() {
         setMd(false);
         isReload(true);
       }
-      if (!localStorage.getItem("test6")) {
-        let ax = JSON.parse(localStorage.getItem("test5"));
-        let user = localStorage.getItem("username");
+      if (!sessionStorage.getItem("test6")) {
+        let ax = JSON.parse(sessionStorage.getItem("test5"));
+        let user = sessionStorage.getItem("username");
         if (ax) {
           let ar = ax["marks"];
           let maxMarks = ax["maxMarks"];
@@ -97,13 +99,13 @@ function PTestScreen() {
                 username: user,
                 marks: total,
                 maxMarks: maxMarks,
-                testId: localStorage.getItem("testId"),
+                testId: sessionStorage.getItem("testId"),
                 gotMarks: gotMarks,
                 check_result: 0,
               },
             })
             .then((res) => {
-              localStorage.removeItem("test5");
+              sessionStorage.removeItem("test5");
             })
             .catch((e) => console.log(e));
         }
@@ -111,7 +113,7 @@ function PTestScreen() {
         let hh = txx.hh;
         let mm = txx.mm;
         let ss = txx.ss;
-        localStorage.setItem(
+        sessionStorage.setItem(
           "test6",
           JSON.stringify({
             username: user,
@@ -124,11 +126,11 @@ function PTestScreen() {
           })
         );
       }
-      var test = JSON.parse(localStorage.getItem("test6"));
-      const token = localStorage.getItem("access_token");
+      var test = JSON.parse(sessionStorage.getItem("test6"));
+      const token = sessionStorage.getItem("access_token");
       const isMyTokenExpired = isExpired(token);
       const channel = new BroadcastChannel("tab");
-      const items = { ...localStorage };
+      const items = { ...sessionStorage };
       channel.postMessage("another-tab");
       // note that listener is added after posting the message
 
@@ -154,10 +156,10 @@ function PTestScreen() {
         navigate("/login");
         return;
       } else {
-        if (localStorage.getItem("result")) {
+        if (sessionStorage.getItem("result")) {
           navigate("/result");
         } else {
-          let xx = localStorage.getItem("testId");
+          let xx = sessionStorage.getItem("testId");
           const getData = async () =>
             await axiosInstance
               .get(`api/subs/4/${xx}`)
@@ -177,7 +179,7 @@ function PTestScreen() {
                     let ar = new Array(res.data.qs).fill(-1);
                     setAns(ar);
                     test["marks"] = ar;
-                    localStorage.setItem("test6", JSON.stringify(test));
+                    sessionStorage.setItem("test6", JSON.stringify(test));
                   } else {
                     var qss = test["question"];
                     var y = res.data.allQs;
@@ -225,7 +227,7 @@ function PTestScreen() {
                     setTimeFF(tf - hourDiff);
                   }
                 } else {
-                  navigate("/admin/analytical");
+                  navigate("/analytical");
                 }
               })
               .catch((e) => {
@@ -254,10 +256,10 @@ function PTestScreen() {
   }
 
   function windowAway() {
-    var ccount = parseInt(localStorage.getItem("screenchange"));
+    var ccount = parseInt(sessionStorage.getItem("screenchange"));
     setCountWindowAway(ccount + 1);
     if (ccount + 1 < 3) {
-      localStorage.setItem("screenchange", ccount + 1);
+      sessionStorage.setItem("screenchange", ccount + 1);
       setCountWindowAwayModal(true);
     } else {
       navigate("/result");
@@ -289,7 +291,7 @@ function PTestScreen() {
     var x;
     ans[qsno] = parseInt(myans);
     setAns(ans);
-    var test = JSON.parse(localStorage.getItem("test6"));
+    var test = JSON.parse(sessionStorage.getItem("test6"));
 
     var index = 0;
     switch (2) {
@@ -306,12 +308,12 @@ function PTestScreen() {
     }
     test["marks"] = ans;
     if (ans.length - 1 === qsno) {
-      navigate("/admin/analytical");
-      localStorage.setItem("test6", JSON.stringify(test));
+      navigate("/analytical");
+      sessionStorage.setItem("test6", JSON.stringify(test));
     } else {
       setQsno(qsno + 1);
       test["currentQsNo"] = test["currentQsNo"] + 1;
-      localStorage.setItem("test6", JSON.stringify(test));
+      sessionStorage.setItem("test6", JSON.stringify(test));
       e.target.reset();
     }
   }

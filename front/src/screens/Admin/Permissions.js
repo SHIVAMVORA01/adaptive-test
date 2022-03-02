@@ -296,6 +296,8 @@ function Permissions() {
                                   setIsloading(false);
                                   if (res.data.exists) {
                                     window.location.reload();
+                                    setIsAlertSuccessMsgLoaded(true);
+                                    setSuccessMsg("Mail sent successfully");
                                   } else {
                                     setIsAlertDangerMsgLoaded(true);
                                     setDangerMsg("Error Occured");
