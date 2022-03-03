@@ -16,6 +16,7 @@ import ProtectUrl from "../../components/TestScreeen/ProtectUrl";
 import MobileWidth from "../../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
 import { AiFillWarning } from "react-icons/ai";
+import createActivityDetector from "activity-detector";
 
 function DTestScreen() {
   const isDesktopOrLaptop = useMediaQuery({
@@ -43,8 +44,16 @@ function DTestScreen() {
   const [md, setMd] = useState(false);
   const [newScreen, setNewScreen] = useState(false);
   const [timeFF, setTimeFF] = useState();
+  const activityDetector = createActivityDetector({
+    timeToIdle: 6000000000000000_0000,
+    autoInit: false,
+  });
+  activityDetector.on("idle", () => {
+    windowAway();
+  });
 
   useEffect(() => {
+    activityDetector.init();
     function fullscreenc() {
       var full_screen_element = document.fullscreenElement;
 
@@ -54,17 +63,11 @@ function DTestScreen() {
         isReload(true);
       }
     }
-    function visibilityc() {
-      if (document.hidden) {
-        windowAway();
-      }
-    }
     function contextm(event) {
       event.preventDefault();
     }
     window.addEventListener("contextmenu", contextm);
     window.addEventListener("fullscreenchange", fullscreenc);
-    window.addEventListener("visibilitychange", visibilityc);
     let flag = true;
     if (
       !(sessionStorage.getItem("test4") && !sessionStorage.getItem("test5"))
@@ -128,25 +131,8 @@ function DTestScreen() {
       var test = JSON.parse(sessionStorage.getItem("test5"));
       const token = sessionStorage.getItem("access_token");
       const isMyTokenExpired = isExpired(token);
-      const channel = new BroadcastChannel("tab");
-      const items = { ...sessionStorage };
-      channel.postMessage("another-tab");
-      // note that listener is added after posting the message
-
-      function messagec(msg) {
-        {
-          if (msg.data === "another-tab") {
-            // message received from 2nd tab
-            // alert('Cannot open multiple instances');
-            // navigate('/error')
-          }
-        }
-      }
-      channel.addEventListener("message", messagec);
-
       if (test) {
         if (test["question"].length !== 0) {
-          console.info("This page is reloaded");
           isReload(true);
           setShow(true);
         }
@@ -272,7 +258,7 @@ function DTestScreen() {
     return () => {
       window.removeEventListener("contextmenu", contextm);
       window.removeEventListener("fullscreenchange", fullscreenc);
-      window.removeEventListener("visibilitychange", visibilityc);
+      activityDetector.stop();
     };
   }, []);
   function GoInFullscreen(element) {
@@ -443,7 +429,7 @@ function DTestScreen() {
                           totalKey="Total"
                           totalValue={ans.length}
                           header="Domain"
-                          nextpage={"admin/personality"}
+                          nextpage={"personality"}
                           setMd={setMd}
                         ></TestHeaderComp>
                       )}

@@ -13,6 +13,7 @@ function ACEEditor({
   set_render_state,
   render_state,
   language_id,
+  height,
 }) {
   const [language, setLanguage] = useState();
   useEffect(() => {
@@ -38,7 +39,7 @@ function ACEEditor({
           name="editor"
           editorProps={{ $blockScrolling: true }}
           value={inputT}
-          height={`100%`}
+          height={height}
           fontSize={14}
           showPrintMargin={true}
           showGutter={true}

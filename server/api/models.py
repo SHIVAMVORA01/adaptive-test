@@ -12,6 +12,7 @@ class Test(models.Model):
     dom = models.JSONField(null=True, blank=True)
     p = models.JSONField(null=True, blank=True)
     aw = models.JSONField(null=True, blank=True)
+    totalTestTime = models.CharField(max_length=40,null=True, blank=True)
     token = models.CharField(max_length=400,null=True,blank=True)
     def __str__(self):
         return self.test_name

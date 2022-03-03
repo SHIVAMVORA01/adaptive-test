@@ -74,7 +74,7 @@ function QuestionComp({
                 );
               })}
             {isPersonality && (
-              <>
+              <div style={{ marginLeft: "7px" }}>
                 <div
                   className="form-check"
                   style={{ padding: "5px 0", marginBottom: "10px" }}
@@ -195,7 +195,7 @@ function QuestionComp({
                     Very Accurate
                   </label>
                 </div>
-              </>
+              </div>
             )}
             <button
               type="submit"

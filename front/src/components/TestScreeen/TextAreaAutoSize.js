@@ -28,8 +28,9 @@ function TextAreaAutoSize({
             backgroundColor: isCoding ? "#F8F8F8" : "transparent",
             borderColor: isCoding ? "rgba(118, 118, 118, 0.3)" : "none",
             resize: "none",
+            overflow: "hidden",
             cursor: isQs ? "default" : "pointer",
-            padding: "0px 0 0px 5px",
+            padding: "0 10px",
             color: "#293e6f",
             border: isCoding ? "1px ridge" : `0px`,
           }}

@@ -11,6 +11,7 @@ import { CgDanger } from "react-icons/cg";
 import ScreenSizeDetector from "screen-size-detector";
 import { addListener, removeListener, launch, stop } from "devtools-detector";
 import "../css/LoginScreen.css";
+import axiosInstance from "../axios";
 
 function DetailPageModified() {
   const imageAddr =
@@ -94,20 +95,29 @@ function DetailPageModified() {
     let m = (ob.getMinutes() < 10 ? "0" : "") + ob.getMinutes();
     let s = (ob.getMinutes() < 10 ? "0" : "") + ob.getSeconds();
     sessionStorage.setItem("screenchange", 0);
-    sessionStorage.setItem(
-      "test",
-      JSON.stringify({
-        username: sessionStorage.getItem("username"),
-        STime: Date(),
-        strtTime: +h + ":" + m + ":" + s,
-        FSTimer: "10",
-        question: [],
-        marks: [],
-        currentQsNo: 1,
-      })
-    );
-    setIsloading(false);
+    let username = sessionStorage.getItem('username')
+    let acc_token = "JWT " + sessionStorage.getItem("access_token");
+    axiosInstance.defaults.headers["Authorization"] = acc_token;
+    axiosInstance
+    .post(`api/setresult/${username}`, {
+      data: { testId: sessionStorage.getItem("testId") },
+    })
+    .then(res=>{
+      sessionStorage.setItem(
+        "test",
+        JSON.stringify({
+          username: sessionStorage.getItem("username"),
+          STime: Date(),
+          strtTime: +h + ":" + m + ":" + s,
+          FSTimer: "10",
+          question: [],
+          marks: [],
+          currentQsNo: 1,
+        })
+      );
+      setIsloading(false);
     navigate("/aptitude");
+    })
   };
 
   const checkboxHandler = () => {
@@ -191,7 +201,7 @@ function DetailPageModified() {
                         ) : (
                           <>
                             <CgDanger
-                              style={{ color: "red", marginRight: "2px" }}
+                              style={{ color: "#842029", marginRight: "2px" }}
                             ></CgDanger>
                             Requirement not satisfied
                           </>
@@ -203,7 +213,7 @@ function DetailPageModified() {
                       </p>
                       <p
                         style={{
-                          color: isDevToolsOpen ? "red" : "#10B65C",
+                          color: isDevToolsOpen ? "#842029" : "#10B65C",
                           textAlign: "center",
                           marginBottom: "20px",
                         }}
@@ -211,7 +221,7 @@ function DetailPageModified() {
                         {isDevToolsOpen ? (
                           <>
                             <CgDanger
-                              style={{ color: "red", marginRight: "2px" }}
+                              style={{ color: "#842029", marginRight: "2px" }}
                             ></CgDanger>
                             Requirement not satisfied
                           </>
@@ -225,7 +235,9 @@ function DetailPageModified() {
                     </Row>
                     <div
                       style={{
-                        backgroundColor: "#D1E7DD",
+                        backgroundColor: !(!isDevToolsOpen && isFullScreenEnabled)
+                            ? "#f8d7da"
+                            : "#D1E7DD",
                         width: "95%",
                         borderRadius: "8px",
                       }}
@@ -233,7 +245,7 @@ function DetailPageModified() {
                       <p
                         style={{
                           color: !(!isDevToolsOpen && isFullScreenEnabled)
-                            ? "red"
+                            ? "#842029"
                             : "#10B65C",
                           textAlign: "center",
                           fontSize: "14px",

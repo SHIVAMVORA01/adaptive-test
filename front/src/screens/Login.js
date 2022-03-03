@@ -368,7 +368,6 @@ function Login() {
                         backgroundColor: "#10B65C",
                         width: "100px",
                         border: "none",
-                        marginLeft: "40%",
                         marginTop: "20px",
                       }}
                       type="submit"

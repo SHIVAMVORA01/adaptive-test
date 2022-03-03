@@ -48,7 +48,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-CORS_ORIGIN_ALLOW_ALL = True
+
 ROOT_URLCONF = 'server.urls'
 
 TEMPLATES = [
@@ -119,9 +119,13 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+CSRF_COOKIE_NAME = "csrftoken"
+CORS_ALLOW_CREDENTIALS = True
+CSRF_TRUSTED_ORIGINS = [os.environ.get('CORS_CSRF_TRUSTED_ORIGIN')]
+CORS_ORIGIN_WHITELIST=[os.environ.get('CORS_CSRF_TRUSTED_ORIGIN')]
 REST_FRAMEWORK={
     'DEFAULT_PERMISSION_CLASSES':[
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',

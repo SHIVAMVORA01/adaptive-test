@@ -29,9 +29,8 @@ function CustomTimer({
           if (setMd !== 0) setMd(true);
           if (!isLogin) {
             navigate(`/${nextpage}`);
-          } else {
-            handleReset();
           }
+          handleReset();
         }
       });
     }, 1000);

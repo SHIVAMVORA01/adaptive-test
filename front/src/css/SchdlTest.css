@@ -18,3 +18,104 @@
   background-color: aliceblue !important;
   border-radius: 30px !important;
 }
+.viewScdlTestTable table.mdb-dataTable thead th:not(:first-child) {
+  padding-left: 2% !important;
+  font-weight: bold;
+  text-align: center !important;
+}
+.viewScdlTestTable table.mdb-dataTable thead th:first-child {
+  padding-left: 10px !important;
+  font-weight: bold;
+  text-align: center !important;
+}
+
+.viewScdlTestTable table.mdb-dataTable thead .sorting:after,
+.viewScdlTestTable table.mdb-dataTable thead .sorting_asc:after,
+.viewScdlTestTable table.mdb-dataTable thead .sorting_desc:after,
+.viewScdlTestTable table.mdb-dataTable thead .sorting_asc_disabled:after,
+.viewScdlTestTable table.mdb-dataTable thead .sorting_desc_disabled:after,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting:after,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting_asc:after,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting_desc:after,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting_asc_disabled:after,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting_desc_disabled:after {
+  left: 0.2rem;
+  font-family: sans-serif;
+  top: 10px;
+  font-size: 1rem;
+  font-weight: 900;
+  content: "\25B2";
+}
+
+.viewScdlTestTable table.mdb-dataTable thead .sorting:before,
+.viewScdlTestTable table.mdb-dataTable thead .sorting_asc:before,
+.viewScdlTestTable table.mdb-dataTable thead .sorting_desc:before,
+.viewScdlTestTable table.mdb-dataTable thead .sorting_asc_disabled:before,
+.viewScdlTestTable table.mdb-dataTable thead .sorting_desc_disabled:before,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting:before,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting_asc:before,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting_desc:before,
+.viewScdlTestTable table thead.mdb-dataTable-head .sorting_asc_disabled:before,
+.viewScdlTestTable
+  table
+  thead.mdb-dataTable-head
+  .sorting_desc_disabled:before {
+  left: 0.2rem;
+  top: 10px;
+  font-family: "Font Awesome\ 5 Free", sans-serif;
+  font-size: 1rem;
+  font-weight: 900;
+  content: "\25BC";
+}
+
+@media (max-width: 1214px) {
+  .viewScdlTestTable table.mdb-dataTable thead .sorting:after,
+  .viewScdlTestTable table.mdb-dataTable thead .sorting_asc:after,
+  .viewScdlTestTable table.mdb-dataTable thead .sorting_desc:after,
+  .viewScdlTestTable table.mdb-dataTable thead .sorting_asc_disabled:after,
+  .viewScdlTestTable table.mdb-dataTable thead .sorting_desc_disabled:after,
+  .viewScdlTestTable table thead.mdb-dataTable-head .sorting:after,
+  .viewScdlTestTable table thead.mdb-dataTable-head .sorting_asc:after,
+  .viewScdlTestTable table thead.mdb-dataTable-head .sorting_desc:after,
+  .viewScdlTestTable table thead.mdb-dataTable-head .sorting_asc_disabled:after,
+  .viewScdlTestTable
+    table
+    thead.mdb-dataTable-head
+    .sorting_desc_disabled:after {
+    left: 0.2rem;
+    font-family: sans-serif;
+    top: 15px !important;
+    font-size: 1rem;
+    font-weight: 900;
+    content: "\25B2";
+  }
+
+  .viewScdlTestTable table.mdb-dataTable thead .sorting:before,
+  .viewScdlTestTable table.mdb-dataTable thead .sorting_asc:before,
+  .viewScdlTestTable table.mdb-dataTable thead .sorting_desc:before,
+  .viewScdlTestTable table.mdb-dataTable thead .sorting_asc_disabled:before,
+  .viewScdlTestTable table.mdb-dataTable thead .sorting_desc_disabled:before,
+  .viewScdlTestTable table thead.mdb-dataTable-head .sorting:before,
+  .viewScdlTestTable table thead.mdb-dataTable-head .sorting_asc:before,
+  .viewScdlTestTable table thead.mdb-dataTable-head .sorting_desc:before,
+  .viewScdlTestTable
+    table
+    thead.mdb-dataTable-head
+    .sorting_asc_disabled:before,
+  .viewScdlTestTable
+    table
+    thead.mdb-dataTable-head
+    .sorting_desc_disabled:before {
+    left: 0.2rem;
+    top: 15px !important;
+    font-family: "Font Awesome\ 5 Free", sans-serif;
+    font-size: 1rem;
+    font-weight: 900;
+    content: "\25BC";
+  }
+  .mdb-dataTable-head .sorting,
+  .mdb-dataTable-head .sorting_asc,
+  .mdb-dataTable-head .sorting_desc {
+    padding-bottom: 15px;
+  }
+}

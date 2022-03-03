@@ -15,6 +15,7 @@ import Alert from "../../components/Admin/Alert";
 import MobileWidth from "../../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
 import { AiFillWarning } from "react-icons/ai";
+import createActivityDetector from "activity-detector";
 
 export default function Compiler() {
   const isDesktopOrLaptop = useMediaQuery({
@@ -153,8 +154,16 @@ export default function Compiler() {
   const [md, setMd] = useState(false);
   const [timeFF, setTimeFF] = useState();
   const [isValidPath, setIsValidPath] = useState(false);
+  const activityDetector = createActivityDetector({
+    timeToIdle: 6000000000000000_0000,
+    autoInit: false,
+  });
+  activityDetector.on("idle", () => {
+    windowAway();
+  });
 
   useEffect(() => {
+    activityDetector.init();
     function fullscreenc() {
       var full_screen_element = document.fullscreenElement;
 
@@ -164,17 +173,11 @@ export default function Compiler() {
         isReload(true);
       }
     }
-    function visibilityc() {
-      if (document.hidden) {
-        windowAway();
-      }
-    }
     function contextm(event) {
       event.preventDefault();
     }
     window.addEventListener("contextmenu", contextm);
     window.addEventListener("fullscreenchange", fullscreenc);
-    window.addEventListener("visibilitychange", visibilityc);
     let flag = true;
     if (
       !(sessionStorage.getItem("test2") && !sessionStorage.getItem("test4"))
@@ -365,7 +368,7 @@ export default function Compiler() {
     return () => {
       window.removeEventListener("contextmenu", contextm);
       window.removeEventListener("fullscreenchange", fullscreenc);
-      window.removeEventListener("visibilitychange", visibilityc);
+      activityDetector.stop();
     };
   }, []);
   function converttime(timex) {
@@ -1245,104 +1248,79 @@ export default function Compiler() {
 
   $(document).ready(function () {
     "use strict";
-
-    if (submitCode_qs1) {
-      if (
-        q1_testCase_1_output_error !== undefined &&
-        q1_testCase_2_output_error !== undefined &&
-        q1_testCase_3_output_error !== undefined
-      ) {
+    let eleQ1 = document.getElementById("uncontrolled-tab-example-tab-Q1");
+    if (eleQ1) {
+      if (submitCode_qs1) {
         if (
-          !q1_testCase_1_output_error &&
-          !q1_testCase_2_output_error &&
-          !q1_testCase_3_output_error
+          q1_testCase_1_output_error !== undefined &&
+          q1_testCase_2_output_error !== undefined &&
+          q1_testCase_3_output_error !== undefined
         ) {
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q1"
-          ).style.backgroundColor = "#10b65c"; //green
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q1"
-          ).style.color = "white";
+          if (
+            !q1_testCase_1_output_error &&
+            !q1_testCase_2_output_error &&
+            !q1_testCase_3_output_error
+          ) {
+            eleQ1.style.backgroundColor = "#10b65c"; //green
+            eleQ1.style.color = "white";
+          } else {
+            eleQ1.style.backgroundColor = "#dc3545"; //red
+            eleQ1.style.color = "white";
+          }
         } else {
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q1"
-          ).style.backgroundColor = "#dc3545"; //red
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q1"
-          ).style.color = "white";
+          eleQ1.style.backgroundColor = "#6c757d"; //grey
+          eleQ1.style.color = "white";
         }
-      } else {
-        document.getElementById(
-          "uncontrolled-tab-example-tab-Q1"
-        ).style.backgroundColor = "#6c757d"; //grey
-        document.getElementById("uncontrolled-tab-example-tab-Q1").style.color =
-          "white";
       }
     }
     if (submitCode_qs2) {
-      if (
-        q2_testCase_1_output_error !== undefined &&
-        q2_testCase_2_output_error !== undefined &&
-        q2_testCase_3_output_error !== undefined
-      ) {
+      let eleQ2 = document.getElementById("uncontrolled-tab-example-tab-Q2");
+      if (eleQ2) {
         if (
-          !q2_testCase_1_output_error &&
-          !q2_testCase_2_output_error &&
-          !q2_testCase_3_output_error
+          q2_testCase_1_output_error !== undefined &&
+          q2_testCase_2_output_error !== undefined &&
+          q2_testCase_3_output_error !== undefined
         ) {
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q2"
-          ).style.backgroundColor = "#10b65c";
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q2"
-          ).style.color = "white";
+          if (
+            !q2_testCase_1_output_error &&
+            !q2_testCase_2_output_error &&
+            !q2_testCase_3_output_error
+          ) {
+            eleQ2.style.backgroundColor = "#10b65c";
+            eleQ2.style.color = "white";
+          } else {
+            eleQ2.style.backgroundColor = "#dc3545";
+            eleQ2.style.color = "white";
+          }
         } else {
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q2"
-          ).style.backgroundColor = "#dc3545";
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q2"
-          ).style.color = "white";
+          eleQ2.style.backgroundColor = "#6c757d"; //grey
+          eleQ2.style.color = "white";
         }
-      } else {
-        document.getElementById(
-          "uncontrolled-tab-example-tab-Q2"
-        ).style.backgroundColor = "#6c757d"; //grey
-        document.getElementById("uncontrolled-tab-example-tab-Q2").style.color =
-          "white";
       }
     }
     if (submitCode_qs3) {
-      if (
-        q3_testCase_1_output_error !== undefined &&
-        q3_testCase_2_output_error !== undefined &&
-        q3_testCase_3_output_error !== undefined
-      ) {
+      let eleQ3 = document.getElementById("uncontrolled-tab-example-tab-Q3");
+      if (eleQ3) {
         if (
-          !q3_testCase_1_output_error &&
-          !q3_testCase_2_output_error &&
-          !q3_testCase_3_output_error
+          q3_testCase_1_output_error !== undefined &&
+          q3_testCase_2_output_error !== undefined &&
+          q3_testCase_3_output_error !== undefined
         ) {
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q3"
-          ).style.backgroundColor = "#10b65c";
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q3"
-          ).style.color = "white";
+          if (
+            !q3_testCase_1_output_error &&
+            !q3_testCase_2_output_error &&
+            !q3_testCase_3_output_error
+          ) {
+            eleQ3.style.backgroundColor = "#10b65c";
+            eleQ3.style.color = "white";
+          } else {
+            eleQ3.style.backgroundColor = "#dc3545";
+            eleQ3.style.color = "white";
+          }
         } else {
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q3"
-          ).style.backgroundColor = "#dc3545";
-          document.getElementById(
-            "uncontrolled-tab-example-tab-Q3"
-          ).style.color = "white";
+          eleQ3.style.backgroundColor = "#6c757d"; //grey
+          eleQ3.style.color = "white";
         }
-      } else {
-        document.getElementById(
-          "uncontrolled-tab-example-tab-Q3"
-        ).style.backgroundColor = "#6c757d"; //grey
-        document.getElementById("uncontrolled-tab-example-tab-Q3").style.color =
-          "white";
       }
     }
     let sum = 0;
@@ -1536,32 +1514,147 @@ export default function Compiler() {
             </>
           )}
           <Row>
-            <Col md={6}>
+            <Col md={12}>
               <Row>
-                <div
-                  className="TestHeaderComp"
-                  style={{ paddingBottom: "7px" }}
-                >
-                  {timeFF !== undefined && (
-                    <TestHeaderComp
-                      noTotal={true}
-                      timer={timeFF}
-                      start={!testFinshBool}
-                      reset={testFinshBool}
-                      timeKey="Time"
-                      header="Coding"
-                      nextpage={"admin/domain"}
-                      setMd={setMd}
-                    ></TestHeaderComp>
-                  )}
-                </div>
+                <Col md={6} style={{ paddingLeft: "0px" }}>
+                  <div
+                    className="TestHeaderComp"
+                    style={{ paddingBottom: "7px", height: "50px" }}
+                  >
+                    {timeFF !== undefined && (
+                      <TestHeaderComp
+                        noTotal={true}
+                        timer={timeFF}
+                        start={!testFinshBool}
+                        reset={testFinshBool}
+                        timeKey="Time"
+                        header="Coding"
+                        nextpage={"domain"}
+                        setMd={setMd}
+                      ></TestHeaderComp>
+                    )}
+                  </div>
+                </Col>
+                <Col md={6}>
+                  <Row
+                    style={{
+                      height: nextSecConfirmation ? "auto" : "40px",
+                      marginTop: "5px",
+                      marginBottom: "10px",
+                      width: "100%",
+                    }}
+                  >
+                    <Col md={nextSecConfirmation ? 12 : 4}>
+                      {nextSecConfirmation && (
+                        <p style={{ fontSize: "14px", fontWeight: "bold" }}>
+                          Are you sure you want to go to the next section? You
+                          cannot come to this section again!
+                        </p>
+                      )}
+                    </Col>
+                    <Col md={nextSecConfirmation ? 4 : 4}>
+                      {!nextSecConfirmation ? (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            setNextSecConfirmation(true);
+                          }}
+                          style={{
+                            color: "white",
+                            borderRadius: "10px",
+                            width: "125px",
+                            padding: "7px 10px",
+                          }}
+                          className="btn scTest"
+                        >
+                          Next Section
+                        </button>
+                      ) : (
+                        <>
+                          <Row>
+                            <Col lg={6}>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  setMd(true);
+                                  setTestFinishBool(true);
+                                  setShow(false);
+                                  navigate("/domain");
+                                }}
+                                style={{
+                                  color: "white",
+                                  backgroundColor: "#10b65c",
+                                  borderRadius: "10px",
+                                  width: "100%",
+                                  padding: "7px 10px",
+                                }}
+                                className="btn"
+                              >
+                                Yes
+                              </button>
+                            </Col>
+                            <Col lg={6}>
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  setNextSecConfirmation(false);
+                                }}
+                                style={{
+                                  color: "white",
+                                  backgroundColor: "red",
+                                  borderRadius: "10px",
+                                  padding: "7px 10px",
+                                  width: "100%",
+                                }}
+                                className="btn"
+                              >
+                                No
+                              </button>
+                            </Col>
+                          </Row>
+                        </>
+                      )}
+                    </Col>
+                    <Col md={nextSecConfirmation ? 6 : 4}>
+                      <button
+                        type="button"
+                        className="btn btn-success"
+                        onClick={(e) => {
+                          setTestFinishBool(true);
+                          setShow(false);
+                          setMd(true);
+                          navigate("/result");
+                          if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                          } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                          } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen();
+                          } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                          }
+                        }}
+                        style={{
+                          backgroundColor: "#081466",
+                          width: "120px",
+                          borderRadius: "10px",
+                          color: "white",
+                          padding: "7px 10px",
+                          height: "40px",
+                        }}
+                      >
+                        Finish Test
+                      </button>
+                    </Col>
+                  </Row>
+                </Col>
               </Row>
               <Row>
                 <div
                   className="basicRec"
                   style={{
                     marginTop: "5px",
-                    height: window.screen.height - 220,
+                    height: window.screen.height - 300,
                     backgroundColor: "#F7F7F7",
                   }}
                 >
@@ -1699,169 +1792,8 @@ export default function Compiler() {
                 </div>
               </Row>
             </Col>
-
-            <Col
-              md={6}
-              style={{
-                height: window.screen.height - 160,
-                paddingLeft: "45px",
-              }}
-            >
-              <Row
-                style={{
-                  height: nextSecConfirmation ? "auto" : "40px",
-                  marginTop: "5px",
-                  marginBottom: "10px",
-                  width: "100%",
-                }}
-              >
-                <Col md={nextSecConfirmation ? 12 : 4}>
-                  {nextSecConfirmation && (
-                    <p style={{ fontSize: "14px", fontWeight: "bold" }}>
-                      Are you sure you want to go to the next section? You
-                      cannot come to this section again!
-                    </p>
-                  )}
-                </Col>
-                <Col md={nextSecConfirmation ? 4 : 4}>
-                  {!nextSecConfirmation ? (
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        setNextSecConfirmation(true);
-                      }}
-                      style={{
-                        color: "white",
-                        borderRadius: "10px",
-                        width: "125px",
-                        padding: "7px 10px",
-                      }}
-                      className="btn scTest"
-                    >
-                      Next Section
-                    </button>
-                  ) : (
-                    <>
-                      <Row>
-                        <Col lg={6}>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              setMd(true);
-                              setTestFinishBool(true);
-                              setShow(false);
-                              navigate("/domain");
-                            }}
-                            style={{
-                              color: "white",
-                              backgroundColor: "#10b65c",
-                              borderRadius: "10px",
-                              width: "100%",
-                              padding: "7px 10px",
-                            }}
-                            className="btn"
-                          >
-                            Yes
-                          </button>
-                        </Col>
-
-                        <Col lg={6}>
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              setNextSecConfirmation(false);
-                            }}
-                            style={{
-                              color: "white",
-                              backgroundColor: "red",
-                              borderRadius: "10px",
-                              padding: "7px 10px",
-                              width: "100%",
-                            }}
-                            className="btn"
-                          >
-                            No
-                          </button>
-                        </Col>
-                      </Row>
-                    </>
-                  )}
-                </Col>
-                <Col md={nextSecConfirmation ? 6 : 4}>
-                  <button
-                    type="button"
-                    className="btn btn-success"
-                    onClick={(e) => {
-                      setTestFinishBool(true);
-                      setShow(false);
-                      setMd(true);
-                      navigate("/result");
-                      if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                      } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                      } else if (document.mozCancelFullScreen) {
-                        document.mozCancelFullScreen();
-                      } else if (document.msExitFullscreen) {
-                        document.msExitFullscreen();
-                      }
-                    }}
-                    style={{
-                      backgroundColor: "#081466",
-                      width: "120px",
-                      borderRadius: "10px",
-                      color: "white",
-                      padding: "7px 10px",
-                      height: "40px",
-                    }}
-                  >
-                    Finish Test
-                  </button>
-                </Col>
-              </Row>
-              <Row style={{ marginTop: "5px" }}>
-                <div
-                  className="basicRec"
-                  style={{
-                    backgroundColor: "#F7F7F7",
-                    padding: "5px 5px",
-                    height: window.screen.height - 220,
-                  }}
-                >
-                  {current_qs === 1 && language_id_question_1 !== undefined && (
-                    <ACEEditor
-                      inputT={inputT_question_1}
-                      render_state={render_state}
-                      set_render_state={set_render_state}
-                      language_id={language_id_question_1}
-                      height={window.screen.height - 500}
-                    ></ACEEditor>
-                  )}
-
-                  {current_qs === 2 && language_id_question_2 !== undefined && (
-                    <ACEEditor
-                      inputT={inputT_question_2}
-                      render_state={render_state}
-                      set_render_state={set_render_state}
-                      language_id={language_id_question_2}
-                      height={window.screen.height - 500}
-                    ></ACEEditor>
-                  )}
-
-                  {current_qs === 3 && language_id_question_3 !== undefined && (
-                    <ACEEditor
-                      inputT={inputT_question_3}
-                      render_state={render_state}
-                      set_render_state={set_render_state}
-                      language_id={language_id_question_3}
-                      height={window.screen.height - 500}
-                    ></ACEEditor>
-                  )}
-                </div>
-              </Row>
-            </Col>
           </Row>
-          <Row style={{ marginBottom: "50px" }}>
+          <Row style={{ margin: "10px 0" }}>
             <Col>
               <Row
                 style={{
@@ -1869,7 +1801,7 @@ export default function Compiler() {
                   paddingBottom: "0",
                 }}
               >
-                <Col lg={1}>
+                <Col lg={1} style={{ paddingLeft: "0" }}>
                   <select
                     style={{ width: "80px" }}
                     value={language_id}
@@ -1883,7 +1815,7 @@ export default function Compiler() {
                     <option value="71">Python</option>
                   </select>
                 </Col>
-                <Col lg={2} style={{ width: "150px" }}>
+                <Col lg={2} style={{ width: "200px" }}>
                   <div
                     className="custom-control custom-checkbox"
                     style={{ paddingTop: "8px" }}
@@ -1891,7 +1823,7 @@ export default function Compiler() {
                     <input
                       type="checkbox"
                       className="custom-control-input"
-                      style={{ marginRight: "4px" }}
+                      style={{ margin: "0 4px" }}
                       onClick={(e) => {
                         console.log(e);
                         setCustomInputCheck(e.target.checked);
@@ -1944,11 +1876,54 @@ export default function Compiler() {
                 </Col>
               </Row>
               <Row>
-                <div
+                <Col md={6}>
+                  <Row style={{ marginTop: "5px" }}>
+                    <div
+                      className="basicRec"
+                      style={{
+                        backgroundColor: "#F7F7F7",
+                        padding: "5px 5px",
+                        height: "450px",
+                      }}
+                    >
+                      {current_qs === 1 &&
+                        language_id_question_1 !== undefined && (
+                          <ACEEditor
+                            inputT={inputT_question_1}
+                            render_state={render_state}
+                            set_render_state={set_render_state}
+                            language_id={language_id_question_1}
+                            height="400px"
+                          ></ACEEditor>
+                        )}
+                      {current_qs === 2 &&
+                        language_id_question_2 !== undefined && (
+                          <ACEEditor
+                            inputT={inputT_question_2}
+                            render_state={render_state}
+                            set_render_state={set_render_state}
+                            language_id={language_id_question_2}
+                            height="400px"
+                          ></ACEEditor>
+                        )}
+                      {current_qs === 3 &&
+                        language_id_question_3 !== undefined && (
+                          <ACEEditor
+                            inputT={inputT_question_3}
+                            render_state={render_state}
+                            set_render_state={set_render_state}
+                            language_id={language_id_question_3}
+                            height="400px"
+                          ></ACEEditor>
+                        )}
+                    </div>
+                  </Row>
+                </Col>
+                <Col
                   className="basicRec"
                   style={{
-                    marginTop: "5px",
-                    height: "400px",
+                    margin: "5px 10px 0 10px",
+                    height: "450px",
                     backgroundColor: "#F7F7F7",
                   }}
                 >
@@ -1963,7 +1938,7 @@ export default function Compiler() {
                         className="scrollbar customInput"
                         spellCheck={false}
                         defaultValue={user_input}
-                        style={{ height: 300 }}
+                        style={{ height: "350px" }}
                         onChange={userInput}
                       ></textarea>
                     </Tab>
@@ -2024,7 +1999,7 @@ export default function Compiler() {
                                         }
                                       }}
                                       style={{
-                                        marginBottom: "1px",
+                                        margin: "10px",
                                         color: "white",
                                         borderRadius: "0",
                                         width: "100%",
@@ -2062,7 +2037,7 @@ export default function Compiler() {
                                         }
                                       }}
                                       style={{
-                                        marginBottom: "1px",
+                                        margin: "10px",
                                         color: "white",
                                         borderRadius: "0",
                                         width: "100%",
@@ -2121,7 +2096,7 @@ export default function Compiler() {
                                         }
                                       }}
                                       style={{
-                                        marginBottom: "1px",
+                                        margin: "10px",
                                         color: "white",
                                         borderRadius: "0",
                                         width: "100%",
@@ -2159,7 +2134,7 @@ export default function Compiler() {
                                         }
                                       }}
                                       style={{
-                                        marginBottom: "1px",
+                                        margin: "10px",
                                         color: "white",
                                         borderRadius: "0",
                                         width: "100%",
@@ -2218,7 +2193,7 @@ export default function Compiler() {
                                         }
                                       }}
                                       style={{
-                                        marginBottom: "1px",
+                                        margin: "10px",
                                         color: "white",
                                         borderRadius: "0",
                                         width: "100%",
@@ -2256,7 +2231,7 @@ export default function Compiler() {
                                         }
                                       }}
                                       style={{
-                                        marginBottom: "1px",
+                                        margin: "10px",
                                         color: "white",
                                         borderRadius: "0",
                                         width: "100%",
@@ -2300,14 +2275,14 @@ export default function Compiler() {
                             }
                             readOnly
                             className="scrollbar codeOutput"
-                            style={{ height: 300 }}
+                            style={{ height: "350px" }}
                             id="style-4"
                           ></textarea>
                         </Col>
                       </Row>
                     </Tab>
                   </Tabs>
-                </div>
+                </Col>
               </Row>
             </Col>
           </Row>

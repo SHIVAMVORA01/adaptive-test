@@ -176,6 +176,7 @@ function Permissions() {
                   padding: "0 60px",
                   marginBottom: "20px",
                 }}
+                className="main_permission_div"
               >
                 <ConfirmDialogBox
                   showConfirmDialogBox={showConfirmDialogBox}

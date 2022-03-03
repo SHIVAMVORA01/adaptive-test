@@ -68,40 +68,41 @@ input:focus::placeholder {
   cursor: pointer;
 }
 
-.Background{
+.Background {
   background-image: url("/src/img/Group 10.png");
 }
 
-.sorting{
+.all_content .sorting,
+.main_permission_div .sorting,
+.feedbackTable .sorting {
   font-size: 13px !important;
   text-align: center;
-  font-weight: bold;
+  font-weight: bold !important;
 }
 
-td{ 
+td {
   font-size: 13px !important;
   text-align: center;
   font-weight: 200;
-
 }
 @media (max-width: 992px) {
-  .Background{
-    height:700px !important;
+  .Background {
+    height: 700px !important;
   }
 }
 @media (max-width: 515px) {
-  .all_content{
-    margin:25px !important;
+  .all_content {
+    margin: 25px !important;
   }
-  .tb_margin{
-    margin:25px 0px !important;
+  .tb_margin {
+    margin: 25px 0px !important;
   }
 }
 @media (max-width: 450px) {
-  .sign_in{
-    width:290px !important;
+  .sign_in {
+    width: 290px !important;
   }
-  .Background{
-    height:650px !important;
+  .Background {
+    height: 650px !important;
   }
 }

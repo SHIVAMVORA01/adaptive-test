@@ -8,7 +8,7 @@ function CodingQsComp({ qs }) {
       id="style-4"
       style={{
         backgroundColor: "white",
-        height: window.screen.height - 300,
+        height: window.screen.height - 390,
         padding: "5px 10px",
       }}
     >

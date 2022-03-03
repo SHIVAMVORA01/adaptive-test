@@ -432,44 +432,35 @@ def results(request,name):
         if request.method == 'POST':
             data=JSONParser().parse(request)['data']
             test = Test.objects.get(id=data['testId'])
-            subs = Subject.objects.all() #change this when we change the model for subjects
-            avg_ap,avg_cf,avg_c,avg_d,avg_p,avg_a=0,0,0,0,0,0
-            for sub in subs:
-                if sub.sub_name == 'Aptitude':
-                    avg_ap=test.apt['avg']
-                elif sub.sub_name == 'Computer Fundamentals':
-                    avg_cf =test.cf['avg']
-                elif sub.sub_name == 'Coding':
-                    avg_c =test.c['avg']   
-                elif sub.sub_name == 'Domain':
-                    avg_d =test.dom['avg']    
-                elif sub.sub_name == 'Personality':
-                    avg_p =test.p['avg']    
-                elif sub.sub_name == 'Analytical Writing':
-                    avg_a =test.aw['avg']  
             if user:
-                d = datetime.datetime.utcnow()
                 myUser=user.myuser
                 name=myUser.name
                 gender=myUser.gender
                 age=myUser.age
                 try:
                     if name != 'a' and user.is_staff!=True:
-                        rr=Results.objects.get(student = user,test=Test.objects.get(id=data['testId']))
+                        rr=Results.objects.get(student = user,test=test)
                         if rr:
                             if rr.endTime!=None:
                                 return JsonResponse({'end':True,'resultExists':True,'name':name,'gender':gender,'age':age},safe=False)
-                            else:    
-                                return JsonResponse({'end':False,'resultExists':True,'name':name,'gender':gender,'age':age},safe=False)
+                            else:
+                                timeDelta=test.totalTestTime.split(':')
+                                time_change = datetime.timedelta(hours=int(timeDelta[0]),minutes=int(timeDelta[1]),seconds=int(timeDelta[2]))
+                                stTime=datetime.datetime.strptime(str(rr.startTime).split(".")[0], '%Y-%m-%d %H:%M:%S')
+                                expTimeToEndExam=stTime+time_change
+                                nowTime=datetime.datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+                                nowTime=datetime.datetime.strptime(nowTime, '%Y-%m-%d %H:%M:%S')   
+                                if nowTime>expTimeToEndExam:
+                                    rr.endTime=expTimeToEndExam
+                                    rr.save()
+                                    return JsonResponse({'end':True,'resultExists':True,'name':name,'gender':gender,'age':age},safe=False)
+                                else:
+                                    return JsonResponse({'end':False,'resultExists':True,'name':name,'gender':gender,'age':age},safe=False)
                     else:
                         Results.objects.get(student = user,test=Test.objects.get(id=data['testId'])).delete()
                 except Results.DoesNotExist:
                     print('No previous entry')
-                result = Results.objects.create(student = user,startTime = d,test=Test.objects.get(id=data['testId']),
-                marks={"ap":0,'cf':0,'c':0,'d':0,'p':0,'a':0,"avg_ap":avg_ap,'avg_cf':avg_cf,'avg_c':avg_c,'avg_d':avg_d,'avg_p':avg_p,'avg_a':avg_a,'apMax':[],'cfMax':[],'cMax':[],'dMax':[],'pMax':[],'aMax':[],'apGot':[],'cfGot':[],'cGot':[],'dGot':[],'pGot':[evaluate(request,{'Nick':name,'Sex':'Male','Age':21,'Q':[0]*(121),'Country':'India'})],'aGot':[]}
-                )
-                result.save()
-                return JsonResponse({'end':False,'resultExists':False,'name':name,'gender':gender,'age':age},safe=False)
+                return JsonResponse({'end':False,'resultExists':False,'name':name,'gender':gender,'age':age},safe=False)    
             else:
                 return JsonResponse("User Doesn't exist",safe=False)
         elif request.method=='GET':
@@ -481,11 +472,44 @@ def results(request,name):
     else:
         return HttpResponseBadRequest()
         
+@csrf_exempt
+def setresult(request,name):
+    if request.method == "POST":
+        if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+            user = User.objects.get(username = name)
+            data=JSONParser().parse(request)['data']
+            if user:
+                test = Test.objects.get(id=data['testId'])
+                avg_ap=test.apt['avg']
+                avg_cf =test.cf['avg']
+                avg_c =test.c['avg']
+                avg_d =test.dom['avg']
+                avg_p =test.p['avg']  
+                avg_a =test.aw['avg']  
+                d = datetime.datetime.utcnow()
+                myUser=user.myuser
+                name=myUser.name
+                gender=myUser.gender
+                age=myUser.age
+                result = Results.objects.create(student = user,startTime = d,test=Test.objects.get(id=data['testId']),
+                marks={"ap":0,'cf':0,'c':0,'d':0,'p':0,'a':0,"avg_ap":avg_ap,'avg_cf':avg_cf,'avg_c':avg_c,'avg_d':avg_d,'avg_p':avg_p,'avg_a':avg_a,'apMax':[],'cfMax':[],'cMax':[],'dMax':[],'pMax':[],'aMax':[],'apGot':[],'cfGot':[],'cGot':[],'dGot':[],'pGot':[evaluate(request,{'Nick':name,'Sex':'Male','Age':21,'Q':[0]*(121),'Country':'India'})],'aGot':[]}
+                )
+                result.save()
+                return JsonResponse({'end':False,'resultExists':False,'name':name,'gender':gender,'age':age},safe=False)
+            else:
+                return JsonResponse("User Doesn't exist",safe=False)    
+        else:
+            return HttpResponseBadRequest()      
+
 def converttoist(datex):
     from_zone = tz.tzutc()
     to_zone = tz.tzlocal()
     datex = str(datex).split('+')[0]
-    utc = datetime.datetime.strptime(datex.split(".")[0], '%Y-%m-%d %H:%M:%S')
+    datex1 = str(datex).rsplit(':',1)[0]+':'
+    datex2 = str(datex).rsplit(':',1)[1][:2]
+    datex = datex1+datex2
+    datex = datex.split(".")[0]
+    utc = datetime.datetime.strptime(datex, '%Y-%m-%d %H:%M:%S')
     
     # Tell the datetime object that it's in UTC time zone since 
     # datetime objects are 'naive' by default
@@ -575,9 +599,10 @@ def takeFeedback(request):
 @csrf_exempt
 def resultTest(request,id):
     if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
-        testData=Results.objects.filter(test=Test.objects.get(id=id))
+        testInfo=Test.objects.get(id=id)
+        resultData=Results.objects.filter(test=testInfo)
         a={}
-        a=ResultSerializer(testData,many=True)
+        a=ResultSerializer(resultData,many=True)
         
         cc=[]
         for x in a.data:
@@ -587,12 +612,25 @@ def resultTest(request,id):
             c['uid']=user.id
             c['name']=user.username
             c['sdate']="{0} {1}".format(x['startTime'].split('T')[0],x['startTime'].split('T')[1].split('.')[0])
-            c['sdate'] = converttoist(c['sdate'])
+            startDateTime=converttoist(c['sdate'])
+            c['sdate'] = startDateTime
             if(x['endTime']):
                 c['edate']="{0} {1}".format(x['endTime'].split('T')[0],x['endTime'].split('T')[1].split('.')[0])
                 c['edate'] = converttoist(c['edate'])
             else:
-                c['edate']='ongoing'
+                timeDelta=testInfo.totalTestTime.split(':')
+                time_change = datetime.timedelta(hours=int(timeDelta[0]),minutes=int(timeDelta[1]),seconds=int(timeDelta[2]))
+                stTime=datetime.datetime.strptime(startDateTime[0].split(".")[0], '%Y-%m-%d %H:%M:%S')
+                expTimeToEndExam=stTime+time_change
+                nowTime=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                nowTime=datetime.datetime.strptime(nowTime, '%Y-%m-%d %H:%M:%S')
+                if nowTime>expTimeToEndExam:
+                    resultStudent=Results.objects.get(test=testInfo,student=user)
+                    resultStudent.endTime=expTimeToEndExam
+                    resultStudent.save()
+                    c['edate']=expTimeToEndExam
+                else:
+                    c['edate']='ongoing'
             c['apt'] = x['marks']['ap']
             c['fund'] = x['marks']['cf']
             c['code'] = x['marks']['c']
@@ -843,6 +881,7 @@ def saveTest(request):
         if request.method == 'POST':
             data=JSONParser().parse(request)['data']
             tst=Test(test_name=data['createTest']['testName'],test_start=data['createTest']['sTime'],test_end=data['createTest']['eTime'],token=str(uuid.uuid4()))
+            totalTestTime=datetime.timedelta(hours=0,minutes=0,seconds=0)
             for x in range(0,len(data['saveTest'])):
                 avgMrk=0
                 if str(data['saveTest'][x]['sub'])=='Coding' or str(data['saveTest'][x]['sub'])=='Analytical Writing':
@@ -850,6 +889,8 @@ def saveTest(request):
                 else:
                     avgMrk=math.ceil(int(data['saveTest'][x]['totalQs'])*2*0.7) # 70% average
                 b=Subject.objects.get(sub_name=data['saveTest'][x]['sub'])
+                splitTime=data['saveTest'][x]['time'].split(':')
+                totalTestTime=totalTestTime+datetime.timedelta(hours=int(splitTime[0]),minutes=int(splitTime[1]),seconds=int(splitTime[2]))
                 if(b.sub_name=="Aptitude"):
                     tst.apt = {
                         "qs":data['saveTest'][x]['totalQs'],
@@ -898,6 +939,8 @@ def saveTest(request):
                 b.avg_score=avgMrk
                 b.save()
                 tst.save()
+            tst.totalTestTime=totalTestTime
+            tst.save()
             return JsonResponse('success',safe=False)
     else:
         return HttpResponseBadRequest()
@@ -907,10 +950,7 @@ def tests(request,idd=0):
         if request.method == 'POST':
             data=JSONParser().parse(request)['data']
             if not data['delete']:
-                if not data['update']:
-                    test = Test.objects.create(test_name =data['name'],test_start=data['start'],test_end=data['end'])
-                    test.save()
-                else:
+                if data['update']:
                     test=Test.objects.get(id=data['id'])
                     test.test_name=data['name']
                     test.apt=data['apt']
@@ -921,6 +961,33 @@ def tests(request,idd=0):
                     test.aw=data['aw']
                     test.test_start=data['start']
                     test.test_end=data['end']
+                    aptTimeArr=data['apt']['time'].split(':')
+                    cfTimeArr=data['cf']['time'].split(':')
+                    cTimeArr=data['c']['time'].split(':')
+                    pTimeArr=data['p']['time'].split(':')
+                    awTimeArr=data['aw']['time'].split(':')
+                    domainTimeArr=data['domain']['time'].split(':')
+                    totalTimeTaken=(
+                        datetime.timedelta(
+                        hours=int(aptTimeArr[0]),minutes=int(aptTimeArr[1]),seconds=int(aptTimeArr[2])
+                    )+
+                        datetime.timedelta(
+                        hours=int(cfTimeArr[0]),minutes=int(cfTimeArr[1]),seconds=int(cfTimeArr[2])
+                    )+
+                        datetime.timedelta(
+                        hours=int(cTimeArr[0]),minutes=int(cTimeArr[1]),seconds=int(cTimeArr[2])
+                    )+
+                        datetime.timedelta(
+                        hours=int(domainTimeArr[0]),minutes=int(domainTimeArr[1]),seconds=int(domainTimeArr[2])
+                    )+
+                        datetime.timedelta(
+                        hours=int(pTimeArr[0]),minutes=int(pTimeArr[1]),seconds=int(pTimeArr[2])
+                    )+
+                        datetime.timedelta(
+                        hours=int(awTimeArr[0]),minutes=int(awTimeArr[1]),seconds=int(awTimeArr[2])
+                    )
+                    )
+                    test.totalTestTime=totalTimeTaken
                     test.save()
                 return JsonResponse('done',safe=False) 
         elif request.method == 'DELETE':
