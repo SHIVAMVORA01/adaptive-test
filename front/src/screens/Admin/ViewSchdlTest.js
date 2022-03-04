@@ -125,41 +125,46 @@ function ViewSchdlTest() {
 
   useEffect(() => {
     setIsloading(true);
-    axiosInstance
-      .get(`/api/admin/resultTest/${location.state.id}`)
-      .then((res) => {
-        setRows(res.data.studentNameArr);
-        console.log(res.data);
-        setTData({
-          columns: columns,
-          rows: res.data.studentNameArr.map((v) => ({
-            ...v,
-            checkBtn: (
-              <MDBInput
-                label=" "
-                defaultChecked={false}
-                style={{ height: "10px", width: "10px" }}
-                type="checkbox"
-                name="checkbox_send_mail"
-                className="checkbox_send_mail"
-                id={"checkbox" + v.uid}
-                onChange={(e) =>
-                  checkAllSelected(res.data.studentNameArr.length)
-                }
-              />
-            ),
-            addBtn: (
-              <button
-                style={{ border: "none" }}
-                onClick={() => deleteRow(v.id)}
-              >
-                {" "}
-                <i className="fa fa-trash" style={{ color: "red" }}></i>
-              </button>
-            ),
-          })),
+    if (location.state !== null) {
+      axiosInstance
+        .get(`/api/admin/resultTest/${location.state.id}`)
+        .then((res) => {
+          setRows(res.data.studentNameArr);
+          console.log(res.data);
+          setTData({
+            columns: columns,
+            rows: res.data.studentNameArr.map((v) => ({
+              ...v,
+              checkBtn: (
+                <MDBInput
+                  label=" "
+                  defaultChecked={false}
+                  style={{ height: "10px", width: "10px" }}
+                  type="checkbox"
+                  name="checkbox_send_mail"
+                  className="checkbox_send_mail"
+                  id={"checkbox" + v.uid}
+                  onChange={(e) =>
+                    checkAllSelected(res.data.studentNameArr.length)
+                  }
+                />
+              ),
+              addBtn: (
+                <button
+                  style={{ border: "none" }}
+                  onClick={() => deleteRow(v.id)}
+                >
+                  {" "}
+                  <i className="fa fa-trash" style={{ color: "red" }}></i>
+                </button>
+              ),
+            })),
+          });
         });
-      });
+    } else {
+      setIsloading(false);
+      navigate(-1);
+    }
     setIsloading(false);
   }, []);
   function deleteRow(id) {

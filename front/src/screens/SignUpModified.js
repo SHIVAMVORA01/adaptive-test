@@ -9,6 +9,7 @@ import Select from "react-select";
 import { useMediaQuery } from "react-responsive";
 import MobileWidth from "../components/MobileWidth";
 import getGraduationYears from "../components/TestScreeen/graduationYears";
+import ConfirmDialogBox from "../components/ConfirmDialogBox";
 
 function SignUpModified() {
   const isDesktopOrLaptop = useMediaQuery({
@@ -35,6 +36,8 @@ function SignUpModified() {
     avgCGPA: "",
     backlogs: "",
     internships: "",
+    admin: false,
+    superuser: false,
   });
   const [formData, updateFormData] = useState(initialFormData);
   const [successMsg, setSuccessMsg] = useState("");
@@ -43,15 +46,21 @@ function SignUpModified() {
   const [isAlertSuccessMsgLoaded, setIsAlertSuccessMsgLoaded] = useState(false);
   const filterOptions = createFilterOptions(colleges);
   const filterOptions2 = createFilterOptions(departments);
+  const [showConfirmDialogBox, setShowConfirmDialogBox] = useState(false);
+  const [argConfirmModal, setArgConfirmModal] = useState();
+  const [confirm_yes_func, set_confirm_yes_func] = useState();
+  const [confirm_no_func, set_confirm_no_func] = useState();
+  const [confirm_dialog_msg, set_confirm_dialog_msg] = useState("");
   useEffect(() => {
     const check = async () =>
       await axiosInstance
         .get("api/newuser", { params: { email: location.state.data.email } })
         .then((res) => {
           if (res.data.exists) {
-            setIsAlertDangerMsgLoaded(true);
-            setDangerMsg("User is already registered");
-            navigate("/login");
+            set_confirm_yes_func(() => onYes);
+            set_confirm_no_func(() => {});
+            set_confirm_dialog_msg("User is already registered");
+            setShowConfirmDialogBox(true);
           } else {
             updateFormData({
               ...formData,
@@ -75,6 +84,9 @@ function SignUpModified() {
     setIsloading(false);
   }, []);
 
+  function onYes() {
+    navigate("/login");
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
     if (formData.pass === formData.cpass) {
@@ -127,6 +139,16 @@ function SignUpModified() {
             <Loader />
           ) : (
             <div>
+              <ConfirmDialogBox
+                showConfirmDialogBox={showConfirmDialogBox}
+                setShowConfirmDialogBox={setShowConfirmDialogBox}
+                title={"User Exists"}
+                confirm_no={confirm_no_func}
+                confirm_yes={confirm_yes_func}
+                arg={argConfirmModal}
+                msg={confirm_dialog_msg}
+                onlyOk={true}
+              />
               <Container
                 className="customLoginBorder"
                 style={{

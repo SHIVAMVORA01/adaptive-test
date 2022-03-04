@@ -98,6 +98,7 @@ function CustomTimer({
     }
     return () => {
       setTimer();
+      clearInterval(increment.current);
     };
   }, [start, reset]);
 

@@ -65,57 +65,66 @@ function SetQuestion() {
   const [confirm_dialog_title, set_confirm_dialog_title] = useState("");
 
   useEffect(() => {
-    document.getElementById(location.state.type).selected = "selected";
-    var divHeight = document.querySelector("#SETQS").clientHeight;
-    setWindowHeight(divHeight);
-    sessionStorage.removeItem("isNewTestReload");
-    var temp = location.state.navArr;
-    setNavArray(temp);
-    if (parseInt(location.state.sid) === 5) {
-      setIsCoding(true);
-    } else if (parseInt(location.state.sid) === 6) {
-      setIsAnalytical(true);
-    } else if (parseInt(location.state.sid) === 4) {
-      set_isPersonality(true);
-    }
-    if (temp[0] !== undefined) {
-      if (location.state.sid !== 5 && location.state.sid !== 6) {
-        setCurrentQsID(temp[0].id);
-        setCurrentQs(temp[0].ques);
-        setOpt(temp[0].options);
-        setImgDb(temp[0].imgId);
-      } else if (location.state.sid === 5) {
-        setCurrentQsID(temp[0].id);
-        setCurrentQs(temp[0].question || "");
-        setOpt([]);
+    if (
+      location.state !== null &&
+      location.state.type !== undefined &&
+      location.state.navArr !== undefined &&
+      location.state.sid !== undefined
+    ) {
+      document.getElementById(location.state.type).selected = "selected";
+      var divHeight = document.querySelector("#SETQS").clientHeight;
+      setWindowHeight(divHeight);
+      sessionStorage.removeItem("isNewTestReload");
+      var temp = location.state.navArr;
+      setNavArray(temp);
+      if (parseInt(location.state.sid) === 5) {
         setIsCoding(true);
+      } else if (parseInt(location.state.sid) === 6) {
+        setIsAnalytical(true);
+      } else if (parseInt(location.state.sid) === 4) {
+        set_isPersonality(true);
+      }
+      if (temp[0] !== undefined) {
+        if (location.state.sid !== 5 && location.state.sid !== 6) {
+          setCurrentQsID(temp[0].id);
+          setCurrentQs(temp[0].ques);
+          setOpt(temp[0].options);
+          setImgDb(temp[0].imgId);
+        } else if (location.state.sid === 5) {
+          setCurrentQsID(temp[0].id);
+          setCurrentQs(temp[0].question || "");
+          setOpt([]);
+          setIsCoding(true);
 
-        setInputF(temp[0].input_format || "");
-        setOutputF(temp[0].output_format || "");
-        setConstraints(temp[0].constraints || "");
-        setSampleInput(temp[0].sample_input || "");
-        setSampleOutput(temp[0].sample_output || "");
-        setExplanation(temp[0].explanation || "");
-        if (temp[0].test_case_input[0] && temp[0].test_case_output[0]) {
-          setTestCaseInput1(temp[0].test_case_input[0] || "");
-          setTestCaseOutput1(temp[0].test_case_output[0] || "");
+          setInputF(temp[0].input_format || "");
+          setOutputF(temp[0].output_format || "");
+          setConstraints(temp[0].constraints || "");
+          setSampleInput(temp[0].sample_input || "");
+          setSampleOutput(temp[0].sample_output || "");
+          setExplanation(temp[0].explanation || "");
+          if (temp[0].test_case_input[0] && temp[0].test_case_output[0]) {
+            setTestCaseInput1(temp[0].test_case_input[0] || "");
+            setTestCaseOutput1(temp[0].test_case_output[0] || "");
+          }
+          if (temp[0].test_case_input[1] && temp[0].test_case_output[1]) {
+            setTestCaseInput2(temp[0].test_case_input[1] || "");
+            setTestCaseOutput2(temp[0].test_case_output[1] || "");
+          }
+          if (temp[0].test_case_input[2] && temp[0].test_case_output[2]) {
+            setTestCaseInput3(temp[0].test_case_input[2] || "");
+            setTestCaseOutput3(temp[0].test_case_output[2] || "");
+          }
+        } else if (location.state.sid === 6) {
+          setCurrentQsID(temp[0].paraId);
+          set_para_title(temp[0].title);
+          set_para(temp[0].para);
+          set_para_qs(temp[0].questions);
         }
-        if (temp[0].test_case_input[1] && temp[0].test_case_output[1]) {
-          setTestCaseInput2(temp[0].test_case_input[1] || "");
-          setTestCaseOutput2(temp[0].test_case_output[1] || "");
-        }
-        if (temp[0].test_case_input[2] && temp[0].test_case_output[2]) {
-          setTestCaseInput3(temp[0].test_case_input[2] || "");
-          setTestCaseOutput3(temp[0].test_case_output[2] || "");
-        }
-      } else if (location.state.sid === 6) {
-        setCurrentQsID(temp[0].paraId);
-        set_para_title(temp[0].title);
-        set_para(temp[0].para);
-        set_para_qs(temp[0].questions);
+      } else {
+        setIsUpdate(true);
       }
     } else {
-      setIsUpdate(true);
+      navigate(-1);
     }
   }, []);
   function handleSubmit(e) {
@@ -527,7 +536,7 @@ function SetQuestion() {
           <form onSubmit={(e) => handleSubmit(e)} id="sbForm">
             <input
               name="sectionName"
-              value={location.state.sectionName}
+              value={location.state?.sectionName}
               hidden
             />
             <input

@@ -17,7 +17,6 @@ admin.site.register(CodingTest)
 admin.site.register(Paraqs)
 admin.site.register(Paraopt)
 admin.site.register(Para)
-admin.site.register(MyUser)
 admin.site.register(Feedback)
 
 class MyUserModel(admin.StackedInline):

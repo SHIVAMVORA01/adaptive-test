@@ -164,43 +164,46 @@ function AdminHome() {
                     Scheduled Test
                   </p>
                 </ListGroup.Item>
-                <ListGroup.Item
-                  action
-                  href="/admin/RegisterAdmin"
-                  style={{
-                    width: "50%",
-                    height: "75px",
-                    padding: "25px 0px",
-                    display: "block",
-                    textAlign: "center",
-                    color: "#666666",
-                    backgroundColor: "#ffffff",
-                    fontSize: "0.85em",
-                    borderRight: "2px solid rgba(0,0,0,0.07)",
-                    textDecoration: "none",
-                    borderTop: "none",
-                    borderBottom: "none",
-                    borderLeft: "none",
-                  }}
-                >
-                  <RiAdminFill
+                {sessionStorage.getItem("super") == true && (
+                  <ListGroup.Item
+                    action
+                    href="/admin/RegisterAdmin"
                     style={{
-                      width: "20px",
-                      height: "35px",
-                      marginTop: "-30px",
-                      color: "#293e6f",
-                    }}
-                  />
-                  <p
-                    style={{
-                      marginTop: "-2px",
+                      width: "50%",
+                      height: "75px",
+                      padding: "25px 0px",
+                      display: "block",
                       textAlign: "center",
-                      fontSize: "11.9px",
+                      color: "#666666",
+                      backgroundColor: "#ffffff",
+                      fontSize: "0.85em",
+                      borderRight: "2px solid rgba(0,0,0,0.07)",
+                      textDecoration: "none",
+                      borderTop: "none",
+                      borderBottom: "none",
+                      borderLeft: "none",
                     }}
                   >
-                    Register Admin
-                  </p>
-                </ListGroup.Item>
+                    <RiAdminFill
+                      style={{
+                        width: "20px",
+                        height: "35px",
+                        marginTop: "-30px",
+                        color: "#293e6f",
+                      }}
+                    />
+                    <p
+                      style={{
+                        marginTop: "-2px",
+                        textAlign: "center",
+                        fontSize: "11.9px",
+                      }}
+                    >
+                      Register Admin
+                    </p>
+                  </ListGroup.Item>
+                )}
+
                 <ListGroup.Item
                   action
                   href="/Permissions"

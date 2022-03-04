@@ -163,6 +163,23 @@ export default function Compiler() {
   });
 
   useEffect(() => {
+    window.onkeydown = function(e) {
+      if(e.keyCode == 123) {
+         return false;
+      }
+      if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)) {
+         return false;
+      }
+      if(e.ctrlKey && e.shiftKey && e.keyCode == 'C'.charCodeAt(0)) {
+         return false;
+      }
+      if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)) {
+         return false;
+      }
+      if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)) {
+         return false;
+      }
+    }
     activityDetector.init();
     function fullscreenc() {
       var full_screen_element = document.fullscreenElement;
@@ -369,6 +386,7 @@ export default function Compiler() {
       window.removeEventListener("contextmenu", contextm);
       window.removeEventListener("fullscreenchange", fullscreenc);
       activityDetector.stop();
+      window.onkeydown = null
     };
   }, []);
   function converttime(timex) {

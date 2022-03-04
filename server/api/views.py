@@ -62,7 +62,15 @@ def newuser(request):
 
     if request.method=="POST":
         data=JSONParser().parse(request)['data']
-        user = User.objects.create(first_name=data['name'],username = data['email'],email=data['email'],password=make_password(data['pass']))   
+        if User.objects.filter(username = data['email']).exists():
+            return JsonResponse({"msg":"Failed","created":False,'exists':1},safe=False)
+        user = User.objects.create(first_name=data['name'],username = data['email'],email=data['email'],password=make_password(data['pass']))  
+        feedback=1
+        if data['admin']:
+            feedback=0
+            user.is_staff = True
+            if data['superuser']:
+                user.is_superuser = True     
         myuser = MyUser.objects.filter(user=user)
         if(myuser.exists()):
             myuser[0].delete()
@@ -77,7 +85,7 @@ def newuser(request):
                         percent_10_std=int(data['percent_10_std']),percent_12_std=int(data['percent_12_std']),
                         avgCGPA=float(data['avgCGPA']),backlogs=int(data['backlogs']),
                         internships=int(data['internships']),branch=data['branch'],
-                        college=data['college'],year=data['graduationYear']
+                        college=data['college'],year=data['graduationYear'],takeFeedback=feedback
                         )
         user.save()
         newuser.save()
@@ -92,13 +100,16 @@ def login(request):
         user = auth.authenticate(username = username,password = password)
         if user is not None:
             auth.login(request,user)
-            if User.objects.get(username=username).is_staff ==True:
-                return JsonResponse({"exist":1,"allowed":1,"admin":1},safe=False)
+            userr = User.objects.get(username=username)
+            if userr.is_staff ==True:
+                if userr.is_superuser:
+                    return JsonResponse({"exist":1,"allowed":1,"admin":1,"super":1},safe=False)
+                return JsonResponse({"exist":1,"allowed":1,"admin":1,"super":0},safe=False)
             else :
                 if int(data['mytid'])==-1:
                     return JsonResponse({"exist":1,"allowed":1,"admin":0},safe=False)
                 testx = Test.objects.get(id=int(data['mytid']))
-                if testx.token == user.last_name:
+                if testx.token == user.myuser.permission_token:
                     return JsonResponse({"exist":1,"allowed":1,"admin":0},safe=False)
                 else:
                     return JsonResponse({"exist":1,"allowed":0,"admin":0},safe=False)       
@@ -169,24 +180,33 @@ def getuserslist(request):
         if not presentTest.exists():   
             return JsonResponse({'exists':0},safe=False) 
         testx = presentTest[0]
-        allowed = User.objects.filter(last_name = testx.token).exclude(is_staff=True)
-        notallowed = User.objects.all().exclude(last_name = testx.token).exclude(is_staff=True)
+        myusers = MyUser.objects.filter(user__is_staff = False)
+        allowed =myusers.filter(permission_token = testx.token)
+        notallowed = myusers.exclude(permission_token = testx.token)
         bb=[]
         for xx in allowed:
             b={}
-            b['id'] = xx.id
-            b['first_name'] = xx.first_name
-            b['email'] = xx.email
+            b['id'] = xx.user.id
+            b['first_name'] = xx.user.first_name
+            b['email'] = xx.user.email
             bb.append(b) 
         aa=[]
         for xx in notallowed:
             a={}
-            a['id'] = xx.id
+            a['id'] = xx.user.id
             a['checkBtn'] = False
-            a['first_name'] = xx.first_name
-            a['email'] = xx.email
+            a['first_name'] = xx.user.first_name
+            a['email'] = xx.user.email
             aa.append(a)
         return JsonResponse({'exists':1,'allowed':bb,'notallowed':aa},safe=False)
+
+@csrf_exempt
+def getUserData(request,username):
+    if request.headers.get('Authorization') and checkAuthorization(request.headers["Authorization"]):
+        if request.method == "GET":
+            user=MyUser.objects.filter(user__username=username)
+            user=MyUserSerializer(user,many=True).data
+        return JsonResponse({'user':user[0]},safe=False)
 
 @csrf_exempt
 def send_custom_mail(request):
@@ -224,9 +244,10 @@ def permission(request):
             userrs=[]
             for user in users:
                 x = User.objects.get(id=int(user))
-                x.last_name = testx.token
+                xy=x.myuser
+                xy.permission_token = testx.token
                 userrs.append(x.email)
-                x.save()
+                xy.save()
             subject = "Invitation Link For Aptitude Test"
             email_from = settings.EMAIL_HOST_USER
             recipient_list = userrs

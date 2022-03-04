@@ -252,7 +252,8 @@ input:focus {
   background-color: #adb5bd;
 }
 
-.form-check-input {
+#quesComp .form-check-input,
+#comp_screen .form-check-input {
   width: 1px;
   height: 1px;
   border-radius: 1px;
