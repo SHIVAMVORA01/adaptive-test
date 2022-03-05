@@ -703,7 +703,8 @@ function Login() {
                                   style={{
                                     height: "30px",
                                     width: "30px",
-                                    marginLeft: "5px",
+                                    marginLeft: "-2px",
+                                    marginTop: "2px",
                                   }}
                                 />
                               </button>

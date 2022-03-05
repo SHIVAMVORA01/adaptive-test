@@ -164,7 +164,7 @@ function AdminHome() {
                     Scheduled Test
                   </p>
                 </ListGroup.Item>
-                {sessionStorage.getItem("super") == true && (
+                {`${sessionStorage.getItem("super")}` === "true" && (
                   <ListGroup.Item
                     action
                     href="/admin/RegisterAdmin"

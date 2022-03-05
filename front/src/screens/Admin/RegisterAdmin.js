@@ -176,7 +176,7 @@ function RegisterAdmin() {
             className="customLoginBorder"
             style={{
               width: "887px",
-              height: "630px",
+              height: "fit-content",
               boxShadow: "1.5px 1.5px 7px 3px rgba(0,0,0,0.2)",
               borderRadius: "40px",
               marginTop: "30px",
@@ -311,7 +311,11 @@ function RegisterAdmin() {
                 </Form.Group>
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <Form.Check
-                    style={{ border: "1px black" }}
+                    style={{
+                      border: "1px black",
+                      marginTop: "20px",
+                      marginBottom: "20px",
+                    }}
                     value={formData.superuser}
                     name="superuser"
                     onChange={(e) => {
@@ -323,12 +327,12 @@ function RegisterAdmin() {
                     type="checkbox"
                     class="custom-control-label"
                     id="custom-switch"
-                    label="Check this switch"
+                    label="Make this user superadmin?"
                   />
                   <button
                     type="submit"
                     style={{
-                      marginTop: "5%",
+                      marginTop: "10%",
                       border: "none",
                       outline: "none",
                       borderRadius: "5px",
@@ -337,6 +341,12 @@ function RegisterAdmin() {
                       fontFamily: "Poppins",
                       padding: "5px 45px",
                       color: "#FFFFFF",
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      marginRight: "auto",
+                      marginBottom: "30px",
+                      marginLeft: "120px",
                     }}
                   >
                     Login

@@ -11,6 +11,7 @@ import Loader from "../../components/Loader";
 import Alert from "../../components/Admin/Alert";
 import MobileWidth from "../../components/MobileWidth";
 import { useMediaQuery } from "react-responsive";
+import { quesData } from "./sampleJSON";
 
 function NewTest() {
   const isDesktopOrLaptop = useMediaQuery({
@@ -49,6 +50,7 @@ function NewTest() {
   const [isLoading, setIsloading] = useState(true);
 
   useEffect(() => {
+    console.log(quesData);
     setIsloading(true);
     const data = async () =>
       await axiosInstance
@@ -63,6 +65,7 @@ function NewTest() {
             ssid = location.state.sid;
             setSid(ssid + 1);
           }
+          // var d = quesData.data;  //customData
           var d = res.data.data;
           setAxData(d);
           //For Aptitude
