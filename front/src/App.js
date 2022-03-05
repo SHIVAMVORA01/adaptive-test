@@ -313,8 +313,8 @@ function App() {
               path="/details"
               exact
               element={
-                <Row style={{ margin: "20px 0 0 0" }}>
-                  <Col style={{ padding: "10px 90px" }}>
+                <Row style={{ margin: "0 0 0 0" }}>
+                  <Col style={{ padding: "0 0 0 0" }}>
                     <DetailPageModified />
                   </Col>
                 </Row>

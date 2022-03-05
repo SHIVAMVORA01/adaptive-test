@@ -1,3 +1,9 @@
+* {
+  font-family: sans-serif;
+  font-style: normal;
+  font-size: 14px;
+}
+
 #title {
   font-style: normal;
   font-weight: 500;
@@ -39,9 +45,30 @@
   width: 460px !important;
 }
 
+.accordion-button:focus {
+  z-index: 0 !important;
+  border-color: white !important;
+  outline: 0 !important;
+}
+
+.accordion-toggle:focus{outline: none;}
+
 input {
   border: 0px;
   outline: none;
+}
+
+.proct {
+  margin-top: 10px;
+  margin-left: 10px;
+  border-left: 2px solid #293e6f;
+  height: 20px;
+}
+.proct1 {
+  margin-top: 10px;
+  margin-left: 10px;
+  border-left: 2px solid #293e6f;
+  height: 20px;
 }
 
 input:focus {
@@ -72,6 +99,10 @@ input:focus::placeholder {
   background-image: url("/src/img/Group 10.png");
 }
 
+.accordion-button:not(.collapsed) {
+  color: black !important;
+  background-color: white !important;
+}
 .all_content .sorting,
 .main_permission_div .sorting,
 .feedbackTable .sorting {
@@ -104,5 +135,14 @@ td {
   }
   .Background {
     height: 650px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .proct {
+    margin-top: 40px;
+  }
+  .proct1 {
+    margin-top: 40px;
   }
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col, Row, Accordion } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { isExpired } from "react-jwt";
 import ProtectUrl from "../components/TestScreeen/ProtectUrl";
@@ -99,30 +99,31 @@ function DetailPageModified() {
     let acc_token = "JWT " + sessionStorage.getItem("access_token");
     axiosInstance.defaults.headers["Authorization"] = acc_token;
     axiosInstance
-    .post(`api/setresult/${username}`, {
-      data: { testId: sessionStorage.getItem("testId") },
-    })
-    .then(res=>{
-      sessionStorage.setItem(
-        "test",
-        JSON.stringify({
-          username: sessionStorage.getItem("username"),
-          STime: Date(),
-          strtTime: +h + ":" + m + ":" + s,
-          FSTimer: "10",
-          question: [],
-          marks: [],
-          currentQsNo: 1,
-        })
-      );
-      setIsloading(false);
-    navigate("/aptitude");
-    })
+      .post(`api/setresult/${username}`, {
+        data: { testId: sessionStorage.getItem("testId") },
+      })
+      .then(res => {
+        sessionStorage.setItem(
+          "test",
+          JSON.stringify({
+            username: sessionStorage.getItem("username"),
+            STime: Date(),
+            strtTime: +h + ":" + m + ":" + s,
+            FSTimer: "10",
+            question: [],
+            marks: [],
+            currentQsNo: 1,
+          })
+        );
+        setIsloading(false);
+        navigate("/aptitude");
+      })
   };
 
   const checkboxHandler = () => {
     setAgree(!agree);
   };
+
   return (
     <>
       {isDesktopOrLaptop ? (
@@ -130,10 +131,9 @@ function DetailPageModified() {
           {isLoading ? (
             <Loader />
           ) : (
-            <Row>
-              <Col md={3} style={{ padding: "0", margin: "0", height: "100%" }}>
-                <div
-                  className="rectangleInstuc"
+            <Row style={{ height: "100%", margin: "0px" }}>
+              <Col md={5} >
+              <div
                   style={{
                     padding: "15px 35px 30px 35px",
                     margin: "0 10px",
@@ -261,115 +261,180 @@ function DetailPageModified() {
                   </Row>
                 </div>
               </Col>
-              <Col md={9} style={{ padding: "0", margin: "0" }}>
-                <div
-                  className="rectangleInstuc"
-                  style={{
-                    minHeight: "100%",
-                    padding: "5px 35px 20px 35px",
-                    margin: "0 30px",
-                  }}
-                >
-                  <Row style={{ textAlign: "center", margin: "30px 0" }}>
-                    <Col>
-                      <div
-                        style={{
-                          textAlign: "center",
-                          fontSize: "19px",
-                          color: "#293e6f",
-                          fontWeight: "bold",
-                        }}
-                      >
-                        Instructions
-                      </div>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <Col>
-                      <Row
-                        style={{
-                          marginRight: "30px",
-                          marginLeft: "30px",
-                          fontSize: "15px",
-                          lineHeight: "2",
-                        }}
-                      >
-                        <ol>
-                          <li>
-                            It is mandatory for you to attempt the exam in one
-                            sitting.
+              <Col md={7} style={{ backgroundColor: "white", borderLeft: "3px solid #F1F1F1", height: "1000px" }}>
+                <div>
+                  <div style={{ borderLeft: "3px solid #293E6F", height: "50px", marginTop: "20px", marginLeft: "10px" }}>
+                    <h2 style={{ fontSize: "18px", color: "#293E6F", fontFamily: "sans-serif", fontWeight: "medium", padding: "0 0 6px", marginTop: "20px", marginLeft: "10px" }}>Assessment Guidelines</h2>
+                    <p style={{ fontSize: "14px", fontFamily: "sans-serif", fontWeight: "400", padding: "0 0 6px", marginTop: "-10px", marginLeft: "10px" }}>Kindly read through the following key instructions and important guidelines for this assessment:</p>
+                  </div>
+                  <div style={{ borderLeft: "2px solid #293E6F", height: "20px", marginTop: "30px", marginLeft: "10px" }}>
+                    <h2 style={{ fontSize: "16px", color: "#293E6F", fontFamily: "sans-serif", fontWeight: "500", padding: "0 0 6px", marginTop: "20px", marginLeft: "10px" }}>Timelines & Questions:</h2>
+                    <ul>
+                      <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "medium", lineHeight: "22px", marginBottom: "6px" }}>
+                        <b style={{ fontFamily: "sans-serif", color:"#293E6F" }}>Assessment Window:</b>  05 Mar 22, 12:00 PM IST to 05 Mar 22, 08:00 PM IST
+                      </li>
+                      <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                        <b style={{ fontFamily: "sans-serif" , color:"#293E6F"}}>Assessment Duration:</b> 00:30:00 (hh:mm:ss)
+                      </li>
+                      <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                        You can attempt the assessment anytime between the provided assessment window.
+                      </li>
+                      <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                        Please ensure that you attempt the assessment in one sitting as once you start the assessment, the timer won’t stop.
+                      </li>
+                      <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                        You will have to finish the assessment before 05 Mar 22, 08:00 PM IST. To get the complete assessment duration, you need to start the assessment latest by 05 Mar 22, 07:30 PM IST. Otherwise, you’ll get less time to complete the assessment.
+                      </li>
+                    </ul>
+                    <div className="proct">
+                      <h2 style={{ fontSize: "16px", color: "#293E6F", fontFamily: "sans-serif", fontWeight: "500", padding: "0 0 6px", marginTop: "10px", marginLeft: "10px" }}>Proctoring Related:</h2>
+                      <ul>
+                        <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                          You can take the assessment only on a desktop/laptop and in full-screen mode. </li>
+
+                        <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                          You must not refresh the screen. However, if the screen refreshes by accident, the progress will not be lost, the progress and the timer will be restored to where it was before.
+                        </li>
+                        <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                          You should not switch tabs, desktops, or browsers during the test, a warning will appear twice, indicating that the screen has been changed. The test will be auto-submitted after two warnings.
+                        </li>
+                      </ul>
+                      <div className="proct1">
+                        <h2 style={{ fontSize: "16px", color: "#293E6F", fontFamily: "sans-serif", fontWeight: "500", padding: "0 0 6px", marginTop: "10px", marginLeft: "10px" }}>Key Instructions:</h2>
+                        <ul>
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            You can access the assessment once you have registered and have been accepted by the admin.</li>
+
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            You won’t be able to browse through the questions. If you either skip your question or submit your answer, it is marked and stored, and cannot be altered.
                           </li>
-                          <li>
-                            You are only allowed to attempt the exam unless
-                            access has been granted by the admin.{" "}
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            You must attempt every module. This exam contains six modules. In case you miss any module, it will not be considered as completed and will not be evaluated for the final result.                      </li>
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            You must have an uninterrupted Internet Connection while giving the exam (1 MBPS preferred).
                           </li>
-                          <li>
-                            Exam will be in auto proctored mode. Therefore,
-                            don’t use any unfair means during exam.The Test will
-                            be conducted in full screen mode.
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            You will be allowed to give the test once and in a single sitting.
                           </li>
-                          <li>
-                            The exam contains six modules. You must attempt
-                            every module. In case you miss any module, it will
-                            not be considered as completed and will not be
-                            evaluated for final result.
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            Once the time is over for a section, you'll be taken to the next section automatically.
                           </li>
-                          <li>
-                            Make sure you have an uninterrupted Internet
-                            Connection while giving the exam (1 MBPS preferred)
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            You'll have to submit answers/code/solutions to all the questions individually.
                           </li>
-                          <li>
-                            If the screen refreshes by accident, the progress is
-                            not lost, the progress and the timer will be
-                            restored to where it was before.
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            Any participant resorting to unfair practices will be directly disqualified from the challenge.
                           </li>
-                          <li>
-                            Do not switch tabs, desktops, or browsers during the
-                            test, a warning will appear twice, indicating that
-                            the screen has been changed. The test will be
-                            auto-submitted after three warning.
-                          </li>
-                          <li>
-                            Taking more than one test at the same time is not
-                            allowed. Multiple instances of the tests are not
-                            allowed.
-                          </li>
-                          <li>
-                            During the test, the candidate should not switch and
-                            move out of the test window. The test will get
-                            autosubmitted.
-                          </li>
-                          <li>
-                            {" "}
-                            If you face any issue while giving the test you need
-                            to contact on the given helpline number and your
-                            query will be resolved immediately{" "}
-                          </li>
-                        </ol>
-                      </Row>
-                      <Row>
-                        <Col>
-                          <input
-                            style={{ marginLeft: "30px" }}
-                            type="checkbox"
-                            id="agree"
-                            onChange={checkboxHandler}
-                          />
-                          <label
-                            style={{
-                              marginLeft: "15px",
-                              marginBottom: "15px",
-                              fontSize: "14px",
-                            }}
-                            htmlFor="agree"
-                          >
-                            {" "}
-                            I have read all the <b>instructions </b>and hereby
-                            accept to adhere them.
-                          </label>
-                        </Col>
-                      </Row>
-                      <Row>
+                          <li style={{ fontFamily: "sans-serif", fontSize: "14px", fontWeight: "500", lineHeight: "22px", marginBottom: "6px" }}>
+                            All decisions in the matter of eligibility, authenticity & final judgment will be with the admin.</li>
+                        </ul>
+                        <div>
+                          <Accordion flush>
+                            <Accordion.Item>
+                              <Accordion.Header style={{border:"none", outline:"none"}}>Please confirm the following statements</Accordion.Header>
+                              <Accordion.Body className="acc" style={{fontFamily:"sans-serif", fontSize:"14px"}}>
+                                <Col>
+                                 <p>I understand that,</p>
+                                  <input
+                                    style={{ marginLeft: "30px" }}
+                                    type="checkbox"
+                                    id="agree"
+                                    onChange={checkboxHandler}
+                                  />
+                                  <label
+                                   className="check"
+                                    style={{
+                                      marginLeft: "15px",
+                                      marginBottom: "15px",
+                                      fontSize: "14px",
+                                    }}
+                                    htmlFor="agree"
+                                  >
+                                    {" "}
+                                    This assessment will work only in full-screen mode.
+                                  </label>
+                                </Col>
+                                <Col>
+                                  <input
+                                    style={{ marginLeft: "30px" }}
+                                    type="checkbox"
+                                    id="agree"
+                                    onChange={checkboxHandler}
+                                  />
+                                  <label
+
+                                    style={{
+                                      marginLeft: "15px",
+                                      marginBottom: "15px",
+                                      fontSize: "14px",
+                                    }}
+                                    htmlFor="agree"
+                                  >
+                                    {" "}
+                                    Switching tabs will result in full screen violation.
+                                  </label>
+                                </Col>
+                                <Col>
+                                  <input
+                                    style={{ marginLeft: "30px" }}
+                                    type="checkbox"
+                                    id="agree"
+                                    onChange={checkboxHandler}
+                                  />
+                                  <label
+                                    style={{
+                                      marginLeft: "15px",
+                                      marginBottom: "15px",
+                                      fontSize: "14px",
+                                    }}
+                                    htmlFor="agree"
+                                  >
+                                    {" "}
+                                    Escape button press or click will result in full screen violation.
+                                  </label>
+                                </Col>
+                                <Col>
+                                  <input
+                                    style={{ marginLeft: "30px" }}
+                                    type="checkbox"
+                                    id="agree"
+                                    onChange={checkboxHandler}
+                                  />
+                                  <label
+                                    style={{
+                                      marginLeft: "15px",
+                                      marginBottom: "15px",
+                                      fontSize: "14px",
+                                    }}
+                                    htmlFor="agree"
+                                  >
+                                    {" "}
+                                    Any other activity that disturbs the full screen mode may result in termination of the assessment
+                                  </label>
+                                </Col>
+                                <Col>
+                                  <input
+                                    style={{ marginLeft: "30px" }}
+                                    type="checkbox"
+                                    id="agree"
+                                    onChange={checkboxHandler}
+                                  />
+                                  <label
+                                    style={{
+                                      marginLeft: "15px",
+                                      marginBottom: "15px",
+                                      fontSize: "14px",
+                                    }}
+                                    htmlFor="agree"
+                                  >
+                                    {" "}
+                                    I have read all the above statements and thereby will adhere them.
+                                  </label>
+                                </Col>
+                              </Accordion.Body>
+                            </Accordion.Item>
+                          </Accordion>
+                        </div>
                         <button
                           disabled={
                             !(agree && !isDevToolsOpen && isFullScreenEnabled)
@@ -391,12 +456,13 @@ function DetailPageModified() {
                         >
                           Start Test
                         </button>
-                      </Row>
-                    </Col>
-                  </Row>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </Col>
             </Row>
+
           )}
         </>
       ) : (
